@@ -1,4 +1,11 @@
-﻿
+﻿---
+name: Other issues
+about: For issues not related to the other templates
+title: ''
+labels: ''
+assignees: ''
+
+---
 ## Describe the issue
 <!-- A clear and concise description of the issue. -->
 
