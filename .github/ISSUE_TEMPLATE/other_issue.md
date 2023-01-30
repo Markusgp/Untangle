@@ -1,4 +1,4 @@
-﻿---
+---
 name: Other issues
 about: For issues not related to the other templates
 title: ''
