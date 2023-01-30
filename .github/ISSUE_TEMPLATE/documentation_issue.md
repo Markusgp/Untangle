@@ -1,4 +1,12 @@
-﻿## Description of issue
+﻿---
+name: Documentation issue
+about: Use this template for documentation related issues
+title: "[DOCS]"
+labels: documentation
+assignees: ''
+
+---
+## Description of issue
 ### Description
 <!-- For example, How is this method useful? Why would anyone use it. What does it do? -->
 

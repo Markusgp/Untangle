@@ -1,4 +1,12 @@
-﻿## Describe the solution you'd like
+﻿---
+name: Feature
+about: Suggest a feature
+title: "[FEATURE]"
+labels: enhancement
+assignees: ''
+
+---
+## Describe the solution you'd like
 <!-- A clear and concise description of what you want to happen. -->
 
 ## Describe alternatives you've considered
