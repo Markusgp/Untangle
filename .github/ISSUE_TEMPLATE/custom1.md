@@ -1,5 +1,5 @@
 ---
-name: Other issues
+name: Other issues test
 about: For issues not related to the other templates
 title: ''
 labels: ''
