@@ -4,6 +4,7 @@ about: For issues not related to the other templates
 title: ''
 labels: ''
 assignees: ''
+project: Bachelor Project KanBan
 
 ---
 ## Describe the issue
