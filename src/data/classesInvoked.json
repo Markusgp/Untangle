@@ -1,0 +1,14 @@
+[  
+  {    
+    "class": "Student",    
+    "invokes": []
+  },
+  {
+    "class": "Teacher",
+    "invokes": []
+  },
+  {
+    "class": "Course",
+    "invokes": []
+  }
+]
