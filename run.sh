@@ -1,12 +1,19 @@
 if [ ! -d "database-$1}" ]
 then
-  codeql database create database-$1 --language=$1 --overwrite --threads=0
+  codeql database create codeql-database-$1 --language=$1 --overwrite --threads=0
 else
-  codeql database create database-$1 --language=$1
+  codeql database create codeql-database-$1 --language=$1
 fi
-codeql database analyze database-$1 --format=csv --output=results
-cd database-$1\\results\\codeql\\$1-queries\\codeql\\$1-queries
-codeql bqrs decode test-query.bqrs --format=json --output=test.csv
+codeql database run-queries codeql-database-$1
+echo "Interpreting results"
+dir=$(pwd)
+datapath2=$dir\\codeql-database-$1\\results\\codeql\\java
+k=1
+for i in "$datapath2"/*.bqrs
+do
+  codeql bqrs decode "$i" -o=test$k.json --format=json
+  k=$(($k + 1))
+done
 cd ..\\..\\..\\..\\..\\..
 npm start
 $SHELL
