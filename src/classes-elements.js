@@ -19,7 +19,7 @@ classes.forEach(cls => {
     data: {
       label: cls.class.Name
     },
-    
+    position: { x: 0, y: 0 }
   };
 
   nodes.push(node);
