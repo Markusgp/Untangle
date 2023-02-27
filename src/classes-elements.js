@@ -24,20 +24,20 @@ classes.forEach(cls => {
 
   nodes.push(node);
 });
+//How the Nodes are organized on the canvas. Change this for different positioning
+  // Calculate the total number of nodes
+  const numNodes = nodes.length;
 
-// Calculate the total number of nodes
-const numNodes = nodes.length;
+  // Calculate the radius of the circle based on the number of nodes
+  const radius = 200 + (numNodes - 5) * 20;
 
-// Calculate the radius of the circle based on the number of nodes
-const radius = 200 + (numNodes - 5) * 20;
-
-// Loop through each node and calculate its position on the circle
-nodes.forEach((node, index) => {
-  const angle = (index / numNodes) * 2 * Math.PI;
-  node.position = {
-    x: Math.cos(angle) * radius + 400,
-    y: Math.sin(angle) * radius + 300
-  };
+  // Loop through each node and calculate its position on the circle
+  nodes.forEach((node, index) => {
+    const angle = (index / numNodes) * 2 * Math.PI;
+    node.position = {
+      x: Math.cos(angle) * radius + 400,
+      y: Math.sin(angle) * radius + 300
+    };
 });
 
 // Create edges for inheritance relationships
