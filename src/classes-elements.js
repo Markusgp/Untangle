@@ -1,12 +1,10 @@
-import React from "react";
 import { MarkerType } from "reactflow";
-
-// Import data from .json files
 import classes from "./data/classes.json";
 import classesInherited from "./data/classesInherited.json";
 import classesInvoked from "./data/classesInvoked.json";
 import interfacesInvoked from "./data/interfacesInvoked.json";
 
+// Initialize nodes and edges arrays
 const nodes = [];
 const edges = [];
 
@@ -24,20 +22,16 @@ classes.forEach(cls => {
 
   nodes.push(node);
 });
-//How the Nodes are organized on the canvas. Change this for different positioning
-  // Calculate the total number of nodes
-  const numNodes = nodes.length;
 
-  // Calculate the radius of the circle based on the number of nodes
-  const radius = 200 + (numNodes - 5) * 20;
-
-  // Loop through each node and calculate its position on the circle
-  nodes.forEach((node, index) => {
-    const angle = (index / numNodes) * 2 * Math.PI;
-    node.position = {
-      x: Math.cos(angle) * radius + 400,
-      y: Math.sin(angle) * radius + 300
-    };
+// Calculate the positions of the nodes in a circular layout
+const numNodes = nodes.length;
+const radius = 200 + (numNodes - 5) * 20;
+nodes.forEach((node, index) => {
+  const angle = (index / numNodes) * 2 * Math.PI;
+  node.position = {
+    x: Math.cos(angle) * radius + 400,
+    y: Math.sin(angle) * radius + 300
+  };
 });
 
 // Create edges for inheritance relationships
@@ -47,7 +41,7 @@ classesInherited.forEach(cls => {
   cls.inherits.forEach(inheritedClass => {
     const inheritedNode = nodes.find(n => n.id === inheritedClass.toLowerCase());
 
-    const edge = {
+    edges.push({
       id: `${node.id}-inherits-${inheritedNode.id}`,
       source: node.id,
       target: inheritedNode.id,
@@ -55,9 +49,7 @@ classesInherited.forEach(cls => {
       animated: true,
       label: "inherits",
       labelStyle: { fill: "#f6ab6c", fontWeight: 700 }
-    };
-
-    edges.push(edge);
+    });
   });
 });
 
@@ -68,7 +60,7 @@ classesInvoked.forEach(cls => {
   cls.invokes.forEach(invokedClass => {
     const invokedNode = nodes.find(n => n.id === invokedClass.toLowerCase());
 
-    const edge = {
+    edges.push({
       id: `${node.id}-invokes-${invokedNode.id}`,
       source: node.id,
       target: invokedNode.id,
@@ -76,17 +68,16 @@ classesInvoked.forEach(cls => {
       animated: true,
       label: "invokes",
       labelStyle: { fill: "#f6ab6c", fontWeight: 700 }
-    };
-
-    edges.push(edge);
+    });
   });
 });
 
-// Add interfaces to nodes
+// Add interface names to node labels
 interfacesInvoked.forEach(cls => {
   const node = nodes.find(n => n.id === cls.class.toLowerCase());
 
   cls.interfaces.forEach(iface => {
+    // Append the interface name to the node label
     node.data.label = (
       <>
         {node.data.label} <br /> <small>({iface})</small>
@@ -95,4 +86,5 @@ interfacesInvoked.forEach(cls => {
   });
 });
 
+// Export the nodes and edges arrays for use in the ReactFlow component
 export { nodes, edges };
