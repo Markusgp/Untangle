@@ -45,7 +45,7 @@ classesInherited.forEach(cls => {
       id: `${node.id}-inherits-${inheritedNode.id}`,
       source: node.id,
       target: inheritedNode.id,
-      type: "smoothstep",
+      type: "straight",
       animated: true,
       label: "inherits",
       labelStyle: { fill: "#f6ab6c", fontWeight: 700 }
