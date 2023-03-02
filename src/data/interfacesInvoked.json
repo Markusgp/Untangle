@@ -1,0 +1,22 @@
+[  
+  {    
+    "class": "Student",    
+    "interfaces": [      
+        "IStudent"    
+    ]
+  },
+  {
+    "class": "Teacher",
+    "interfaces": [
+      "ITeacher"
+    ]
+  },
+  {
+    "class": "Course",
+    "interfaces": []
+  },
+  {
+    "class": "Person",
+    "interfaces": []
+  }
+]

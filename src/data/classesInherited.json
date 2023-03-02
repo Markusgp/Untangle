@@ -1,0 +1,14 @@
+[  
+  {    
+    "class": "Student",    
+    "inherits": ["Person"]
+  },
+  {
+    "class": "Teacher",
+    "inherits": ["Person"]
+  },
+  {
+    "class": "Course",
+    "inherits": []
+  }
+]

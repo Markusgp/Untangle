@@ -11,7 +11,7 @@ import "reactflow/dist/style.css";
 import {
   nodes as initialNodes,
   edges as initialEdges
-} from "./initial-elements";
+} from "./classes-elements.js";
 
 const onInit = (reactFlowInstance) =>
   console.log("flow loaded:", reactFlowInstance);
