@@ -10,7 +10,8 @@ fi
 codeql database run-queries codeql-database-$1
 echo "Interpreting results"
 dir=$(pwd)
-datapath2=$dir\\codeql-database-$1\\results\\codeql\\java
+datapath2=$dir\\codeql-database-$1\\results\\codeql\\$1
+mkdir -p results
 for i in "$datapath2"/*.bqrs
 do
   path=$(cut -d "." -f 1 <<< "$i")
