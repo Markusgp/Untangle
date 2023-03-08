@@ -15,11 +15,11 @@ const nodeStyle = {
   color: '#333'
 };
 
-function RectangularNode({ data }) {
-   const { label } = data;
+function RectangularNode({data}) {
+   const {id, label } = data;
 
    const onClick = () => {
-     console.log('Node clicked');
+    console.log(`Node ${id} clicked`); // log the node id
    };
 
    return (

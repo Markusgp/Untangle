@@ -88,6 +88,7 @@ export function createNodesAndEdges() {
             id: nodeId,
             type: "rectangularNode",
             data: {
+                id: nodeId,
                 label: cls.class.Name
             },
             position: { x: 0, y: 0 }
