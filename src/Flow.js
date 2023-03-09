@@ -1,39 +1,60 @@
-import React, { useCallback } from "react";
+import React, { useCallback } from 'react';
 import ReactFlow, {
-  MiniMap,
-  Controls,
+  addEdge,
   Background,
   useNodesState,
-  useEdgesState
-} from "reactflow";
-import "reactflow/dist/style.css";
+  useEdgesState,
+  MarkerType
+} from 'reactflow';
+import 'reactflow/dist/style.css';
 
-import {
-  nodes as initialNodes,
-  edges as initialEdges
-} from "./classes-elements.js";
+import FloatingEdge from './FloatingEdge.js';
+import FloatingConnectionLine from './FloatingConnectionLine.js';
+import { createNodesAndEdges } from './utils.js';
+import RectangularNode from './RectangularNode.js';
 
-const onInit = (reactFlowInstance) =>
-  console.log("flow loaded:", reactFlowInstance);
+import './index.css';
 
-const OverviewFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+const { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges();
+
+const nodeTypes = {
+  rectangularNode: RectangularNode,
+};
+
+const edgeTypes = {
+  floating: FloatingEdge,
+};
+
+const NodeAsHandleFlow = () => {
+  const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  const onConnect = useCallback(
+    (params) =>
+      setEdges((eds) =>
+        addEdge({ ...params, type: 'floating', markerEnd: { type: MarkerType.Arrow } }, eds)
+      ),
+    [setEdges]
+  );
+
   return (
-    <ReactFlow
-      nodes={nodes}
-      edges={edges}
-      onNodesChange={onNodesChange}
-      onEdgesChange={onEdgesChange}
-      onInit={onInit}
-      fitView
-      attributionPosition="top-right"
-    >
-      <Controls />
-      <Background color="#aaa" gap={20} />
-    </ReactFlow>
+    <div className="floatingedges">
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        fitView
+        edgeTypes={edgeTypes}
+        nodeTypes={nodeTypes}
+        connectionLineComponent={FloatingConnectionLine}
+      >
+        <Background />
+        
+      </ReactFlow>
+    </div>
   );
 };
 
-export default OverviewFlow;
+export default NodeAsHandleFlow;
