@@ -4,8 +4,7 @@ import ReactFlow, {
   Background,
   useNodesState,
   useEdgesState,
-  MarkerType,
-  Handle,
+  MarkerType
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -52,8 +51,7 @@ const NodeAsHandleFlow = () => {
         connectionLineComponent={FloatingConnectionLine}
       >
         <Background />
-        <Handle type="source" position="right" style={{ zIndex: 10, background: '#555' }} />
-        <Handle type="target" position="left" style={{ zIndex: 10, background: '#555' }} />
+        
       </ReactFlow>
     </div>
   );

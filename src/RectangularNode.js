@@ -1,4 +1,5 @@
 import { Handle, Position } from 'reactflow';
+import './index.css';
 
 const nodeStyle = {
   background: '#f9f9f9',
