@@ -1,11 +1,14 @@
 /**
  * @name Interface
+ * @id java/example/interface
+ * @description Gets all interfaces as well as their qualified module
  * @kind problem
  * @problem.severity warning
- * @description Gets all interfaces
- * @id java/example/interface
+
  */
 import java
+
+//TODO: remove javafx classes from query
 from Interface c
 where c.getCompilationUnit().fromSource()
-select c, c.getPackage() + "." + c.getName()
+select c.getName(), c.getPackage() + "." + c.getName(), c.getNumberOfLinesOfCode()
