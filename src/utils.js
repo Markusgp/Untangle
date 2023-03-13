@@ -3,6 +3,8 @@ import classes from "./data/classes.json";
 import classesInherited from "./data/classesInherited.json";
 import classesInvoked from "./data/classesInvoked.json";
 import interfacesInvoked from "./data/interfacesInvoked.json";
+import { tree } from "./Parse"
+import { JavaClass } from "./JavaClass"
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -81,21 +83,36 @@ export function createNodesAndEdges() {
     const edges = [];
 
     // Create nodes for each class
-    classes.forEach(cls => {
-        const nodeId = cls.class.Name.toLowerCase();
+    const myNodes = tree.getPackageContent("bfst21")
 
+    myNodes.forEach(cls => {
+        const nodeId = cls.pack+"."+cls.name
+      
         const node = {
-            id: nodeId,
-            type: "rectangularNode",
-            data: {
-                id: nodeId,
-                label: cls.class.Name
-            },
-            position: { x: 0, y: 0 }
-        };
+          id: nodeId,
+          data: {
+            label: cls.name
+          },
+          position: { x: 0, y: 0}
+        }
+      
+        nodes.push(node)
+      })
+    // classes.forEach(cls => {
+    //     const nodeId = cls.class.Name.toLowerCase();
 
-        nodes.push(node);
-    });
+    //     const node = {
+    //         id: nodeId,
+    //         type: "rectangularNode",
+    //         data: {
+    //             id: nodeId,
+    //             label: cls.class.Name
+    //         },
+    //         position: { x: 0, y: 0 }
+    //     };
+
+    //     nodes.push(node);
+    // });
 
     // Calculate the positions of the nodes in a circular layout
     const numNodes = nodes.length;
@@ -109,59 +126,59 @@ export function createNodesAndEdges() {
     });
 
     // Create edges for inheritance relationships
-    classesInherited.forEach(cls => {
-        const node = nodes.find(n => n.id === cls.class.toLowerCase());
+    // classesInherited.forEach(cls => {
+    //     const node = nodes.find(n => n.id === cls.class.toLowerCase());
 
-        cls.inherits.forEach(inheritedClass => {
-            const inheritedNode = nodes.find(n => n.id === inheritedClass.toLowerCase());
+    //     cls.inherits.forEach(inheritedClass => {
+    //         const inheritedNode = nodes.find(n => n.id === inheritedClass.toLowerCase());
 
-            edges.push({
-                id: `${node.id}-inherits-${inheritedNode.id}`,
-                source: node.id,
-                target: inheritedNode.id,
-                type: "floating",
-                animated: true,
-                label: "inherits",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                }
-            });
-        });
-    });
+    //         edges.push({
+    //             id: `${node.id}-inherits-${inheritedNode.id}`,
+    //             source: node.id,
+    //             target: inheritedNode.id,
+    //             type: "floating",
+    //             animated: true,
+    //             label: "inherits",
+    //             labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+    //             markerEnd: {
+    //                 type: MarkerType.Arrow,
+    //             }
+    //         });
+    //     });
+    // });
 
-    // Create edges for invocation relationships
-    classesInvoked.forEach(cls => {
-        const node = nodes.find(n => n.id === cls.class.toLowerCase());
+    // // Create edges for invocation relationships
+    // classesInvoked.forEach(cls => {
+    //     const node = nodes.find(n => n.id === cls.class.toLowerCase());
 
-        cls.invokes.forEach(invokedClass => {
-            const invokedNode = nodes.find(n => n.id === invokedClass.toLowerCase());
+    //     cls.invokes.forEach(invokedClass => {
+    //         const invokedNode = nodes.find(n => n.id === invokedClass.toLowerCase());
 
-            edges.push({
-                id: `${node.id}-invokes-${invokedNode.id}`,
-                source: node.id,
-                target: invokedNode.id,
-                type: "floating",
-                animated: true,
-                label: "invokes",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 }
-            });
-        });
-    });
+    //         edges.push({
+    //             id: `${node.id}-invokes-${invokedNode.id}`,
+    //             source: node.id,
+    //             target: invokedNode.id,
+    //             type: "floating",
+    //             animated: true,
+    //             label: "invokes",
+    //             labelStyle: { fill: "#f6ab6c", fontWeight: 700 }
+    //         });
+    //     });
+    // });
 
-    // Add interface names to node labels
-    interfacesInvoked.forEach(cls => {
-        const node = nodes.find(n => n.id === cls.class.toLowerCase());
+    // // Add interface names to node labels
+    // interfacesInvoked.forEach(cls => {
+    //     const node = nodes.find(n => n.id === cls.class.toLowerCase());
 
-        cls.interfaces.forEach(iface => {
-            // Append the interface name to the node label
-            node.data.label = (
-                <>
-                    {node.data.label} <br /> <small>({iface})</small>
-                </>
-            );
-        });
-    });
+    //     cls.interfaces.forEach(iface => {
+    //         // Append the interface name to the node label
+    //         node.data.label = (
+    //             <>
+    //                 {node.data.label} <br /> <small>({iface})</small>
+    //             </>
+    //         );
+    //     });
+    // });
 
     return { nodes, edges };
 }
