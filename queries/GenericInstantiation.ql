@@ -15,14 +15,14 @@ boolean isGeneric(ClassOrInterface pt) {
 }
 
 string getRepresentation(ClassOrInterface c) {
-    if (isGeneric(c) = false) then result = c.getPackage() + "." + c
-    else if (isGeneric(c) = true) then result = c.getPackage().toString() + "." + c.(ParameterizedType).getGenericType()
+    if (isGeneric(c) = false) then result = c.getPackage() + "." + c.getName()
+    else if (isGeneric(c) = true) then result = c.getPackage().toString() + "." + c.(ParameterizedType).getGenericType().getName()
     else result = "Something went wrong"
 }
 
 from VariableUpdate ass, ParameterizedType generic, ClassOrInterface child
 where ass.getDestVar().getType() = generic and generic.getATypeArgument*() = child
-and child.fromSource() //- Comment to filter out java libraries
+      and (child.getSourceDeclaration().fromSource()) //- Comment to filter out java libraries
 
 select getRepresentation(ass.getEnclosingCallable().getDeclaringType()), 
        getRepresentation(child)
