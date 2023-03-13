@@ -7,6 +7,7 @@ export class JavaPackage {
     constructor(name, pack){
         this.name = name
         this.pack = pack
+        this.visible = true
     }
     //make sure there is no duplicates
     set classInvokation(x){

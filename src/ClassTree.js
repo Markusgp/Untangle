@@ -106,4 +106,18 @@ export class CLassTree{
         return [...current.children.values()]
     }
 
+    getNode(node){
+        let current = this.root
+
+        let packages = node.split(".")
+
+        for (let i = 0; i < packages.length; i++){
+            if (current.children.has(current.pack+"."+packages[i]))
+                current = current.children.get(current.pack+"."+packages[i])
+            else if (current.children.has(node))
+                current = current.children.get(node)
+        }
+        return current
+    }
+
 }

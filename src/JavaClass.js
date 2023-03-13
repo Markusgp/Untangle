@@ -3,11 +3,13 @@ export class JavaClass {
     #classInherits = new Set()
     #packageInvokes = new Set()
     #children = new Map()
+    
 
     constructor(name, pack, type){
         this.name = name
         this.pack = pack
         this.type = type
+        this.visible = true
     }
     //make sure there is no duplicates
     set classInvokation(x){
