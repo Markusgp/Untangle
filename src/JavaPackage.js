@@ -1,13 +1,12 @@
-export class JavaClass {
+export class JavaPackage {
     #classInvokes = new Set()
     #classInherits = new Set()
     #packageInvokes = new Set()
     #children = new Map()
 
-    constructor(name, pack, type){
+    constructor(name, pack){
         this.name = name
         this.pack = pack
-        this.type = type
     }
     //make sure there is no duplicates
     set classInvokation(x){

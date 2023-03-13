@@ -1,12 +1,13 @@
 import { JavaClass } from "./JavaClass"
+import { JavaPackage } from "./JavaPackage"
 
 export class CLassTree{
     constructor() {
-        this.root = new JavaClass("src","src",false)
+        this.root = new JavaPackage("src","src")
     }
 
-    add(name, pack, leaf){
-        const node = new JavaClass(name, pack, leaf)
+    add(name, pack, type){
+        const node = new JavaClass(name, pack, type)
 
         if (!this.root) {
             this.root = node
@@ -14,32 +15,30 @@ export class CLassTree{
         }
 
         let current = this.root
-
         let packages = pack.split(".")
         console.log(packages)
         //handle edge case if class and subpackage have same name
         for (let i = 0; i < packages.length; i++){
-            if (current.children.has(packages[i]))
-                current = current.children.get(packages[i])
+            if (current.children.has(current.pack+"."+packages[i]))
+                current = current.children.get(current.pack+"."+packages[i])
             else{
-                const newNode = new JavaClass(packages[i],current.package+"."+packages[i],false)
-                console.log(newNode)
-                current.children.set(packages[i],newNode)
+                const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i])
+                current.children.set(newNode.pack,newNode)
                 current = newNode
             }
 
         }
-        current.children.set(name,node)
+        current?.children.set(pack+"."+name,node)
     }
 
-    contains(name, pack, leaf){
+    contains(name, pack, isPack){
         let current = this.root
 
         let packages = pack.split(".")
 
         for (let i = 0; i < packages.length; i++){
-            if (!leaf) {
-                if (i == packages.length-1){
+            if (isPack) {
+                if (i === packages.length-1){
                     return current.children.has(name)
                 }
             }
@@ -47,13 +46,12 @@ export class CLassTree{
             if (current == null) return false
         }
 
-        if (leaf){
+        if (!isPack){
             return current.children.has(name)
         }
     }
 
-    addDependency(from, to){
-        console.log(from)
+    addDependency(from, to, dependencyType){
         const lastIndex = from.lastIndexOf(".")
 
         const fromPackage = from.slice(0, lastIndex)
@@ -61,27 +59,24 @@ export class CLassTree{
         const fromName = from.slice(lastIndex + 1)
 
         let packages = fromPackage.split(".")
-        console.log(packages)
 
         let current = this.root
-        console.log(current)
 
         for (let i = 0; i < packages.length; i++){
-            current = current.children.get(packages[i])
+            current = current.children.get(current.pack+"."+packages[i])
             console.log(current)
             console.log(i)
-            if (current == null) return
+            if (current == undefined) return
         }
-        console.log(current)
-        console.log(fromName)
-        let fromNode = current.children.get(fromName)
-
-        fromNode.classInvokation.add(to)
+        let fromNode = current.children.get(from)
+        console.log(fromNode)
+        if (dependencyType == "inheritance") fromNode.classInherits.add(to)
+        else if (dependencyType == "invokation") fromNode.classInvokation.add(to)
     }
     getAllLeavesRec(node, leaves){
         if (node.children.size > 0){
             for (let value of node.children.values()){
-                if (value.leaf) leaves.push(value)
+                if (value instanceof JavaClass) leaves.push(value)
                 else leaves.join(this.getAllLeavesRec(value,leaves))
             }
         }
@@ -93,7 +88,22 @@ export class CLassTree{
 
     //get packages
     //toplevel packages
+    getTopLevelPackages(){
+        console.log([...this.root.children.values()])
+        return [...this.root.children.values()]
+    }
     //by level maybe??
     //get leaves in package
+
+    //get children of package name
+    getPackageContent(pack){
+        let current = this.root
+        let packages = pack.split(".")
+        for (let i = 0; i < packages.length; i++){
+            current = current.children.get(current.pack+"."+packages[i])
+        }
+
+        return [...current.children.values()]
+    }
 
 }

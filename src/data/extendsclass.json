@@ -1,0 +1,14 @@
+{"#select":{"columns":[
+   {"kind":"String"}
+  ,{"kind":"String"}]
+ ,"tuples":[
+   ["BFST21Group6.RTree","BFST21Group6.RTreeNode"]
+  ,["BFST21Group6.Leaf","BFST21Group6.RTreeNode"]
+  ,["BFST21Group6.osm.Way","BFST21Group6.Drawable"]
+  ,["BFST21Group6.osm.Relation","BFST21Group6.Drawable"]
+  ,["BFST21Group6.pointsofinterest.HomePoint","BFST21Group6.pointsofinterest.PointOfInterest"]
+  ,["BFST21Group6.pointsofinterest.WorkPoint","BFST21Group6.pointsofinterest.PointOfInterest"]
+  ,["BFST21Group6.pointsofinterest.FavouritePoint","BFST21Group6.pointsofinterest.PointOfInterest"]
+  ,["BFST21Group6.Drawable","BFST21Group6.osm.HasBounds"]
+  ,["BFST21Group6.RTreeNode","BFST21Group6.osm.HasBounds"]]
+ }}
