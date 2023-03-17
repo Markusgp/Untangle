@@ -83,20 +83,40 @@ export function createNodesAndEdges() {
     const edges = [];
 
     // Create nodes for each class
-    const myNodes = tree.getPackageContent("bfst21")
+    const myNodes = tree.getPackageContent("BFST21Group6")
 
     myNodes.forEach(cls => {
         const nodeId = cls.pack+"."+cls.name
-      
-        const node = {
-          id: nodeId,
-          data: {
-            label: cls.name
-          },
-          position: { x: 0, y: 0}
+
+        console.log(tree.getNode(nodeId).children.size);
+
+        if(tree.getNode(nodeId).children.size === 0) {
+            const node = {
+                id: nodeId,
+                type: 'classNode',
+                data: {
+                    id: nodeId,
+                    label: cls.name
+                },
+                position: { x: 0, y: 0}
+            }
+            nodes.push(node)
+        } else {
+            const node = {
+                id: nodeId,
+                type: 'packageNode',
+                data: {
+                    id: nodeId,
+                    label: cls.name
+                },
+                position: { x: 0, y: 0}
+            }
+            nodes.push(node)
         }
-      
-        nodes.push(node)
+
+
+
+
       })
     // classes.forEach(cls => {
     //     const nodeId = cls.class.Name.toLowerCase();
