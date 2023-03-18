@@ -10,12 +10,12 @@ const iconWrapperStyle  = {
   justifyContent: "flex-start"
 }
 
-function ClassNode({data}) {
+function InterfaceNode({data}) {
   const {id, label} = data;
   const [focused, setIsFocused] = useState(false);
 
   const classNodeStyle = {
-    border: focused ? '5px solid #292929' : '5px solid #FBA500',
+    border: focused ? '5px solid purple' : '5px solid purple',
     boxShadow: focused ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
   };
 
@@ -41,4 +41,4 @@ function ClassNode({data}) {
    );
 }
 
-export default ClassNode;
+export default InterfaceNode;
