@@ -14,6 +14,7 @@ import FloatingConnectionLine from './FloatingConnectionLine.js';
 import { createNodesAndEdges } from './utils.js';
 import PackageNode from './FlowElements/PackageNode.js';
 import ClassNode from './FlowElements/ClassNode'
+import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
 
@@ -21,7 +22,8 @@ const { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges();
 
 const nodeTypes = {
   packageNode: PackageNode,
-  classNode: ClassNode
+  classNode: ClassNode,
+  interfaceNode: InterfaceNode
 };
 
 const edgeTypes = {
