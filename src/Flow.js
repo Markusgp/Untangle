@@ -1,7 +1,8 @@
 import React, { useCallback } from 'react';
 import ReactFlow, {
-  addEdge,
   Background,
+  Controls,
+  addEdge,
   useNodesState,
   useEdgesState,
   MarkerType
@@ -11,23 +12,27 @@ import 'reactflow/dist/style.css';
 import FloatingEdge from './FloatingEdge.js';
 import FloatingConnectionLine from './FloatingConnectionLine.js';
 import { createNodesAndEdges } from './utils.js';
-import RectangularNode from './RectangularNode.js';
+import PackageNode from './FlowElements/PackageNode.js';
+import ClassNode from './FlowElements/ClassNode'
+import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
 
 const nodeTypes = {
-  rectangularNode: RectangularNode,
+  packageNode: PackageNode,
+  classNode: ClassNode,
+  interfaceNode: InterfaceNode
 };
 
 const edgeTypes = {
   floating: FloatingEdge,
 };
 
-let NodeAsHandleFlow = () => {
-  let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+const NodeAsHandleFlow = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
     (params) =>
@@ -56,7 +61,7 @@ let NodeAsHandleFlow = () => {
         connectionLineComponent={FloatingConnectionLine}
       >
         <Background />
-        
+        <Controls />
       </ReactFlow>
     </div>
   );

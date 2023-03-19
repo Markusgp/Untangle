@@ -87,19 +87,53 @@ export function createNodesAndEdges(param) {
     const myNodes = tree.getPackageContent(param)
     
     myNodes.forEach(cls => {
-        let nodeId = cls.pack
-        console.log(nodeId)
-        const node = {
-          id: nodeId,
-          data: {
-            label: cls.name,
-            id: nodeId
-          },
-          type : 'rectangularNode',
-          position: { x: 0, y: 0}
+        const nodeId = cls.pack+"."+cls.name
+        if(tree.getNode(nodeId).children.size === 0) {
+
+            if (tree.getNode(nodeId) instanceof (JavaClass)) {
+
+                const nodeTmp = tree.getNode(nodeId);
+                if (nodeTmp.type === "class") {
+                    const node = {
+                        id: nodeId,
+                        type: 'classNode',
+                        data: {
+                            id: nodeId,
+                            label: cls.name
+                        },
+                        position: { x: 0, y: 0}
+                    }
+                    nodes.push(node)
+
+                } else if (nodeTmp.type === "interface") {
+                    const node = {
+                        id: nodeId,
+                        type: 'interfaceNode',
+                        data: {
+                            id: nodeId,
+                            label: cls.name
+                        },
+                        position: { x: 0, y: 0}
+                    }
+                    nodes.push(node)
+                }
+            }
+        } else {
+            const node = {
+                id: nodeId,
+                type: 'packageNode',
+                data: {
+                    id: nodeId,
+                    label: cls.name
+                },
+                position: { x: 0, y: 0}
+            }
+            nodes.push(node)
         }
-      
-        nodes.push(node)
+
+
+
+
       })
 
     // classes.forEach(cls => {

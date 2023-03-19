@@ -1,0 +1,47 @@
+.nodeDefault {
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    width: 100px;
+    height: 90px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nodeContentWrapper {
+    width: 85%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nodeNameLabel {
+    font-weight: 700;
+    max-width: 100%;
+    overflow-wrap: break-word;
+}
+
+.nodeTypeLabel {
+    font-size: 8px;
+    font-weight: 500;
+}
+
+.nodeIcon {
+    opacity: 0.5;
+    width: 16px;
+    height: 16px;
+}
+
+.expandIcon {
+    opacity: 1;
+    width: 14px;
+    height: 14px;
+}
+
+
+
