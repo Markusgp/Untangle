@@ -1,4 +1,5 @@
 import { Handle, Position } from 'reactflow';
+import { useCallback } from 'react';
 import './index.css';
 
 const nodeStyle = {
@@ -18,13 +19,16 @@ const nodeStyle = {
 
 function RectangularNode({data}) {
    const {id, label } = data;
+   const nodeId = id
 
-   const onClick = () => {
+   const onClick = useCallback((evt) => {
+    console.log(data)
+    console.log("nodeit",nodeId)
     console.log(`Node ${id} clicked`); // log the node id
-   };
+   },[]);
 
    return (
-     <div className="rectangular-node" style={nodeStyle} onClick={onClick}>
+     <div className="rectangular-node" style={nodeStyle} id={nodeId} onClick={onClick}>
        <Handle type="target" position={Position.Top} />
        <Handle type="source" position={Position.Bottom} />
        <div>{label}</div>

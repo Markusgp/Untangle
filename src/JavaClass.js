@@ -5,10 +5,11 @@ export class JavaClass {
     #children = new Map()
     
 
-    constructor(name, pack, type){
+    constructor(name, pack, type, linesOfCode){
         this.name = name
         this.pack = pack
         this.type = type
+        this.linesOfCode = linesOfCode
         this.visible = true
     }
     //make sure there is no duplicates

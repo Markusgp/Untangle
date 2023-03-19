@@ -3,11 +3,11 @@ import { JavaPackage } from "./JavaPackage"
 
 export class CLassTree{
     constructor() {
-        this.root = new JavaPackage("src","src")
+        this.root = new JavaPackage("src","")
     }
 
-    add(name, pack, type){
-        const node = new JavaClass(name, pack, type)
+    add(name, pack, type, linesOfCode){
+        const node = new JavaClass(name, pack, type,linesOfCode)
 
         if (!this.root) {
             this.root = node
@@ -18,17 +18,28 @@ export class CLassTree{
         let packages = pack.split(".")
         console.log(packages)
         //handle edge case if class and subpackage have same name
-        for (let i = 0; i < packages.length; i++){
-            if (current.children.has(current.pack+"."+packages[i]))
-                current = current.children.get(current.pack+"."+packages[i])
-            else{
-                const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i])
-                current.children.set(newNode.pack,newNode)
-                current = newNode
+        for (let i = 0; i < packages.length-1; i++){
+            if (i == 0)
+                if (current.children.has(packages[i]))
+                    current = current.children.get(packages[i])
+                else {
+                    const newNode = new JavaPackage(packages[i],packages[i])
+                    current.children.set(newNode.pack,newNode)
+                    current = newNode
+                }
+            else {
+                if (current.children.has(current.pack+"."+packages[i]))
+                    current = current.children.get(current.pack+"."+packages[i])
+                else{
+                    const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i])
+                    current.children.set(newNode.pack,newNode)
+                    current = newNode
+                }
             }
 
+
         }
-        current?.children.set(pack+"."+name,node)
+        current.children.set(pack,node)
     }
 
     contains(name, pack, isPack){
@@ -63,13 +74,11 @@ export class CLassTree{
         let current = this.root
 
         for (let i = 0; i < packages.length; i++){
-            current = current.children.get(current.pack+"."+packages[i])
-            console.log(current)
-            console.log(i)
+            if (i == 0) current = current.children.get(packages[i])
+            else current = current.children.get(current.pack+"."+packages[i])
             if (current == undefined) return
         }
         let fromNode = current.children.get(from)
-        console.log(fromNode)
         if (dependencyType == "inheritance") fromNode.classInherits.add(to)
         else if (dependencyType == "invokation") fromNode.classInvokation.add(to)
     }
@@ -100,8 +109,10 @@ export class CLassTree{
         let current = this.root
         let packages = pack.split(".")
         for (let i = 0; i < packages.length; i++){
-            current = current.children.get(current.pack+"."+packages[i])
+            if (i == 0) current = current.children.get(packages[i])
+            else current = current.children.get(current.pack+"."+packages[i])
         }
+        console.log(current)
 
         return [...current.children.values()]
     }
@@ -112,6 +123,7 @@ export class CLassTree{
         let packages = node.split(".")
 
         for (let i = 0; i < packages.length; i++){
+            if (i == 0) current = current.children.get(packages[i])
             if (current.children.has(current.pack+"."+packages[i]))
                 current = current.children.get(current.pack+"."+packages[i])
             else if (current.children.has(node))

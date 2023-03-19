@@ -5,6 +5,7 @@ import classesInvoked from "./data/classesInvoked.json";
 import interfacesInvoked from "./data/interfacesInvoked.json";
 import { tree } from "./Parse"
 import { JavaClass } from "./JavaClass"
+import RectangularNode from './RectangularNode.js';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -78,26 +79,29 @@ export function getEdgeParams(source, target) {
     };
 }
 
-export function createNodesAndEdges() {
+export function createNodesAndEdges(param) {
     const nodes = [];
     const edges = [];
 
     // Create nodes for each class
-    const myNodes = tree.getPackageContent("bfst21")
-
+    const myNodes = tree.getPackageContent(param)
+    
     myNodes.forEach(cls => {
-        const nodeId = cls.pack+"."+cls.name
-      
+        let nodeId = cls.pack
+        console.log(nodeId)
         const node = {
           id: nodeId,
           data: {
-            label: cls.name
+            label: cls.name,
+            id: nodeId
           },
+          type : 'rectangularNode',
           position: { x: 0, y: 0}
         }
       
         nodes.push(node)
       })
+
     // classes.forEach(cls => {
     //     const nodeId = cls.class.Name.toLowerCase();
 
@@ -124,6 +128,29 @@ export function createNodesAndEdges() {
             y: Math.sin(angle) * radius + 300
         };
     });
+
+    // myNodes.forEach(cls => {
+    //     const node = nodes.find(n => n.id == cls.pack+"."+cls.name)
+
+    //     cls.classInherits.forEach(inheritedClass => {
+    //         const inheritedNode = nodes.find(n => n.id === inheritedClass)
+    //         if (inheritedNode == undefined) return
+    //         console.log(inheritedNode)
+    //         edges.push({
+    //             id: `${node.id}-inherits-${inheritedNode.id}`,
+    //             source: node.id,
+    //             target: inheritedNode.id,
+    //             type: "floating",
+    //             animated: true,
+    //             label: "inherits",
+    //             labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+    //             markerEnd: {
+    //                 type: MarkerType.Arrow,
+    //             }
+    //         })
+    //     })
+        
+    // })
 
     // Create edges for inheritance relationships
     // classesInherited.forEach(cls => {
@@ -165,6 +192,29 @@ export function createNodesAndEdges() {
     //         });
     //     });
     // });
+    myNodes.forEach(cls => {
+        const node = nodes.find(n => n.id == cls.pack)
+        console.log("hey")
+        console.log(node)
+        cls.classInvokation.forEach(inheritedClass => {
+            const inheritedNode = nodes.find(n => n.id === inheritedClass)
+            if (inheritedNode == undefined) return
+            console.log("inheritedNode")
+            edges.push({
+                id: `${node.id}-invokes-${inheritedNode.id}`,
+                source: node.id,
+                target: inheritedNode.id,
+                type: "floating",
+                animated: true,
+                label: "invokes",
+                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                }
+            })
+        })
+        
+    })
 
     // // Add interface names to node labels
     // interfacesInvoked.forEach(cls => {
