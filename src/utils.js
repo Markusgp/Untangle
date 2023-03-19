@@ -5,7 +5,6 @@ import classesInvoked from "./data/classesInvoked.json";
 import interfacesInvoked from "./data/interfacesInvoked.json";
 import { tree } from "./Parse"
 import { JavaClass } from "./JavaClass"
-import RectangularNode from './RectangularNode.js';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -131,9 +130,6 @@ export function createNodesAndEdges(param) {
             nodes.push(node)
         }
 
-
-
-
       })
 
     // classes.forEach(cls => {
@@ -163,28 +159,6 @@ export function createNodesAndEdges(param) {
         };
     });
 
-    // myNodes.forEach(cls => {
-    //     const node = nodes.find(n => n.id == cls.pack+"."+cls.name)
-
-    //     cls.classInherits.forEach(inheritedClass => {
-    //         const inheritedNode = nodes.find(n => n.id === inheritedClass)
-    //         if (inheritedNode == undefined) return
-    //         console.log(inheritedNode)
-    //         edges.push({
-    //             id: `${node.id}-inherits-${inheritedNode.id}`,
-    //             source: node.id,
-    //             target: inheritedNode.id,
-    //             type: "floating",
-    //             animated: true,
-    //             label: "inherits",
-    //             labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-    //             markerEnd: {
-    //                 type: MarkerType.Arrow,
-    //             }
-    //         })
-    //     })
-        
-    // })
 
     // Create edges for inheritance relationships
     // classesInherited.forEach(cls => {
@@ -228,12 +202,9 @@ export function createNodesAndEdges(param) {
     // });
     myNodes.forEach(cls => {
         const node = nodes.find(n => n.id == cls.pack)
-        console.log("hey")
-        console.log(node)
         cls.classInvokation.forEach(invokedClass => {
             const inheritedNode = nodes.find(n => n.id === invokedClass)
             if (inheritedNode == undefined) return
-            console.log("inheritedNode")
             edges.push({
                 id: `${node.id}-invokes-${inheritedNode.id}`,
                 source: node.id,

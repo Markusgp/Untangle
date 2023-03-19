@@ -16,8 +16,6 @@ export class CLassTree{
 
         let current = this.root
         let packages = pack.split(".")
-        console.log(packages)
-        //handle edge case if class and subpackage have same name
         for (let i = 0; i < packages.length-1; i++){
             if (i == 0)
                 if (current.children.has(packages[i]))
@@ -42,32 +40,27 @@ export class CLassTree{
         current.children.set(pack,node)
     }
 
-    contains(name, pack, isPack){
+    contains(pack){
         let current = this.root
 
         let packages = pack.split(".")
 
         for (let i = 0; i < packages.length; i++){
-            if (isPack) {
-                if (i === packages.length-1){
-                    return current.children.has(name)
-                }
+            if (i === packages.length-1){
+                 return current.children.has(pack)
             }
-            current = current.children.get(packages[i])
+            if (i == 0) current = current.children.get(packages[i])
+            else current = current.children.get(current.pack+"."+packages[i])
             if (current == null) return false
         }
 
-        if (!isPack){
-            return current.children.has(name)
-        }
+
     }
 
     addDependency(from, to, dependencyType){
         const lastIndex = from.lastIndexOf(".")
 
         const fromPackage = from.slice(0, lastIndex)
-
-        const fromName = from.slice(lastIndex + 1)
 
         let packages = fromPackage.split(".")
 
@@ -109,16 +102,10 @@ export class CLassTree{
     getPackageContent(pack){
         let current = this.root
         let packages = pack.split(".")
-        console.log("packis"+pack)
-        console.log(current)
         for (let i = 0; i < packages.length; i++){
-            console.log(packages[i])
             if (i == 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
-            console.log("heylooo")
-            console.log(current)
         }
-        console.log(current)
 
         return [...current.children.values()]
     }

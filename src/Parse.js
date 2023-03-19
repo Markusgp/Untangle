@@ -72,6 +72,5 @@ for (let i = 0; i < genericInstantioationTuple.length; i++){
     const to = genInstTuple[1]
     tree.addDependency(from,to,"invokation")
 }
-console.log("wewoo")
 console.log(tree)
 export {tree}
