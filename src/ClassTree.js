@@ -81,6 +81,7 @@ export class CLassTree{
         let fromNode = current.children.get(from)
         if (dependencyType == "inheritance") fromNode.classInherits.add(to)
         else if (dependencyType == "invokation") fromNode.classInvokation.add(to)
+        else if (dependencyType == "implementation") fromNode.classImplements.add(to)
     }
     getAllLeavesRec(node, leaves){
         if (node.children.size > 0){
@@ -108,9 +109,14 @@ export class CLassTree{
     getPackageContent(pack){
         let current = this.root
         let packages = pack.split(".")
+        console.log("packis"+pack)
+        console.log(current)
         for (let i = 0; i < packages.length; i++){
+            console.log(packages[i])
             if (i == 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
+            console.log("heylooo")
+            console.log(current)
         }
         console.log(current)
 

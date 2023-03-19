@@ -1,6 +1,7 @@
 export class JavaClass {
     #classInvokes = new Set()
     #classInherits = new Set()
+    #classImplements = new Set()
     #packageInvokes = new Set()
     #children = new Map()
     
@@ -19,6 +20,9 @@ export class JavaClass {
     set classInherits(x){
         this.#classInherits.add(x)
     }
+    set classImplements(x){
+        this.classImplements.add(x)
+    }
     set packageInvokation(x){
         this.#packageInvokes.add(x)
     }
@@ -35,6 +39,9 @@ export class JavaClass {
 
     get classInherits(){
         return this.#classInherits
+    }
+    get classImplements(){
+        return this.#classImplements
     }
 
     get packageInvokation(){
