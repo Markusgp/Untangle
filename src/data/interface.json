@@ -1,24 +1,9 @@
 {"#select":{"columns":[
-   {"name":"c","kind":"Entity"}
-  ,{"kind":"String"}]
+   {"kind":"String"}
+  ,{"kind":"String"}
+  ,{"kind":"Integer"}]
  ,"tuples":[
-   [{"label":"ObservableFileValue"},"bfst21.beans.value"]
-  ,[{"label":"WritableFileValue"},"bfst21.beans.value"]
-  ,[{"label":"Identifiable"},"bfst21.collections"]
-  ,[{"label":"Distance"},"bfst21.geometry"]
-  ,[{"label":"NearestEntitySearchable"},"bfst21.collections"]
-  ,[{"label":"Geometry"},"bfst21.geometry"]
-  ,[{"label":"RangeSearchable"},"bfst21.collections"]
-  ,[{"label":"Triple"},"bfst21.collections"]
-  ,[{"label":"Point"},"bfst21.geometry"]
-  ,[{"label":"SearchHitHandler"},"bfst21.collections.kdtree"]
-  ,[{"label":"NodeFilter"},"bfst21.collections.rtree.lambda"]
-  ,[{"label":"SearchCondition"},"bfst21.collections.rtree.lambda"]
-  ,[{"label":"Drawable"},"bfst21.drawing"]
-  ,[{"label":"ShortestPathFoundEvent"},"bfst21.drawing"]
-  ,[{"label":"NearestEntityFound"},"bfst21.drawing.canvas.events"]
-  ,[{"label":"PointCreatedEvent"},"bfst21.drawing.canvas.events"]
-  ,[{"label":"ClearEvent"},"bfst21.drawing.canvas.events"]
-  ,[{"label":"VehicleTypeChangedEvent"},"bfst21.gui"]
-  ,[{"label":"AreaType"},"bfst21.osm.types"]]
+   ["Drawable","BFST21Group6.Drawable",4]
+  ,["RTreeNode","BFST21Group6.RTreeNode",2]
+  ,["HasBounds","BFST21Group6.osm.HasBounds",8]]
  }}

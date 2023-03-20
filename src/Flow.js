@@ -18,7 +18,7 @@ import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
 
-const { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges();
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -30,9 +30,9 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
-const NodeAsHandleFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+let NodeAsHandleFlow = () => {
+  let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const onConnect = useCallback(
     (params) =>
@@ -41,6 +41,10 @@ const NodeAsHandleFlow = () => {
       ),
     [setEdges]
   );
+  
+  const onClick = useCallback(
+    (param) => ({nodes, edges } = createNodesAndEdges(param.target.id), setNodes(nodes),setEdges(edges))
+    )
 
   return (
     <div className="floatingedges">
@@ -50,6 +54,7 @@ const NodeAsHandleFlow = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
+        onClick={onClick}
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
