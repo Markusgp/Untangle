@@ -71,7 +71,7 @@ let NodeAsHandleFlow = () => {
       <div className="panelHolder" id="rightFloat">
           { selectedNode != null && (
             <div className="panelStyleInformation">
-            <InformationPanel name={selectedNode.name} pack={selectedNode.pack}/>
+            <InformationPanel name={selectedNode.name} pack={selectedNode.pack} visible={selectedNode.visible}/>
             </div>
             )
           }

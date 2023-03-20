@@ -3,7 +3,7 @@ import "./PanelStyles.css"
 import FileLogo from "../Assets/File.svg"
 
 
-const InformationPanel = ({name, pack}) => {
+const InformationPanel = ({name, pack, visible}) => {
     const toggle = () => setOpen(!open);
 
     const panelName = "Information-Panel";
@@ -39,6 +39,13 @@ const InformationPanel = ({name, pack}) => {
                                 <p><strong>Q-Name:</strong></p>
                             </div>
                             <p>{pack}</p>
+                        </div>
+                        <div className="listElementHolder">
+                            <div className="leftFloat">
+                                <span className="dot"></span>
+                                <p><strong>Q-Name:</strong></p>
+                            </div>
+                            <p>{visible.toString()}</p>
                         </div>
                     </div>
                 </div>
