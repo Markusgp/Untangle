@@ -1,0 +1,44 @@
+.topBar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: 25px;
+}
+
+.panelIcon {
+    opacity: 0.8;
+    width: 20px;
+    height: 20px;
+}
+
+.identifierSection {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.identifierSection > img {
+    margin-right: 5px;
+}
+.identifierSection > .panelName {
+    font-weight: 700;
+    font-size: 16px;
+    color: #292929;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.contentDivider {
+    align-self: center;
+    margin: 8px 0;
+    width: 110%;
+    height: 5px;
+    background-color: #FF6C69;
+}

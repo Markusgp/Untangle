@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, {useCallback, useState} from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -17,6 +17,7 @@ import ClassNode from './FlowElements/ClassNode'
 import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
+import Collapsible from "./FlowElements/Panels/Collapsible";
 
 const { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges();
 
@@ -34,6 +35,7 @@ const NodeAsHandleFlow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  /*
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
@@ -41,15 +43,56 @@ const NodeAsHandleFlow = () => {
       ),
     [setEdges]
   );
+   */
+
+
+
+  const [selectedNodeId, setSelectNode] = useState("none");
+
+  const onNodeClicked = (event, node) => {
+    console.log("clicked node" + node.id)
+    setSelectNode(node.id);
+  }
+  const onPaneClicked = () => setSelectNode("none");
+
+
+  const panelStyle = {
+    position: "absolute",
+    left: "20px",
+    top: "20px",
+    width: "300px",
+    height: "400px",
+    backgroundColor: "#FFFFFF",
+    zIndex: "20"
+  }
 
   return (
+    <>
+      <div className="panelHolder" id="leftFloat">
+        <div className="panelStyle">
+          <Collapsible/>
+        </div>
+        <div className="panelStyle">
+          <Collapsible/>
+        </div>
+      </div>
+      <div className="panelHolder" id="rightFloat">
+        <div className="panelStyle">
+          <Collapsible/>
+        </div>
+        <div className="panelStyle">
+          <Collapsible/>
+        </div>
+      </div>
     <div className="floatingedges">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
+        onNodeClick={onNodeClicked}
+        onPaneClick={onPaneClicked}
+        //onConnect={onConnect}
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
@@ -59,6 +102,7 @@ const NodeAsHandleFlow = () => {
         <Controls />
       </ReactFlow>
     </div>
+    </>
   );
 };
 
