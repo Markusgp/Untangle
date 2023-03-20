@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [ ! "$2" = "skipDatabase" ]
 then
   if [ ! -d "database-$1}" ]
