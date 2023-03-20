@@ -20,6 +20,8 @@ import './index.css';
 import Collapsible from "./FlowElements/Panels/Collapsible";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
+import { tree } from "./Parse"
+
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
 
 const nodeTypes = {
@@ -36,6 +38,7 @@ let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  /*
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
@@ -43,18 +46,15 @@ let NodeAsHandleFlow = () => {
       ),
     [setEdges]
   );
+   */
 
   const onClick = useCallback(
     (param) => ({nodes, edges } = createNodesAndEdges(param.target.id), setNodes(nodes),setEdges(edges))
-    )
+  )
 
-
-
-  const [selectedNodeId, setSelectNode] = useState(null);
-
+  const [selectedNode, setSelectNode] = useState(null);
   const onNodeClicked = (event, node) => {
-    console.log("clicked node" + node.id)
-    setSelectNode(node);
+    setSelectNode(tree.getNode(node.id));
   }
   const onPaneClicked = () => setSelectNode(null);
 
@@ -69,9 +69,9 @@ let NodeAsHandleFlow = () => {
         </div>
       </div>
       <div className="panelHolder" id="rightFloat">
-          { selectedNodeId != null && (
+          { selectedNode != null && (
             <div className="panelStyleInformation">
-            <InformationPanel name={selectedNodeId}/>
+            <InformationPanel name={selectedNode.name} pack={selectedNode.pack}/>
             </div>
             )
           }
@@ -89,7 +89,8 @@ let NodeAsHandleFlow = () => {
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
-        connectionLineComponent={FloatingConnectionLine}
+        nodesConnectable={false}
+        //connectionLineComponent={FloatingConnectionLine}
       >
         <Background />
         <Controls />

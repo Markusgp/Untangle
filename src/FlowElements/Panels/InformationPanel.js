@@ -3,12 +3,13 @@ import "./PanelStyles.css"
 import FileLogo from "../Assets/File.svg"
 
 
-const InformationPanel = (props) => {
+const InformationPanel = ({name, pack}) => {
     const toggle = () => setOpen(!open);
 
     const panelName = "Information-Panel";
 
     const [open, setOpen] = useState(true);
+
     return (
         <>
             <div className="topBar">
@@ -30,14 +31,14 @@ const InformationPanel = (props) => {
                                 <span className="dot"></span>
                                 <p><strong>Name:</strong></p>
                             </div>
-                            <p>{props.name?.data?.label}</p>
+                            <p>{name}</p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Q-Name:</strong></p>
                             </div>
-                            <p>{props.name?.id}</p>
+                            <p>{pack}</p>
                         </div>
                     </div>
                 </div>
