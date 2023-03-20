@@ -19,7 +19,7 @@ import InterfaceNode from "./FlowElements/InterfaceNode";
 import './index.css';
 import Collapsible from "./FlowElements/Panels/Collapsible";
 
-const { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges();
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -31,11 +31,10 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
-const NodeAsHandleFlow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+let NodeAsHandleFlow = () => {
+  let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  /*
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
@@ -43,6 +42,10 @@ const NodeAsHandleFlow = () => {
       ),
     [setEdges]
   );
+
+  const onClick = useCallback(
+    (param) => ({nodes, edges } = createNodesAndEdges(param.target.id), setNodes(nodes),setEdges(edges))
+    )
    */
 
 
@@ -90,9 +93,10 @@ const NodeAsHandleFlow = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onNodeClick={onNodeClicked}
-        onPaneClick={onPaneClicked}
-        //onConnect={onConnect}
+        /*onNodeClick={onNodeClicked}
+        onPaneClick={onPaneClicked}*/
+          //onConnect={onConnect}
+        onClick={onClick}
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}

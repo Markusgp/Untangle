@@ -78,15 +78,15 @@ export function getEdgeParams(source, target) {
     };
 }
 
-export function createNodesAndEdges() {
+export function createNodesAndEdges(param) {
     const nodes = [];
     const edges = [];
 
     // Create nodes for each class
-    const myNodes = tree.getPackageContent("BFST21Group6")
-
+    const myNodes = tree.getPackageContent(param)
+    
     myNodes.forEach(cls => {
-        const nodeId = cls.pack+"."+cls.name
+        const nodeId = cls.pack
         if(tree.getNode(nodeId).children.size === 0) {
 
             if (tree.getNode(nodeId) instanceof (JavaClass)) {
@@ -130,10 +130,8 @@ export function createNodesAndEdges() {
             nodes.push(node)
         }
 
-
-
-
       })
+
     // classes.forEach(cls => {
     //     const nodeId = cls.class.Name.toLowerCase();
 
@@ -160,6 +158,7 @@ export function createNodesAndEdges() {
             y: Math.sin(angle) * radius + 300
         };
     });
+
 
     // Create edges for inheritance relationships
     // classesInherited.forEach(cls => {
@@ -201,6 +200,58 @@ export function createNodesAndEdges() {
     //         });
     //     });
     // });
+    myNodes.forEach(cls => {
+        const node = nodes.find(n => n.id == cls.pack)
+        cls.classInvokation.forEach(invokedClass => {
+            const inheritedNode = nodes.find(n => n.id === invokedClass)
+            if (inheritedNode == undefined) return
+            edges.push({
+                id: `${node.id}-invokes-${inheritedNode.id}`,
+                source: node.id,
+                target: inheritedNode.id,
+                type: "floating",
+                animated: false,
+                label: "invokes",
+                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                }
+            })
+        })
+        cls.classImplements.forEach(implementedClass => {
+            const implementedNode = nodes.find(n => n.id == implementedClass)
+            if (implementedNode == undefined) return
+            edges.push({
+                id: `${node.id}-implements-${implementedNode.id}`,
+                source: node.id,
+                target: implementedNode.id,
+                type: "floating",
+                animated: true,
+                label: "implements",
+                labelStyle: { fill: "#0000FF", fontWeight: 900 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                }
+            })
+        })
+        cls.classInherits.forEach(inheritedClass => {
+            const inheritedNode = nodes.find(n => n.id == inheritedClass)
+            if (inheritedNode == undefined) return
+            edges.push({
+                id: `${node.id}-inherits-${inheritedNode.id}`,
+                source: node.id,
+                target: inheritedNode.id,
+                type: "floating",
+                animated: true,
+                label: "inherits",
+                labelStyle: { fill: "#FF0000", fontWeight: 900 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                }
+            })
+        })
+        
+    })
 
     // // Add interface names to node labels
     // interfacesInvoked.forEach(cls => {
