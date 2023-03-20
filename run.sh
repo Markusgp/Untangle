@@ -1,5 +1,10 @@
 #!/bin/bash
-
+cp -r codeql $3
+cp -r run.sh $3
+cp -r qlpack.yml $3
+cwd=$(pwd)
+cd $3
+codeql pack install
 if [ ! "$2" = "skipDatabase" ]
 then
   if [ ! -d "database-$1}" ]
@@ -20,5 +25,7 @@ do
   queryFile=$(echo ${path##*/})
   codeql bqrs decode "$i" -o=results\\$queryFile.json --format=json
 done
+cp -r results $cwd
+cd $cwd
 npm start
 $SHELL
