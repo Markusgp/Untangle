@@ -14,7 +14,7 @@ const InformationPanel = ({name, pack, visible}) => {
         <>
             <div className="topBar">
                 <div className="identifierSection">
-                    <img className="panelIcon" src={FileLogo}/>
+                    <img className="panelIcon" src={FileLogo} alt="informationPanelLogo"/>
                     <p className="panelName">{panelName}</p>
                 </div>
 
@@ -43,9 +43,9 @@ const InformationPanel = ({name, pack, visible}) => {
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
-                                <p><strong>Q-Name:</strong></p>
+                                <p><strong>Hidden:</strong></p>
                             </div>
-                            <p>{visible.toString()}</p>
+                            <p>{(!visible).toString()}</p>
                         </div>
                     </div>
                 </div>
