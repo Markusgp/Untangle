@@ -7,7 +7,6 @@
     padding: 0;
     height: 25px;
 }
-
 .panelIcon {
     opacity: 0.8;
     width: 20px;
@@ -19,10 +18,10 @@
     justify-content: flex-start;
     align-items: center;
 }
-.identifierSection > img {
+.identifierSection img {
     margin-right: 5px;
 }
-.identifierSection > .panelName {
+.identifierSection .panelName {
     font-weight: 700;
     font-size: 16px;
     color: #292929;
@@ -34,11 +33,62 @@
     align-items: flex-start;
     width: 100%;
 }
-
-.contentDivider {
+.content .contentDivider {
     align-self: center;
     margin: 8px 0;
-    width: 110%;
+    width: 105%;
     height: 5px;
     background-color: #FF6C69;
+}
+.content .treeDiagram {
+    width: 105%;
+    align-self: center;
+    height: 120px;
+    background-color: lightskyblue;
+}
+
+.content ul {
+    margin: 0;
+    padding: 0 0 0 20px;
+    text-align: left;
+}
+
+.content h5 {
+    margin: 10px 0;
+}
+.content li {
+    font-size: 14px;
+
+}
+
+.content .listHolder {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+.content .listHolder .listElementHolder {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+.content .listElementHolder .leftFloat {
+    display: flex;
+    align-items: center;
+}
+.content .listElementHolder .dot {
+    height: 5px;
+    width: 5px;
+    background-color: #FF6C69;
+    border-radius: 20px;
+    margin: 0 5px 0 5px;
+}
+.content .listElementHolder p {
+    margin: 5px;
+    font-size: 12px;
+    overflow: hidden;
+    text-wrap: avoid;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }

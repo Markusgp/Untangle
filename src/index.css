@@ -42,10 +42,9 @@ code {
   left: auto;
 }
 
-.panelStyle {
+.panelStyle, .panelStyleInformation {
   pointer-events: all;
-  width: auto;
-  min-width: 200px;
+  width: 250px;
   height: auto;
   padding: 8px;
   margin: 20px;
@@ -59,6 +58,9 @@ code {
   border: 5px solid #FF6C69;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
   border-radius: 20px;
+}
+.panelStyleInformation {
+  width: 350px;
 }
 
 

@@ -18,6 +18,7 @@ import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
 import Collapsible from "./FlowElements/Panels/Collapsible";
+import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
 
@@ -46,28 +47,16 @@ let NodeAsHandleFlow = () => {
   const onClick = useCallback(
     (param) => ({nodes, edges } = createNodesAndEdges(param.target.id), setNodes(nodes),setEdges(edges))
     )
-   */
 
 
 
-  const [selectedNodeId, setSelectNode] = useState("none");
+  const [selectedNodeId, setSelectNode] = useState(null);
 
   const onNodeClicked = (event, node) => {
     console.log("clicked node" + node.id)
-    setSelectNode(node.id);
+    setSelectNode(node);
   }
-  const onPaneClicked = () => setSelectNode("none");
-
-
-  const panelStyle = {
-    position: "absolute",
-    left: "20px",
-    top: "20px",
-    width: "300px",
-    height: "400px",
-    backgroundColor: "#FFFFFF",
-    zIndex: "20"
-  }
+  const onPaneClicked = () => setSelectNode(null);
 
   return (
     <>
@@ -80,12 +69,12 @@ let NodeAsHandleFlow = () => {
         </div>
       </div>
       <div className="panelHolder" id="rightFloat">
-        <div className="panelStyle">
-          <Collapsible/>
-        </div>
-        <div className="panelStyle">
-          <Collapsible/>
-        </div>
+          { selectedNodeId != null && (
+            <div className="panelStyleInformation">
+            <InformationPanel name={selectedNodeId}/>
+            </div>
+            )
+          }
       </div>
     <div className="floatingedges">
       <ReactFlow
@@ -93,10 +82,10 @@ let NodeAsHandleFlow = () => {
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        /*onNodeClick={onNodeClicked}
-        onPaneClick={onPaneClicked}*/
-          //onConnect={onConnect}
-        onClick={onClick}
+        onNodeClick={onNodeClicked}
+        onPaneClick={onPaneClicked}
+          /*onConnect={onConnect}
+          onClick={onClick}*/
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
