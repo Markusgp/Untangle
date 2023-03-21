@@ -1,8 +1,4 @@
 import { Position, MarkerType } from 'reactflow';
-import classes from "./data/classes.json";
-import classesInherited from "./data/classesInherited.json";
-import classesInvoked from "./data/classesInvoked.json";
-import interfacesInvoked from "./data/interfacesInvoked.json";
 import { tree } from "./Parse"
 import { JavaClass } from "./JavaClass"
 
@@ -78,6 +74,21 @@ export function getEdgeParams(source, target) {
     };
 }
 
+function calculateBarycenters(nodes, edges) {
+    const barycenters = nodes.map((node) => {
+      const connectedEdges = edges.filter((edge) => edge.source === node.id || edge.target === node.id);
+      const sum = connectedEdges.reduce((acc, edge) => {
+        const otherNodeId = edge.source === node.id ? edge.target : edge.source;
+        const otherNodeIndex = nodes.findIndex((n) => n.id === otherNodeId);
+        return acc + otherNodeIndex;
+      }, 0);
+      const average = sum / connectedEdges.length;
+      return { nodeId: node.id, barycenter: average };
+    });
+  
+    return barycenters;
+}
+
 export function createNodesAndEdges(param) {
     const nodes = [];
     const edges = [];
@@ -132,74 +143,6 @@ export function createNodesAndEdges(param) {
 
       })
 
-    // classes.forEach(cls => {
-    //     const nodeId = cls.class.Name.toLowerCase();
-
-    //     const node = {
-    //         id: nodeId,
-    //         type: "rectangularNode",
-    //         data: {
-    //             id: nodeId,
-    //             label: cls.class.Name
-    //         },
-    //         position: { x: 0, y: 0 }
-    //     };
-
-    //     nodes.push(node);
-    // });
-
-    // Calculate the positions of the nodes in a circular layout
-    const numNodes = nodes.length;
-    const radius = 200 + (numNodes - 5) * 20;
-    nodes.forEach((node, index) => {
-        const angle = (index / numNodes) * 2 * Math.PI;
-        node.position = {
-            x: Math.cos(angle) * radius + 400,
-            y: Math.sin(angle) * radius + 300
-        };
-    });
-
-
-    // Create edges for inheritance relationships
-    // classesInherited.forEach(cls => {
-    //     const node = nodes.find(n => n.id === cls.class.toLowerCase());
-
-    //     cls.inherits.forEach(inheritedClass => {
-    //         const inheritedNode = nodes.find(n => n.id === inheritedClass.toLowerCase());
-
-    //         edges.push({
-    //             id: `${node.id}-inherits-${inheritedNode.id}`,
-    //             source: node.id,
-    //             target: inheritedNode.id,
-    //             type: "floating",
-    //             animated: true,
-    //             label: "inherits",
-    //             labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-    //             markerEnd: {
-    //                 type: MarkerType.Arrow,
-    //             }
-    //         });
-    //     });
-    // });
-
-    // // Create edges for invocation relationships
-    // classesInvoked.forEach(cls => {
-    //     const node = nodes.find(n => n.id === cls.class.toLowerCase());
-
-    //     cls.invokes.forEach(invokedClass => {
-    //         const invokedNode = nodes.find(n => n.id === invokedClass.toLowerCase());
-
-    //         edges.push({
-    //             id: `${node.id}-invokes-${invokedNode.id}`,
-    //             source: node.id,
-    //             target: invokedNode.id,
-    //             type: "floating",
-    //             animated: true,
-    //             label: "invokes",
-    //             labelStyle: { fill: "#f6ab6c", fontWeight: 700 }
-    //         });
-    //     });
-    // });
     myNodes.forEach(cls => {
         const node = nodes.find(n => n.id == cls.pack)
         cls.classInvokation.forEach(invokedClass => {
@@ -253,19 +196,22 @@ export function createNodesAndEdges(param) {
         
     })
 
-    // // Add interface names to node labels
-    // interfacesInvoked.forEach(cls => {
-    //     const node = nodes.find(n => n.id === cls.class.toLowerCase());
-
-    //     cls.interfaces.forEach(iface => {
-    //         // Append the interface name to the node label
-    //         node.data.label = (
-    //             <>
-    //                 {node.data.label} <br /> <small>({iface})</small>
-    //             </>
-    //         );
-    //     });
-    // });
+    // Calculate the positions of the nodes in a circular layout
+    const numNodes = nodes.length;
+    const barycenters = calculateBarycenters(nodes, edges);
+    nodes.sort((a, b) => {
+    const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
+    const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
+    return aBarycenter - bBarycenter;
+    });
+    const radius = 200 + (numNodes - 5) * 20;
+    nodes.forEach((node, index) => {
+        const angle = (index / numNodes) * 2 * Math.PI;
+        node.position = {
+            x: Math.cos(angle) * radius + 400,
+            y: Math.sin(angle) * radius + 300
+        };
+    });
 
     return { nodes, edges };
 }
