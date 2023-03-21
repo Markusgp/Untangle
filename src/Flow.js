@@ -48,13 +48,17 @@ let NodeAsHandleFlow = () => {
   );
    */
 
-
-
-  const onClick = useCallback(
-    (param) => ({nodes, edges } = createNodesAndEdges(param.target.id), setNodes(nodes),setEdges(edges))
-  )
+  const expandPackage = (evt,nd) => {
+    if (nd.type === "packageNode") {
+      const {nodes, edges} = createNodesAndEdges(nd.id);
+      setSelectNode(null);
+      setNodes(nodes);
+      setEdges(edges);
+    }
+  }
 
   const [selectedNode, setSelectNode] = useState(null);
+
   const onNodeClicked = (event, node) => {
     setSelectNode(tree.getNode(node.id));
   }
@@ -85,6 +89,7 @@ let NodeAsHandleFlow = () => {
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClicked}
+        onNodeDoubleClick={expandPackage}
         onPaneClick={onPaneClicked}
           /*onConnect={onConnect}
           onClick={onClick}*/
