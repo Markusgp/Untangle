@@ -1,24 +1,26 @@
 import React, {useState} from 'react';
 import "./PanelStyles.css"
-import FileLogo from "../Assets/File.svg"
+import ObjectLogo from "../Assets/Object.svg"
+import Drop from "../Assets/Drop.svg"
 
 
 const InformationPanel = ({name, pack, visible}) => {
     const toggle = () => setOpen(!open);
 
-    const panelName = "Information-Panel";
-
     const [open, setOpen] = useState(true);
+
+    const dropStyle = {
+        transform: open ? "rotate(180deg)" : "rotate(0)"
+    }
 
     return (
         <>
             <div className="topBar">
                 <div className="identifierSection">
-                    <img className="panelIcon" src={FileLogo} alt="informationPanelLogo"/>
-                    <p className="panelName">{panelName}</p>
+                    <img className="objectIcon" src={ObjectLogo} alt="informationPanelLogo"/>
+                    <p className="panelName">Information Panel</p>
                 </div>
-
-                <button onClick={toggle}>*</button>
+                <img className="dropBtn" src={Drop} style={dropStyle} alt={"toggleOpen"} onClick={toggle}/>
             </div>
             {open && (
                 <div className="content">

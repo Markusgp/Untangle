@@ -17,7 +17,7 @@ import ClassNode from './FlowElements/ClassNode'
 import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
-import Collapsible from "./FlowElements/Panels/Collapsible";
+import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
 import { tree } from "./Parse"
@@ -68,10 +68,10 @@ let NodeAsHandleFlow = () => {
     <>
       <div className="panelHolder" id="leftFloat">
         <div className="panelStyle">
-          <Collapsible/>
+          <ExamplePanel/>
         </div>
         <div className="panelStyle">
-          <Collapsible/>
+          <ExamplePanel/>
         </div>
       </div>
       <div className="panelHolder" id="rightFloat">
