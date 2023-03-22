@@ -72,13 +72,9 @@ export class CLassTree{
             if (i == 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
             if (current == undefined) return
-            //testting
-            //packages needs to contain information on referencing classes aswell as packages and don't need to contain information about it if its internal in the package
             tempTo = ""
             for (let j = 0; j < toPackages.length; j++){
                 tempTo += toPackages[j]
-                console.log(current.pack,tempTo+toPackages[j])
-                console.log((tempTo+toPackages[j]).startsWith(current.pack))
                 if (!tempTo.startsWith(current.pack) && !current.pack.startsWith(tempTo)){
                     console.log("paseed the if with",current.pack,tempTo)
                     if (dependencyType == "inheritance") current.classInherits.add(tempTo)
@@ -87,7 +83,6 @@ export class CLassTree{
                 }
                 tempTo += "."
             }
-            console.log(tempTo)
         }
         let fromNode = current.children.get(from)
 
