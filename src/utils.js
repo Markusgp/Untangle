@@ -89,7 +89,7 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
-export function createNodesAndEdges(param) {
+export function createNodesAndEdges(param, useBarycenter) {
     const nodes = [];
     const edges = [];
 
@@ -198,12 +198,14 @@ export function createNodesAndEdges(param) {
 
     // Calculate the positions of the nodes in a circular layout
     const numNodes = nodes.length;
-    const barycenters = calculateBarycenters(nodes, edges);
-    nodes.sort((a, b) => {
-    const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
-    const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
-    return aBarycenter - bBarycenter;
-    });
+    if (useBarycenter) {
+        const barycenters = calculateBarycenters(nodes, edges);
+        nodes.sort((a, b) => {
+            const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
+            const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
+            return aBarycenter - bBarycenter;
+        });
+    }
     const radius = 200 + (numNodes - 5) * 20;
     nodes.forEach((node, index) => {
         const angle = (index / numNodes) * 2 * Math.PI;
