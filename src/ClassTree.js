@@ -1,7 +1,7 @@
 import { JavaClass } from "./JavaClass"
 import { JavaPackage } from "./JavaPackage"
 
-export class CLassTree{
+export class ClassTree {
     constructor() {
         this.root = new JavaPackage("src","")
     }

@@ -1,109 +1,108 @@
-import classes from "./data/class.json";
-import { CLassTree } from "./ClassTree";
-import implementations from "./data/implementations.json";
-import inherits from "./data/Extensions.json";
-import interfaces from "./data/interface.json"
-import initialization from "./data/initialization.json"
-import genericInitialization from "./data/genericInitalization.json"
-import instantioation from "./data/Instantiation.json"
-import genericInstantioation from "./data/genericInstantiation.json"
+import { ClassTree } from "./ClassTree";
 
-const tree = new CLassTree()
+import Classes from "./data/Class.json";
+import Interfaces from "./data/Interface.json"
+import Implementations from "./data/Implementations.json";
+import Extensions from "./data/Extensions.json";
+import Initializations from "./data/Initialization.json"
+import Instantiations from "./data/Instantiation.json"
+import GenericInitializations from "./data/GenericInitialization.json"
+import GenericInstantiations from "./data/GenericInstantiation.json"
 
-const tuplesC = classes["#select"]["tuples"]
-for (let i = 0;i < tuplesC.length; i++) {
-    const tuple = tuplesC[i]
+const tree = new ClassTree()
+
+const classTuples = Classes["#select"]["tuples"]
+for (let i = 0; i < classTuples.length; i++) {
+    const tuple = classTuples[i]
     const name = tuple[0]
 
-    if (name === "") {
-        continue;
-    }
+    if (name === "") continue;
+
     const pack = tuple[1]
     const lines = tuple[2]
     tree.add(name,pack,"class",lines)
 }
-const tuplesI = interfaces["#select"]["tuples"]
-for (let i = 0;i < tuplesI.length; i++) {
-    const tuple = tuplesI[i]
+
+const interfaceTuples = Interfaces["#select"]["tuples"]
+for (let i = 0;i < interfaceTuples.length; i++) {
+    const tuple = interfaceTuples[i]
     const name = tuple[0]
-    if (name === "") {
-        continue;
-    }
+
+    if (name === "") continue;
+
     const pack = tuple[1]
     const lines = tuple[2]
     tree.add(name,pack,"interface",lines)
 }
-console.log(tree)
-const implementsTuples = implementations["#select"]["tuples"]
+
+const implementsTuples = Implementations["#select"]["tuples"]
 for (let i = 0; i < implementsTuples.length; i++){
     const implementTuple = implementsTuples[i]
     let from = implementTuple[0]
     const to = implementTuple[1]
-    if (from.endsWith("<>")) {
-        from = from.substring(0, from.length - 2)
-    }
-    if (from.endsWith(".")) {
-        continue;
 
-    }
+    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
+    if (from.endsWith(".")) continue;
+
     tree.addDependency(from,to,"implementation")
 }
 
-const inheritTuples = inherits["#select"]["tuples"]
-for (let i = 0; i < inheritTuples.length; i++){
-    const inheritTuple = inheritTuples[i]
+const extensionTuples = Extensions["#select"]["tuples"]
+for (let i = 0; i < extensionTuples.length; i++){
+    const inheritTuple = extensionTuples[i]
     let from = inheritTuple[0]
     const to = inheritTuple[1]
-    if (from.endsWith("<>")) {
-        from = from.substring(0, from.length - 2)
-    }
+    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
+    if (from.endsWith(".")) continue;
+
     tree.addDependency(from,to,"inheritance")
 }
 
-const initializationTuple = initialization["#select"]["tuples"]
-for (let i = 0; i < initializationTuple.length; i++){
-    const iniTuple = initializationTuple[i]
-    const from = iniTuple[0]
+const initializationTuples = Initializations["#select"]["tuples"]
+for (let i = 0; i < initializationTuples.length; i++){
+    const iniTuple = initializationTuples[i]
+    let from = iniTuple[0]
     const to = iniTuple[1]
-    if (from.endsWith(".")) {
-        continue;
 
-    }
-    tree.addDependency(from,to,"invokation")
+    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
+    if (from.endsWith(".")) continue;
+
+    tree.addDependency(from,to,"invocation")
 }
-const genericInitializationTuple = initialization["#select"]["tuples"]
+
+const genericInitializationTuple = Initializations["#select"]["tuples"]
 for (let i = 0; i < genericInitializationTuple.length; i++){
     const genIniTuple = genericInitializationTuple[i]
-    const from = genIniTuple[0]
+    let from = genIniTuple[0]
     const to = genIniTuple[1]
-    if (from.endsWith(".")) {
-        continue;
 
-    }
-    tree.addDependency(from,to,"invokation")
+    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
+    if (from.endsWith(".")) continue;
+
+    tree.addDependency(from,to,"invocation")
 }
 
-const instantioationTuple = instantioation["#select"]["tuples"]
-for (let i = 0; i < instantioationTuple.length; i++){
-    const instTuple = instantioationTuple[i]
-    const from = instTuple[0]
+const instantiationTuples = Instantiations["#select"]["tuples"]
+for (let i = 0; i < instantiationTuples.length; i++){
+    const instTuple = instantiationTuples[i]
+    let from = instTuple[0]
     const to = instTuple[1]
-    if (from.endsWith("{ ... }")) {
-        continue;
 
-    }
-    tree.addDependency(from,to,"invokation")
+    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
+    if (from.endsWith(".")) continue;
+
+    tree.addDependency(from,to,"invocation")
 }
-const genericInstantioationTuple = genericInstantioation["#select"]["tuples"]
-for (let i = 0; i < genericInstantioationTuple.length; i++){
-    const genInstTuple = genericInstantioationTuple[i]
-    const from = genInstTuple[0]
+const genericInstantiationTuples = GenericInstantiations["#select"]["tuples"]
+for (let i = 0; i < genericInstantiationTuples.length; i++){
+    const genInstTuple = genericInstantiationTuples[i]
+    let from = genInstTuple[0]
     const to = genInstTuple[1]
-    if (from.endsWith(".")) {
-        continue;
 
-    }
-    tree.addDependency(from,to,"invokation")
+    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
+    if (from.endsWith(".")) continue;
+
+    tree.addDependency(from,to,"invocation")
 }
-console.log(tree)
+
 export {tree}
