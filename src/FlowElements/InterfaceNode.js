@@ -15,16 +15,16 @@ function InterfaceNode({data}) {
   const [focused, setIsFocused] = useState(false);
 
   const classNodeStyle = {
-    border: focused ? '5px solid purple' : '5px solid purple',
+    border: focused ? '5px solid #292929' : '5px solid #58BF62',
     boxShadow: focused ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
   };
 
    const onClick = () => {
-     console.log(`Node ${id} clicked`); // log the node id
+     console.log(`${id}`); // log the node id
    };
 
-  const onFocus = () => { setIsFocused(true); };
-  const onBlur = () => { setIsFocused(false); };
+  const onFocus = () => { /* setIsFocused(true);*/ };
+  const onBlur = () => { /*setIsFocused(false);*/ };
 
    return (
      <div className="nodeDefault" style={classNodeStyle} tabIndex="1" onClick={onClick} onFocus={onFocus} onBlur={onBlur}>
@@ -35,7 +35,7 @@ function InterfaceNode({data}) {
            <img className="nodeIcon" src={FileLogo} alt="Package-icon"/>
          </div>
          <div className="nodeNameLabel">{label}</div>
-         <p className="nodeTypeLabel">&lt;Class&gt;</p>
+         <p className="nodeTypeLabel">&lt;Interface&gt;</p>
        </div>
      </div>
    );

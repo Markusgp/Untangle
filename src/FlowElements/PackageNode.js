@@ -12,7 +12,6 @@ const iconWrapperStyle = {
 }
 
 function PackageNode({data}) {
-
   const {id, label} = data;
   const nodeId = id
   const [focused, setIsFocused] = useState(false);
@@ -22,12 +21,12 @@ function PackageNode({data}) {
     boxShadow: focused ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
   };
 
-   const onClick = () => {
-     console.log(`Node ${id} clicked`); // log the node id
-   };
+    const onClick = () => {
+        console.log(`${id}`); // log the node id
+    };
 
-  const onFocus = () => { setIsFocused(true); };
-  const onBlur = () => { setIsFocused(false); };
+    const onFocus = () => { /* setIsFocused(true);*/ };
+    const onBlur = () => { /*setIsFocused(false);*/ };
 
   const expandModule = () => {
     console.log(id + " was expanded");

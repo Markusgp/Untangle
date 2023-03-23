@@ -1,22 +1,24 @@
-import React, { useCallback } from 'react';
+import React, {useCallback, useState} from 'react';
 import ReactFlow, {
   Background,
   Controls,
-  addEdge,
   useNodesState,
   useEdgesState,
-  MarkerType
 } from 'reactflow';
+
 import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
-import FloatingConnectionLine from './FloatingConnectionLine.js';
 import { createNodesAndEdges } from './utils.js';
 import PackageNode from './FlowElements/PackageNode.js';
 import ClassNode from './FlowElements/ClassNode'
 import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
+import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
+import InformationPanel from "./FlowElements/Panels/InformationPanel";
+
+import { tree } from "./Parse"
 
 const useBaryCenter = true;
 
@@ -36,36 +38,60 @@ let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const onConnect = useCallback(
-    (params) =>
-      setEdges((eds) =>
-        addEdge({ ...params, type: 'floating', markerEnd: { type: MarkerType.Arrow } }, eds)
-      ),
-    [setEdges]
-  );
-  
-  const onClick = useCallback(
-    (param) => ({nodes, edges } = createNodesAndEdges(param.target.id, useBaryCenter), setNodes(nodes),setEdges(edges))
-    )
+  const expandPackage = (evt,nd) => {
+    if (nd.type === "packageNode") {
+      const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
+      setSelectNode(null);
+      setNodes(nodes);
+      setEdges(edges);
+    }
+  }
+
+  const [selectedNode, setSelectNode] = useState(null);
+
+  const onNodeClicked = (event, node) => {
+    setSelectNode(tree.getNode(node.id));
+  }
+  const onPaneClicked = () => setSelectNode(null);
 
   return (
+    <>
+      <div className="panelHolder" id="leftFloat">
+        <div className="panelStyle">
+          <ExamplePanel/>
+        </div>
+        <div className="panelStyle">
+          <ExamplePanel/>
+        </div>
+      </div>
+      <div className="panelHolder" id="rightFloat">
+          { selectedNode != null && (
+            <div className="panelStyleInformation">
+            <InformationPanel name={selectedNode.name} pack={selectedNode.pack} visible={selectedNode.visible}/>
+            </div>
+            )
+          }
+      </div>
     <div className="floatingedges">
       <ReactFlow
         nodes={nodes}
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onClick={onClick}
+        onNodeClick={onNodeClicked}
+        onNodeDoubleClick={expandPackage}
+        onPaneClick={onPaneClicked}
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
-        connectionLineComponent={FloatingConnectionLine}
+        nodesConnectable={false}
+        nodesDraggable={false}
       >
         <Background />
         <Controls />
       </ReactFlow>
     </div>
+    </>
   );
 };
 

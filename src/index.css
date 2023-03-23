@@ -23,6 +23,46 @@ code {
   opacity: 0;
 }
 
+.panelHolder {
+  position: absolute;
+  width: auto;
+  height: 100%;
+  z-index: 20;
+  pointer-events: none;
+  /*background-color: rgba(125,23,0,0.1);*/
+}
+
+#leftFloat.panelHolder {
+  left: 0;
+  right: auto
+}
+
+#rightFloat.panelHolder {
+  right: 0;
+  left: auto;
+}
+
+.panelStyle, .panelStyleInformation {
+  pointer-events: all;
+  width: 250px;
+  height: auto;
+  padding: 8px;
+  margin: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+
+  background: #FFFFFF;
+  border: 5px solid #FF6C69;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+}
+.panelStyleInformation {
+  width: 350px;
+}
+
 
 /*
 .react-flow__controls {
