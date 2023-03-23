@@ -65,16 +65,36 @@ export class CLassTree{
         let packages = fromPackage.split(".")
 
         let current = this.root
+        let tempTo = ""
+        let toPackages = to.split(".")
 
         for (let i = 0; i < packages.length; i++){
             if (i == 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
             if (current == undefined) return
+            tempTo = ""
+            for (let j = 0; j < toPackages.length; j++){
+                tempTo += toPackages[j]
+                if (!tempTo.startsWith(current.pack) && !current.pack.startsWith(tempTo)){
+                    console.log("paseed the if with",current.pack,tempTo)
+                    if (dependencyType == "inheritance") current.classInherits.add(tempTo)
+                    else if (dependencyType == "invokation") current.classInvokation.add(tempTo)
+                    else if (dependencyType == "implementation") current.classImplements.add(tempTo)
+                }
+                tempTo += "."
+            }
         }
         let fromNode = current.children.get(from)
-        if (dependencyType == "inheritance") fromNode.classInherits.add(to)
-        else if (dependencyType == "invokation") fromNode.classInvokation.add(to)
-        else if (dependencyType == "implementation") fromNode.classImplements.add(to)
+
+        tempTo = ""
+        for (let i = 0; i < toPackages.length; i++){
+            if (dependencyType == "inheritance") fromNode.classInherits.add(tempTo+toPackages[i])
+            else if (dependencyType == "invokation") fromNode.classInvokation.add(tempTo+toPackages[i])
+            else if (dependencyType == "implementation") fromNode.classImplements.add(tempTo+toPackages[i])
+            tempTo = tempTo + toPackages[i]+"."
+        }
+
+        
     }
     getAllLeavesRec(node, leaves){
         if (node.children.size > 0){
