@@ -89,10 +89,15 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
-export function createNodesAndEdges(param, useBarycenter) {
-    const nodes = [];
-    const edges = [];
+export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
+    let nodes = [];
+    let edges = [];
+    console.log(prevNodes)
+    console.log(prevNodes.length)
+    let oldNodes = prevNodes
+    let oldEdges = prevEdges
 
+    
     // Create nodes for each class
     const myNodes = tree.getPackageContent(param)
     
@@ -113,6 +118,7 @@ export function createNodesAndEdges(param, useBarycenter) {
                         },
                         position: { x: 0, y: 0}
                     }
+                    if (prevNodes.length > 0) node.parentNode = param
                     nodes.push(node)
 
                 } else if (nodeTmp.type === "interface") {
@@ -123,8 +129,10 @@ export function createNodesAndEdges(param, useBarycenter) {
                             id: nodeId,
                             label: cls.name
                         },
-                        position: { x: 0, y: 0}
+                        position: { x: 0, y: 0},
                     }
+                    if (oldNodes.length > 0) node.parentNode = param
+                    console.log(node)
                     nodes.push(node)
                 }
             }
@@ -138,6 +146,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                 },
                 position: { x: 0, y: 0}
             }
+            if (oldNodes.length > 0) node.parentNode = param
+            console.log(node)
             nodes.push(node)
         }
 
@@ -158,7 +168,7 @@ export function createNodesAndEdges(param, useBarycenter) {
                 labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
                 markerEnd: {
                     type: MarkerType.Arrow,
-                }
+                },
             })
         })
         cls.classImplements.forEach(implementedClass => {
@@ -207,13 +217,31 @@ export function createNodesAndEdges(param, useBarycenter) {
         });
     }
     const radius = 200 + (numNodes - 5) * 20;
+    if (oldNodes.length > 0){
+        let packageNode = oldNodes.find(n => n.id === param)
+        packageNode.type = "openedPackageNode"
+        packageNode.style = {backgroundcolor: 'rgba(255, 0, 0, 0.2)',width: radius*2, height: radius*2}
+
+    }
     nodes.forEach((node, index) => {
         const angle = (index / numNodes) * 2 * Math.PI;
         node.position = {
             x: Math.cos(angle) * radius + 400,
             y: Math.sin(angle) * radius + 300
         };
+        if (oldNodes.length > 0) node.position = {
+            x: node.position.x - radius-55,
+            y: node.position.y - radius+50
+        }
     });
-
+    
+    if (oldNodes.length > 0){
+        console.log("....")
+        console.log(oldNodes.concat(nodes))
+        nodes = oldNodes.concat(nodes)
+        edges = oldEdges.concat(edges)
+        return { nodes, edges}
+    }
+    console.log("testing")
     return { nodes, edges };
 }

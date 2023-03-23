@@ -13,6 +13,7 @@ import { createNodesAndEdges } from './utils.js';
 import PackageNode from './FlowElements/PackageNode.js';
 import ClassNode from './FlowElements/ClassNode'
 import InterfaceNode from "./FlowElements/InterfaceNode";
+import OpenedPackageNode from "./FlowElements/OpenedPackageNode";
 
 import './index.css';
 import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
@@ -22,12 +23,13 @@ import { tree } from "./Parse"
 
 const useBaryCenter = true;
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6", useBaryCenter);
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([],[],"BFST21Group6", useBaryCenter);
 
 const nodeTypes = {
   packageNode: PackageNode,
   classNode: ClassNode,
-  interfaceNode: InterfaceNode
+  interfaceNode: InterfaceNode,
+  openedPackageNode: OpenedPackageNode
 };
 
 const edgeTypes = {
@@ -40,9 +42,16 @@ let NodeAsHandleFlow = () => {
 
   const expandPackage = (evt,nd) => {
     console.log(nd.type);
+    console.log(nodes)
+    let tempNodes = nodes
+    let tempEdges = edges
     if (nd.type === "packageNode") {
-      const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
+      const {nodes, edges} = createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter);
       setSelectNode(null);
+      console.log("after cacll")
+      console.log(nodes)
+      console.log("next time")
+      console.log("l",createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter))
       setNodes(nodes);
       setEdges(edges);
     }
@@ -84,6 +93,7 @@ let NodeAsHandleFlow = () => {
         onPaneClick={onPaneClicked}
         fitView
         edgeTypes={edgeTypes}
+        minZoom={0.1}
         nodeTypes={nodeTypes}
         nodesConnectable={false}
         nodesDraggable={false}
