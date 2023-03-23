@@ -22,7 +22,7 @@ import { tree } from "./Parse"
 
 const useBaryCenter = true;
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6", useBaryCenter);
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges(tree.getTopLevelPackages()[0].name, useBaryCenter);
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -41,6 +41,7 @@ let NodeAsHandleFlow = () => {
   const expandPackage = (evt,nd) => {
     console.log(nd.type);
     if (nd.type === "packageNode") {
+      console.log(nd.id)
       const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
       setSelectNode(null);
       setNodes(nodes);

@@ -121,6 +121,7 @@ export class CLassTree{
         let current = this.root
         let packages = pack.split(".")
         for (let i = 0; i < packages.length; i++){
+            //if (current !== undefined) continue
             if (i === 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
         }

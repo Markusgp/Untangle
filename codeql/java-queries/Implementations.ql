@@ -13,8 +13,8 @@ boolean isGeneric(ClassOrInterface pt) {
 }
 
   string getRepresentation(ClassOrInterface c) {
-    if (isGeneric(c) = false) then result = c.getPackage() + "." + c
-    else if (isGeneric(c) = true) then result = c.getPackage().toString() + "." + c.(ParameterizedType).getGenericType()
+    if (isGeneric(c) = false) then result = c.getPackage() + "." + c.getName()
+    else if (isGeneric(c) = true) then result = c.getPackage().toString() + "." + c.(ParameterizedType).getGenericType().getName()
     else result = "Something went wrong"
 }
 

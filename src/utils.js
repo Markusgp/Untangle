@@ -95,7 +95,7 @@ export function createNodesAndEdges(param, useBarycenter) {
 
     // Create nodes for each class
     const myNodes = tree.getPackageContent(param)
-    
+
     myNodes.forEach(cls => {
         const nodeId = cls.pack
         if(tree.getNode(nodeId).children.size === 0) {
@@ -147,7 +147,7 @@ export function createNodesAndEdges(param, useBarycenter) {
         const node = nodes.find(n => n.id == cls.pack)
         cls.classInvokation.forEach(invokedClass => {
             const inheritedNode = nodes.find(n => n.id === invokedClass)
-            if (inheritedNode == undefined) return
+            if (inheritedNode === undefined) return
             edges.push({
                 id: `${node.id}-invokes-${inheritedNode.id}`,
                 source: node.id,
@@ -163,7 +163,7 @@ export function createNodesAndEdges(param, useBarycenter) {
         })
         cls.classImplements.forEach(implementedClass => {
             const implementedNode = nodes.find(n => n.id == implementedClass)
-            if (implementedNode == undefined) return
+            if (implementedNode === undefined) return
             edges.push({
                 id: `${node.id}-implements-${implementedNode.id}`,
                 source: node.id,
@@ -179,7 +179,7 @@ export function createNodesAndEdges(param, useBarycenter) {
         })
         cls.classInherits.forEach(inheritedClass => {
             const inheritedNode = nodes.find(n => n.id == inheritedClass)
-            if (inheritedNode == undefined) return
+            if (inheritedNode === undefined) return
             edges.push({
                 id: `${node.id}-inherits-${inheritedNode.id}`,
                 source: node.id,

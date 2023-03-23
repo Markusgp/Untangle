@@ -1,6 +1,5 @@
 #!/bin/bash
 cp -r codeql $3
-cp -r run.sh $3
 cp -r qlpack.yml $3
 cwd=$(pwd)
 cd $3
