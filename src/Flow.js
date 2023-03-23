@@ -18,7 +18,9 @@ import InterfaceNode from "./FlowElements/InterfaceNode";
 
 import './index.css';
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
+const useBaryCenter = true;
+
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6", useBaryCenter);
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -43,7 +45,7 @@ let NodeAsHandleFlow = () => {
   );
   
   const onClick = useCallback(
-    (param) => ({nodes, edges } = createNodesAndEdges(param.target.id), setNodes(nodes),setEdges(edges))
+    (param) => ({nodes, edges } = createNodesAndEdges(param.target.id, useBaryCenter), setNodes(nodes),setEdges(edges))
     )
 
   return (
