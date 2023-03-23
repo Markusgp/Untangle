@@ -67,7 +67,7 @@ for (let i = 0; i < initializationTuples.length; i++){
     if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
     if (from.endsWith(".")) continue;
 
-    tree.addDependency(from,to,"invocation")
+    tree.addDependency(from,to,"invokation")
 }
 
 const genericInitializationTuple = Initializations["#select"]["tuples"]
@@ -79,7 +79,7 @@ for (let i = 0; i < genericInitializationTuple.length; i++){
     if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
     if (from.endsWith(".")) continue;
 
-    tree.addDependency(from,to,"invocation")
+    tree.addDependency(from,to,"invokation")
 }
 
 const instantiationTuples = Instantiations["#select"]["tuples"]
@@ -91,7 +91,7 @@ for (let i = 0; i < instantiationTuples.length; i++){
     if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
     if (from.endsWith(".")) continue;
 
-    tree.addDependency(from,to,"invocation")
+    tree.addDependency(from,to,"invokation")
 }
 const genericInstantiationTuples = GenericInstantiations["#select"]["tuples"]
 for (let i = 0; i < genericInstantiationTuples.length; i++){
@@ -102,7 +102,7 @@ for (let i = 0; i < genericInstantiationTuples.length; i++){
     if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
     if (from.endsWith(".")) continue;
 
-    tree.addDependency(from,to,"invocation")
+    tree.addDependency(from,to,"invokation")
 }
 
 export {tree}
