@@ -1,6 +1,6 @@
 import { Position, MarkerType } from 'reactflow';
-import { tree } from "./Parse"
-import { JavaClass } from "./JavaClass"
+import { tree } from "./Model/Parse"
+import { JavaClass } from "./Model/JavaClass"
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node

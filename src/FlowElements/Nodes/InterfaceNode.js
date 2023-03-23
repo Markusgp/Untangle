@@ -1,6 +1,6 @@
 import { Handle, Position } from 'reactflow';
 import './NodeStyles.css'
-import FileLogo from './Assets/File.svg'
+import FileLogo from '../Assets/File.svg'
 import { useState } from "react";
 
 const iconWrapperStyle  = {

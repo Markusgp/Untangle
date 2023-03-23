@@ -10,15 +10,15 @@ import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
 import { createNodesAndEdges } from './utils.js';
-import PackageNode from './FlowElements/PackageNode.js';
-import ClassNode from './FlowElements/ClassNode'
-import InterfaceNode from "./FlowElements/InterfaceNode";
+import PackageNode from './FlowElements/Nodes/PackageNode.js';
+import ClassNode from './FlowElements/Nodes/ClassNode'
+import InterfaceNode from "./FlowElements/Nodes/InterfaceNode";
 
 import './index.css';
 import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
-import { tree } from "./Parse"
+import { tree } from "./Model/Parse"
 
 const useBaryCenter = true;
 
