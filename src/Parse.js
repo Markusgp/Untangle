@@ -1,13 +1,13 @@
 import { ClassTree } from "./ClassTree";
 
-import Classes from "./data/Class.json";
-import Interfaces from "./data/Interface.json"
-import Implementations from "./data/Implementations.json";
-import Extensions from "./data/Extensions.json";
-import Initializations from "./data/Initialization.json"
-import Instantiations from "./data/Instantiation.json"
-import GenericInitializations from "./data/GenericInitialization.json"
-import GenericInstantiations from "./data/GenericInstantiation.json"
+import Classes from "./Data/Class.json";
+import Interfaces from "./Data/Interface.json"
+import Implementations from "./Data/Implementations.json";
+import Extensions from "./Data/Extensions.json";
+import Initializations from "./Data/Initialization.json"
+import Instantiations from "./Data/Instantiation.json"
+import GenericInitializations from "./Data/GenericInitialization.json"
+import GenericInstantiations from "./Data/GenericInstantiation.json"
 
 const tree = new ClassTree()
 
