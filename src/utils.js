@@ -1,6 +1,7 @@
 import { Position, MarkerType } from 'reactflow';
 import { tree } from "./Parse"
 import { JavaClass } from "./JavaClass"
+import { forceSimulation, forceManyBody, forceLink, forceCenter, forceCollide } from 'd3-force';
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -76,20 +77,104 @@ export function getEdgeParams(source, target) {
 
 function calculateBarycenters(nodes, edges) {
     const barycenters = nodes.map((node) => {
-      const connectedEdges = edges.filter((edge) => edge.source === node.id || edge.target === node.id);
-      const sum = connectedEdges.reduce((acc, edge) => {
-        const otherNodeId = edge.source === node.id ? edge.target : edge.source;
-        const otherNodeIndex = nodes.findIndex((n) => n.id === otherNodeId);
-        return acc + otherNodeIndex;
-      }, 0);
-      const average = sum / connectedEdges.length;
-      return { nodeId: node.id, barycenter: average };
+        const connectedEdges = edges.filter((edge) => edge.source === node.id || edge.target === node.id);
+        const sum = connectedEdges.reduce((acc, edge) => {
+            const otherNodeId = edge.source === node.id ? edge.target : edge.source;
+            const otherNodeIndex = nodes.findIndex((n) => n.id === otherNodeId);
+            return acc + otherNodeIndex;
+        }, 0);
+        const average = sum / connectedEdges.length;
+        return { nodeId: node.id, barycenter: average };
     });
-  
+
     return barycenters;
 }
 
-export function createNodesAndEdges(param, useBarycenter) {
+function linkCrossingForce(edges, strength) {
+    return (alpha) => {
+      edges.forEach((edge) => {
+        const source = edge.source;
+        const target = edge.target;
+  
+        edges.forEach((otherEdge) => {
+          if (edge === otherEdge) return;
+  
+          const otherSource = otherEdge.source;
+          const otherTarget = otherEdge.target;
+  
+          const dx = target.x - source.x;
+          const dy = target.y - source.y;
+          const otherDx = otherTarget.x - otherSource.x;
+          const otherDy = otherTarget.y - otherSource.y;
+  
+          const delta = dx * otherDy - dy * otherDx;
+  
+          if (delta === 0) return;
+  
+          const t = ((source.x - otherSource.x) * otherDy - (source.y - otherSource.y) * otherDx) / delta;
+          const u = ((source.x - otherSource.x) * dy - (source.y - otherSource.y) * dx) / delta;
+  
+          if (t > 0 && t < 1 && u > 0 && u < 1) {
+            const crossingPoint = {
+              x: source.x + t * dx,
+              y: source.y + t * dy,
+            };
+  
+            const force = strength * alpha;
+  
+            [source, target, otherSource, otherTarget].forEach((node) => {
+              node.vx -= (crossingPoint.x - node.x) * force;
+              node.vy -= (crossingPoint.y - node.y) * force;
+            });
+          }
+        });
+      });
+    };
+  }
+  
+
+  function simulateForceLayout(nodes, edges) {
+    // Create a map of dependent nodes for each node
+    const dependents = new Map();
+    edges.forEach((edge) => {
+        if (!dependents.has(edge.source)) {
+            dependents.set(edge.source, []);
+        }
+        if (!dependents.has(edge.target)) {
+            dependents.set(edge.target, []);
+        }
+        dependents.get(edge.source).push(edge.target);
+        dependents.get(edge.target).push(edge.source);
+    });
+
+    const collisionForce = forceCollide(100);
+    const chargeForce = forceManyBody().strength(-200);
+    const centerForce = forceCenter(400, 300); // Adjust the center point if needed
+
+    const simulation = forceSimulation(nodes)
+        .force("charge", chargeForce)
+        .force("collide", collisionForce)
+        .force("center", centerForce)
+        .stop();
+
+    // Run simulation for a fixed number of iterations
+    const numIterations = 100; // Increase the number of iterations for better convergence
+    for (let i = 0; i < numIterations; ++i) {
+        simulation.tick();
+    }
+
+    // Update node positions based on simulation results
+    nodes.forEach((node, index) => {
+        node.position = { x: nodes[index].x, y: nodes[index].y };
+    });
+
+    return { nodes, edges };
+}
+
+
+  
+
+export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
     const nodes = [];
     const edges = [];
 
@@ -98,7 +183,7 @@ export function createNodesAndEdges(param, useBarycenter) {
 
     myNodes.forEach(cls => {
         const nodeId = cls.pack
-        if(tree.getNode(nodeId).children.size === 0) {
+        if (tree.getNode(nodeId).children.size === 0) {
 
             if (tree.getNode(nodeId) instanceof (JavaClass)) {
 
@@ -111,7 +196,7 @@ export function createNodesAndEdges(param, useBarycenter) {
                             id: nodeId,
                             label: cls.name
                         },
-                        position: { x: 0, y: 0}
+                        position: { x: 0, y: 0 }
                     }
                     nodes.push(node)
 
@@ -123,7 +208,7 @@ export function createNodesAndEdges(param, useBarycenter) {
                             id: nodeId,
                             label: cls.name
                         },
-                        position: { x: 0, y: 0}
+                        position: { x: 0, y: 0 }
                     }
                     nodes.push(node)
                 }
@@ -136,12 +221,12 @@ export function createNodesAndEdges(param, useBarycenter) {
                     id: nodeId,
                     label: cls.name
                 },
-                position: { x: 0, y: 0}
+                position: { x: 0, y: 0 }
             }
             nodes.push(node)
         }
 
-      })
+    })
 
     myNodes.forEach(cls => {
         const node = nodes.find(n => n.id == cls.pack)
@@ -193,27 +278,31 @@ export function createNodesAndEdges(param, useBarycenter) {
                 }
             })
         })
-        
+
     })
-
-    // Calculate the positions of the nodes in a circular layout
-    const numNodes = nodes.length;
-    if (useBarycenter) {
-        const barycenters = calculateBarycenters(nodes, edges);
-        nodes.sort((a, b) => {
-            const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
-            const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
-            return aBarycenter - bBarycenter;
+    if (layout === 'force') {
+        const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
+        return { nodes: forceNodes, edges: forceEdges };
+    } else {
+        // Calculate the positions of the nodes in a circular layout
+        const numNodes = nodes.length;
+        if (useBarycenter) {
+            const barycenters = calculateBarycenters(nodes, edges);
+            nodes.sort((a, b) => {
+                const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
+                const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
+                return aBarycenter - bBarycenter;
+            });
+        }
+        const radius = 200 + (numNodes - 5) * 20;
+        nodes.forEach((node, index) => {
+            const angle = (index / numNodes) * 2 * Math.PI;
+            node.position = {
+                x: Math.cos(angle) * radius + 400,
+                y: Math.sin(angle) * radius + 300
+            };
         });
-    }
-    const radius = 200 + (numNodes - 5) * 20;
-    nodes.forEach((node, index) => {
-        const angle = (index / numNodes) * 2 * Math.PI;
-        node.position = {
-            x: Math.cos(angle) * radius + 400,
-            y: Math.sin(angle) * radius + 300
-        };
-    });
 
-    return { nodes, edges };
+        return { nodes, edges };
+    }
 }
