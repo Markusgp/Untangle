@@ -2,15 +2,13 @@ import React, {useCallback, useState} from 'react';
 import ReactFlow, {
   Background,
   Controls,
-  addEdge,
   useNodesState,
   useEdgesState,
-  MarkerType
 } from 'reactflow';
+
 import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
-import FloatingConnectionLine from './FloatingConnectionLine.js';
 import { createNodesAndEdges } from './utils.js';
 import PackageNode from './FlowElements/PackageNode.js';
 import ClassNode from './FlowElements/ClassNode'
@@ -39,14 +37,6 @@ const edgeTypes = {
 let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-  const onConnect = useCallback(
-    (params) =>
-      setEdges((eds) =>
-        addEdge({ ...params, type: 'floating', markerEnd: { type: MarkerType.Arrow } }, eds)
-      ),
-    [setEdges]
-  );
 
   const expandPackage = (evt,nd) => {
     if (nd.type === "packageNode") {
@@ -91,13 +81,11 @@ let NodeAsHandleFlow = () => {
         onNodeClick={onNodeClicked}
         onNodeDoubleClick={expandPackage}
         onPaneClick={onPaneClicked}
-          /*onConnect={onConnect}
-          onClick={onClick}*/
         fitView
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
         nodesConnectable={false}
-        //connectionLineComponent={FloatingConnectionLine}
+        nodesDraggable={false}
       >
         <Background />
         <Controls />
