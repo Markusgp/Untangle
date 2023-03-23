@@ -10,7 +10,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
-//import FloatingConnectionLine from './FloatingConnectionLine.js';
+import FloatingConnectionLine from './FloatingConnectionLine.js';
 import { createNodesAndEdges } from './utils.js';
 import PackageNode from './FlowElements/PackageNode.js';
 import ClassNode from './FlowElements/ClassNode'
@@ -22,7 +22,9 @@ import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
 import { tree } from "./Parse"
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6");
+const useBaryCenter = true;
+
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges("BFST21Group6", useBaryCenter);
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -38,7 +40,6 @@ let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  /*
   const onConnect = useCallback(
     (params) =>
       setEdges((eds) =>
@@ -46,11 +47,10 @@ let NodeAsHandleFlow = () => {
       ),
     [setEdges]
   );
-   */
 
   const expandPackage = (evt,nd) => {
     if (nd.type === "packageNode") {
-      const {nodes, edges} = createNodesAndEdges(nd.id);
+      const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
