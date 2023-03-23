@@ -17,7 +17,7 @@ export class CLassTree{
         let current = this.root
         let packages = pack.split(".")
         for (let i = 0; i < packages.length-1; i++){
-            if (i == 0)
+            if (i === 0)
                 if (current.children.has(packages[i]))
                     current = current.children.get(packages[i])
                 else {
@@ -49,7 +49,7 @@ export class CLassTree{
             if (i === packages.length-1){
                  return current.children.has(pack)
             }
-            if (i == 0) current = current.children.get(packages[i])
+            if (i === 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
             if (current == null) return false
         }
@@ -69,17 +69,16 @@ export class CLassTree{
         let toPackages = to.split(".")
 
         for (let i = 0; i < packages.length; i++){
-            if (i == 0) current = current.children.get(packages[i])
+            if (i === 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
-            if (current == undefined) return
+            if (current === undefined) return
             tempTo = ""
             for (let j = 0; j < toPackages.length; j++){
                 tempTo += toPackages[j]
                 if (!tempTo.startsWith(current.pack) && !current.pack.startsWith(tempTo)){
-                    console.log("paseed the if with",current.pack,tempTo)
-                    if (dependencyType == "inheritance") current.classInherits.add(tempTo)
-                    else if (dependencyType == "invokation") current.classInvokation.add(tempTo)
-                    else if (dependencyType == "implementation") current.classImplements.add(tempTo)
+                    if (dependencyType === "inheritance") current.classInherits.add(tempTo)
+                    else if (dependencyType === "invokation") current.classInvokation.add(tempTo)
+                    else if (dependencyType === "implementation") current.classImplements.add(tempTo)
                 }
                 tempTo += "."
             }
@@ -88,9 +87,9 @@ export class CLassTree{
 
         tempTo = ""
         for (let i = 0; i < toPackages.length; i++){
-            if (dependencyType == "inheritance") fromNode.classInherits.add(tempTo+toPackages[i])
-            else if (dependencyType == "invokation") fromNode.classInvokation.add(tempTo+toPackages[i])
-            else if (dependencyType == "implementation") fromNode.classImplements.add(tempTo+toPackages[i])
+            if (dependencyType === "inheritance") fromNode.classInherits.add(tempTo+toPackages[i])
+            else if (dependencyType === "invokation") fromNode.classInvokation.add(tempTo+toPackages[i])
+            else if (dependencyType === "implementation") fromNode.classImplements.add(tempTo+toPackages[i])
             tempTo = tempTo + toPackages[i]+"."
         }
 
@@ -112,7 +111,6 @@ export class CLassTree{
     //get packages
     //toplevel packages
     getTopLevelPackages(){
-        console.log([...this.root.children.values()])
         return [...this.root.children.values()]
     }
     //by level maybe??
@@ -123,7 +121,7 @@ export class CLassTree{
         let current = this.root
         let packages = pack.split(".")
         for (let i = 0; i < packages.length; i++){
-            if (i == 0) current = current.children.get(packages[i])
+            if (i === 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
         }
 
@@ -136,7 +134,7 @@ export class CLassTree{
         let packages = node.split(".")
 
         for (let i = 0; i < packages.length; i++){
-            if (i == 0) current = current.children.get(packages[i])
+            if (i === 0) current = current.children.get(packages[i])
             if (current.children.has(current.pack+"."+packages[i]))
                 current = current.children.get(current.pack+"."+packages[i])
             else if (current.children.has(node))
