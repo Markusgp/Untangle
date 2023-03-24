@@ -67,7 +67,10 @@ let NodeAsHandleFlow = () => {
       });
     } else if (!unselect) {
       edges.forEach(function(e) {
-        if (e.source.includes(node.id) || e.target.includes(node.id)) {
+        const sourceSplit = e.source.split(".");
+        const targetSplit = e.target.split(".");
+        const nodeName = node.id.split(".");
+        if (sourceSplit.includes(nodeName[nodeName.length-1]) || targetSplit.includes(nodeName[nodeName.length-1])) {
           e.data.isSelected = !e.data.isSelected;
           e.animated = !e.animated;
         }
