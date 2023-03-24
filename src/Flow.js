@@ -38,9 +38,9 @@ let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const expandPackage = (evt,nd) => {
-    if (nd.type === "packageNode") {
-      const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
+  const expandPackage = (evt,node) => {
+    if (node.type === "packageNode") {
+      const {nodes, edges} = createNodesAndEdges(node.id, useBaryCenter);
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
