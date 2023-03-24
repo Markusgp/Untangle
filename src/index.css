@@ -29,7 +29,6 @@ code {
   height: 100%;
   z-index: 20;
   pointer-events: none;
-  /*background-color: rgba(125,23,0,0.1);*/
 }
 
 #leftFloat.panelHolder {
