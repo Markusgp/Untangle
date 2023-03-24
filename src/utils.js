@@ -1,7 +1,8 @@
 import { Position, MarkerType } from 'reactflow';
 import { tree } from "./Parse"
 import { JavaClass } from "./JavaClass"
-import { forceSimulation, forceManyBody, forceLink, forceCenter, forceCollide } from 'd3-force';
+import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
+
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -90,71 +91,41 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
-function linkCrossingForce(edges, strength) {
-    return (alpha) => {
-      edges.forEach((edge) => {
-        const source = edge.source;
-        const target = edge.target;
-  
-        edges.forEach((otherEdge) => {
-          if (edge === otherEdge) return;
-  
-          const otherSource = otherEdge.source;
-          const otherTarget = otherEdge.target;
-  
-          const dx = target.x - source.x;
-          const dy = target.y - source.y;
-          const otherDx = otherTarget.x - otherSource.x;
-          const otherDy = otherTarget.y - otherSource.y;
-  
-          const delta = dx * otherDy - dy * otherDx;
-  
-          if (delta === 0) return;
-  
-          const t = ((source.x - otherSource.x) * otherDy - (source.y - otherSource.y) * otherDx) / delta;
-          const u = ((source.x - otherSource.x) * dy - (source.y - otherSource.y) * dx) / delta;
-  
-          if (t > 0 && t < 1 && u > 0 && u < 1) {
-            const crossingPoint = {
-              x: source.x + t * dx,
-              y: source.y + t * dy,
-            };
-  
-            const force = strength * alpha;
-  
-            [source, target, otherSource, otherTarget].forEach((node) => {
-              node.vx -= (crossingPoint.x - node.x) * force;
-              node.vy -= (crossingPoint.y - node.y) * force;
-            });
-          }
+function dependencyForce(nodes, edges, strength = 50) {
+    const nodeById = new Map(nodes.map((node) => [node.id, node]));
+
+    function force(alpha) {
+        edges.forEach((edge) => {
+            const source = nodeById.get(edge.source);
+            const target = nodeById.get(edge.target);
+
+            const dx = target.x - source.x;
+            const dy = target.y - source.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance === 0) return;
+
+            const k = (strength * alpha) / distance;
+
+            const fx = dx * k;
+            const fy = dy * k;
+
+            source.vx += fx;
+            source.vy += fy;
+            target.vx -= fx;
+            target.vy -= fy;
         });
-      });
-    };
-  }
-  
+    }
 
-  function simulateForceLayout(nodes, edges) {
-    // Create a map of dependent nodes for each node
-    const dependents = new Map();
-    edges.forEach((edge) => {
-        if (!dependents.has(edge.source)) {
-            dependents.set(edge.source, []);
-        }
-        if (!dependents.has(edge.target)) {
-            dependents.set(edge.target, []);
-        }
-        dependents.get(edge.source).push(edge.target);
-        dependents.get(edge.target).push(edge.source);
-    });
+    return force;
+}
 
-    const collisionForce = forceCollide(100);
-    const chargeForce = forceManyBody().strength(-200);
-    const centerForce = forceCenter(400, 300); // Adjust the center point if needed
-
+function simulateForceLayout(nodes, edges) {
     const simulation = forceSimulation(nodes)
-        .force("charge", chargeForce)
-        .force("collide", collisionForce)
-        .force("center", centerForce)
+        .force("charge", forceManyBody())
+        .force("center", forceCenter(400, 300))
+        .force("collide", forceCollide(150))
+        .force("dependency", dependencyForce(nodes, edges))
         .stop();
 
     // Run simulation for a fixed number of iterations
@@ -170,9 +141,6 @@ function linkCrossingForce(edges, strength) {
 
     return { nodes, edges };
 }
-
-
-  
 
 export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
     const nodes = [];
