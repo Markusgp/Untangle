@@ -1,10 +1,9 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import ReactFlow, {
   Background,
   Controls,
   useNodesState,
   useEdgesState,
-  useReactFlow,
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
@@ -94,7 +93,7 @@ let NodeAsHandleFlow = () => {
             )
           }
       </div>
-    <div className="floatingedges">
+    <div className="FlowWrapper">
       <ReactFlow
         nodes={nodes}
         edges={edges}
