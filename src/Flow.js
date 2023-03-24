@@ -40,9 +40,7 @@ let NodeAsHandleFlow = () => {
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const expandPackage = (evt,nd) => {
-    console.log(nd.type);
     if (nd.type === "packageNode") {
-      console.log(nd.id)
       const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
       setSelectNode(null);
       setNodes(nodes);
@@ -103,7 +101,7 @@ let NodeAsHandleFlow = () => {
       <div className="panelHolder" id="rightFloat">
           { selectedNode != null && (
             <div className="panelStyleInformation">
-            <InformationPanel name={selectedNode.name} pack={selectedNode.pack} visible={selectedNode.visible}/>
+              <InformationPanel {... tree.getNode(selectedNode.pack)}/>
             </div>
             )
           }
