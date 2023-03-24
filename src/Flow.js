@@ -4,6 +4,7 @@ import ReactFlow, {
   Controls,
   useNodesState,
   useEdgesState,
+  useReactFlow,
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
@@ -51,10 +52,43 @@ let NodeAsHandleFlow = () => {
 
   const [selectedNode, setSelectNode] = useState(null);
 
-  const onNodeClicked = (event, node) => {
-    setSelectNode(tree.getNode(node.id));
+
+  const drawSelect = (node) => {
+    let indexOfNode = nodes.findIndex(e => e.id === node.id);
+    nodes.splice(indexOfNode, 1);
+    const newNode = {
+      id: node.id,
+      type: node.type,
+      data: {
+        id: node.data.id,
+        label: node.data.label,
+        isSelected: !node.data.isSelected
+      },
+      position: node.position
+    }
+    let tmp = nodes
+    tmp.push(newNode);
+    setNodes(tmp);
+    onNodesChange([]);
   }
-  const onPaneClicked = () => setSelectNode(null);
+
+  const onNodeClicked = (event, node) => {
+    if (selectedNode !== null) {
+      let nd = nodes.find(e => e.id === selectedNode.pack);
+      drawSelect(nd);
+      setSelectNode(null);
+    }
+    drawSelect(node);
+    setSelectNode(tree.getNode(node.id));
+  };
+
+  const onPaneClicked = () => {
+    if (selectedNode !== null) {
+      let nd = nodes.find(e => e.id === selectedNode.pack);
+      drawSelect(nd);
+      setSelectNode(null);
+    }
+  }
 
   return (
     <>

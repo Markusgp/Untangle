@@ -109,7 +109,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                         type: 'classNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
                         position: { x: 0, y: 0}
                     }
@@ -121,7 +122,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                         type: 'interfaceNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
                         position: { x: 0, y: 0}
                     }
@@ -134,7 +136,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                 type: 'packageNode',
                 data: {
                     id: nodeId,
-                    label: cls.name
+                    label: cls.name,
+                    isSelected: false
                 },
                 position: { x: 0, y: 0}
             }

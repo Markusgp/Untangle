@@ -12,13 +12,11 @@ const iconWrapperStyle = {
 }
 
 function PackageNode({data}) {
-  const {id, label} = data;
+    const {id, label, isSelected} = data;
   const nodeId = id
-  const [focused, setIsFocused] = useState(false);
-
   const packageNodeStyle = {
-    border: focused ? '5px solid #292929' : '5px solid #6FA8FF',
-    boxShadow: focused ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
+    border: isSelected ? '5px solid #292929' : '5px solid #6FA8FF',
+    boxShadow: isSelected ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
   };
 
     const onClick = () => {

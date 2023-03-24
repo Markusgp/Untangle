@@ -11,12 +11,10 @@ const iconWrapperStyle  = {
 }
 
 function ClassNode({data}) {
-  const {id, label} = data;
-  const [focused, setIsFocused] = useState(false);
-
+  const {id, label, isSelected} = data;
   const classNodeStyle = {
-    border: focused ? '5px solid #292929' : '5px solid #FBA500',
-    boxShadow: focused ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
+    border: isSelected ? '5px solid #292929' : '5px solid #FBA500',
+    boxShadow: isSelected ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
   };
 
     const onClick = () => {
