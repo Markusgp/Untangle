@@ -51,39 +51,27 @@ let NodeAsHandleFlow = () => {
   const [selectedNode, setSelectNode] = useState(null);
 
 
-  const drawSelect = (node) => {
-    let indexOfNode = nodes.findIndex(e => e.id === node.id);
-    nodes.splice(indexOfNode, 1);
-    const newNode = {
-      id: node.id,
-      type: node.type,
-      data: {
-        id: node.data.id,
-        label: node.data.label,
-        isSelected: !node.data.isSelected
-      },
-      position: node.position
-    }
-    let tmp = nodes
-    tmp.push(newNode);
-    setNodes(tmp);
+  const redrawSelected = (node) => {
+    let selectNode = nodes.splice(nodes.findIndex(e => e.id === node.id), 1)[0];
+    selectNode.data.isSelected = !selectNode.data.isSelected;
+    nodes.push(selectNode);
+    setNodes(nodes);
     onNodesChange([]);
   }
 
-  const onNodeClicked = (event, node) => {
+  const onNodeClicked = (_, node) => {
     if (selectedNode !== null) {
-      let nd = nodes.find(e => e.id === selectedNode.pack);
-      drawSelect(nd);
+      redrawSelected(nodes.find(e => e.id === selectedNode.id));
       setSelectNode(null);
     }
-    drawSelect(node);
-    setSelectNode(tree.getNode(node.id));
+    redrawSelected(node);
+    setSelectNode(node);
   };
 
   const onPaneClicked = () => {
     if (selectedNode !== null) {
-      let nd = nodes.find(e => e.id === selectedNode.pack);
-      drawSelect(nd);
+      let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
+      redrawSelected(prevSelectNode);
       setSelectNode(null);
     }
   }
@@ -101,7 +89,7 @@ let NodeAsHandleFlow = () => {
       <div className="panelHolder" id="rightFloat">
           { selectedNode != null && (
             <div className="panelStyleInformation">
-              <InformationPanel {... tree.getNode(selectedNode.pack)}/>
+              <InformationPanel {... tree.getNode(selectedNode.id)}/>
             </div>
             )
           }
