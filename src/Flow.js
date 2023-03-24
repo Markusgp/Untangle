@@ -50,7 +50,7 @@ let NodeAsHandleFlow = () => {
   const [selectedNode, setSelectNode] = useState(null);
 
 
-  const redrawSelected = (node) => {
+  const redrawSelectedNodes = (node) => {
     let selectNode = nodes.splice(nodes.findIndex(e => e.id === node.id), 1)[0];
     selectNode.data.isSelected = !selectNode.data.isSelected;
     nodes.push(selectNode);
@@ -58,19 +58,42 @@ let NodeAsHandleFlow = () => {
     onNodesChange([]);
   }
 
+  const redrawSelectedEdges = (node, unselect) => {
+    if (unselect) {
+      edges.forEach(function(e) {
+        e.data.isSelected = false;
+        e.data.nonSelected = true;
+        e.animated = false;
+      });
+    } else if (!unselect) {
+      edges.forEach(function(e) {
+        if (e.source.includes(node.id) || e.target.includes(node.id)) {
+          e.data.isSelected = !e.data.isSelected;
+          e.animated = !e.animated;
+        }
+        e.data.nonSelected = false;
+      });
+    }
+    setEdges(edges);
+    onEdgesChange([]);
+  }
+
   const onNodeClicked = (_, node) => {
     if (selectedNode !== null) {
-      redrawSelected(nodes.find(e => e.id === selectedNode.id));
+      redrawSelectedNodes(nodes.find(e => e.id === selectedNode.id));
+      redrawSelectedEdges(nodes.find(e => e.id === selectedNode.id), true);
       setSelectNode(null);
     }
-    redrawSelected(node);
+    redrawSelectedNodes(node);
+    redrawSelectedEdges(node, false)
     setSelectNode(node);
   };
 
   const onPaneClicked = () => {
     if (selectedNode !== null) {
       let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
-      redrawSelected(prevSelectNode);
+      redrawSelectedNodes(prevSelectNode);
+      redrawSelectedEdges(prevSelectNode, true)
       setSelectNode(null);
     }
   }

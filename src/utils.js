@@ -158,9 +158,13 @@ export function createNodesAndEdges(param, useBarycenter) {
                 type: "floating",
                 animated: false,
                 label: "invokes",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                labelStyle: { width: "50px", height: "20px", fill: "#f6ab6c", fontWeight: 700 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
                 }
             })
         })
@@ -172,11 +176,15 @@ export function createNodesAndEdges(param, useBarycenter) {
                 source: node.id,
                 target: implementedNode.id,
                 type: "floating",
-                animated: true,
+                animated: false,
                 label: "implements",
                 labelStyle: { fill: "#0000FF", fontWeight: 900 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
                 }
             })
         })
@@ -188,11 +196,15 @@ export function createNodesAndEdges(param, useBarycenter) {
                 source: node.id,
                 target: inheritedNode.id,
                 type: "floating",
-                animated: true,
+                animated: false,
                 label: "inherits",
                 labelStyle: { fill: "#FF0000", fontWeight: 900 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
                 }
             })
         })
