@@ -83,8 +83,9 @@ let NodeAsHandleFlow = () => {
 
   const onNodeClicked = (_, node) => {
     if (selectedNode !== null) {
-      redrawSelectedNodes(nodes.find(e => e.id === selectedNode.id));
-      redrawSelectedEdges(nodes.find(e => e.id === selectedNode.id), true);
+      const selNode = nodes.find(e => e.id === selectedNode.id)
+      redrawSelectedNodes(selNode);
+      redrawSelectedEdges(selNode, true);
       setSelectNode(null);
     }
     redrawSelectedNodes(node);
