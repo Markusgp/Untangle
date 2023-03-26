@@ -1,6 +1,6 @@
 import { Position, MarkerType } from 'reactflow';
-import { tree } from "./Parse"
-import { JavaClass } from "./JavaClass"
+import { tree } from "./Model/Parse"
+import { JavaClass } from "./Model/JavaClass"
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -109,7 +109,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                         type: 'classNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
                         position: { x: 0, y: 0}
                     }
@@ -121,7 +122,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                         type: 'interfaceNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
                         position: { x: 0, y: 0}
                     }
@@ -134,7 +136,8 @@ export function createNodesAndEdges(param, useBarycenter) {
                 type: 'packageNode',
                 data: {
                     id: nodeId,
-                    label: cls.name
+                    label: cls.name,
+                    isSelected: false
                 },
                 position: { x: 0, y: 0}
             }
@@ -144,7 +147,7 @@ export function createNodesAndEdges(param, useBarycenter) {
       })
 
     myNodes.forEach(cls => {
-        const node = nodes.find(n => n.id == cls.pack)
+        const node = nodes.find(n => n.id === cls.pack)
         cls.classInvokation.forEach(invokedClass => {
             const inheritedNode = nodes.find(n => n.id === invokedClass)
             if (inheritedNode === undefined) return
@@ -155,41 +158,53 @@ export function createNodesAndEdges(param, useBarycenter) {
                 type: "floating",
                 animated: false,
                 label: "invokes",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                labelStyle: { width: "50px", height: "20px", fill: "#f6ab6c", fontWeight: 700 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
                 }
             })
         })
         cls.classImplements.forEach(implementedClass => {
-            const implementedNode = nodes.find(n => n.id == implementedClass)
+            const implementedNode = nodes.find(n => n.id === implementedClass)
             if (implementedNode === undefined) return
             edges.push({
                 id: `${node.id}-implements-${implementedNode.id}`,
                 source: node.id,
                 target: implementedNode.id,
                 type: "floating",
-                animated: true,
+                animated: false,
                 label: "implements",
                 labelStyle: { fill: "#0000FF", fontWeight: 900 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
                 }
             })
         })
         cls.classInherits.forEach(inheritedClass => {
-            const inheritedNode = nodes.find(n => n.id == inheritedClass)
+            const inheritedNode = nodes.find(n => n.id === inheritedClass)
             if (inheritedNode === undefined) return
             edges.push({
                 id: `${node.id}-inherits-${inheritedNode.id}`,
                 source: node.id,
                 target: inheritedNode.id,
                 type: "floating",
-                animated: true,
+                animated: false,
                 label: "inherits",
                 labelStyle: { fill: "#FF0000", fontWeight: 900 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
                 }
             })
         })

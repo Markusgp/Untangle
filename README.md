@@ -5,7 +5,7 @@ To run the app locally you run the ``run.sh`` script with some parameter which c
 ./run.sh language skipDatabase path/to/project
 ```
 
-Right now the only supported language is java, so specifying another lanuage will not produce any results. 
+Right now the only supported language is java, so specifying another language will not produce any results. 
 
 skipDatabase is if you want to run the program again and the database is already set up from a previous run, and you simply just want to run the queries again and see the results. If this is the case, simply just write ``skipDatabase`` as the second parameter. If not simply write anything but ``skipDatabase`` as the second parameter
 

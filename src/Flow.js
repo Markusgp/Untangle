@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useState} from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -10,15 +10,15 @@ import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
 import { createNodesAndEdges } from './utils.js';
-import PackageNode from './FlowElements/PackageNode.js';
-import ClassNode from './FlowElements/ClassNode'
-import InterfaceNode from "./FlowElements/InterfaceNode";
+import PackageNode from './FlowElements/Nodes/PackageNode.js';
+import ClassNode from './FlowElements/Nodes/ClassNode'
+import InterfaceNode from "./FlowElements/Nodes/InterfaceNode";
 
 import './index.css';
 import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
-import { tree } from "./Parse"
+import { tree } from "./Model/Parse"
 
 const useBaryCenter = true;
 
@@ -38,11 +38,9 @@ let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const expandPackage = (evt,nd) => {
-    console.log(nd.type);
-    if (nd.type === "packageNode") {
-      console.log(nd.id)
-      const {nodes, edges} = createNodesAndEdges(nd.id, useBaryCenter);
+  const expandPackage = (_, node) => {
+    if (node.type === "packageNode") {
+      const {nodes, edges} = createNodesAndEdges(node.id, useBaryCenter);
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
@@ -51,10 +49,58 @@ let NodeAsHandleFlow = () => {
 
   const [selectedNode, setSelectNode] = useState(null);
 
-  const onNodeClicked = (event, node) => {
-    setSelectNode(tree.getNode(node.id));
+
+  const redrawSelectedNodes = (node) => {
+    let selectNode = nodes.splice(nodes.findIndex(e => e.id === node.id), 1)[0];
+    selectNode.data.isSelected = !selectNode.data.isSelected;
+    nodes.push(selectNode);
+    setNodes(nodes);
+    onNodesChange([]);
   }
-  const onPaneClicked = () => setSelectNode(null);
+
+  const redrawSelectedEdges = (node, unselect) => {
+    if (unselect) {
+      edges.forEach(function(e) {
+        e.data.isSelected = false;
+        e.data.nonSelected = true;
+        e.animated = false;
+      });
+    } else if (!unselect) {
+      edges.forEach(function(e) {
+        const sourceSplit = e.source.split(".");
+        const targetSplit = e.target.split(".");
+        const nodeName = node.id.split(".");
+        if (sourceSplit.includes(nodeName[nodeName.length-1]) || targetSplit.includes(nodeName[nodeName.length-1])) {
+          e.data.isSelected = !e.data.isSelected;
+          e.animated = !e.animated;
+        }
+        e.data.nonSelected = false;
+      });
+    }
+    setEdges(edges);
+    onEdgesChange([]);
+  }
+
+  const onNodeClicked = (_, node) => {
+    if (selectedNode !== null) {
+      const selNode = nodes.find(e => e.id === selectedNode.id)
+      redrawSelectedNodes(selNode);
+      redrawSelectedEdges(selNode, true);
+      setSelectNode(null);
+    }
+    redrawSelectedNodes(node);
+    redrawSelectedEdges(node, false)
+    setSelectNode(node);
+  };
+
+  const onPaneClicked = () => {
+    if (selectedNode !== null) {
+      let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
+      redrawSelectedNodes(prevSelectNode);
+      redrawSelectedEdges(prevSelectNode, true)
+      setSelectNode(null);
+    }
+  }
 
   return (
     <>
@@ -69,12 +115,12 @@ let NodeAsHandleFlow = () => {
       <div className="panelHolder" id="rightFloat">
           { selectedNode != null && (
             <div className="panelStyleInformation">
-            <InformationPanel name={selectedNode.name} pack={selectedNode.pack} visible={selectedNode.visible}/>
+              <InformationPanel {... tree.getNode(selectedNode.id)}/>
             </div>
             )
           }
       </div>
-    <div className="floatingedges">
+    <div className="FlowWrapper">
       <ReactFlow
         nodes={nodes}
         edges={edges}

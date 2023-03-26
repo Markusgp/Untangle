@@ -1,7 +1,7 @@
 /**
  * @name Class
  * @id java/example/class
- * @description Gets all classess as well as their qualified module
+ * @description Gets all classes as well as their qualified module
  * @kind problem
  * @problem.severity warning
 
