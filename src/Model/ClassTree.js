@@ -1,7 +1,7 @@
 import { JavaClass } from "./JavaClass"
 import { JavaPackage } from "./JavaPackage"
 
-export class CLassTree{
+export class ClassTree {
     constructor() {
         this.root = new JavaPackage("src","")
     }
@@ -121,6 +121,7 @@ export class CLassTree{
         let current = this.root
         let packages = pack.split(".")
         for (let i = 0; i < packages.length; i++){
+            //if (current !== undefined) continue
             if (i === 0) current = current.children.get(packages[i])
             else current = current.children.get(current.pack+"."+packages[i])
         }

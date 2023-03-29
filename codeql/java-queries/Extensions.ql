@@ -1,7 +1,7 @@
 /**
- * @name Implementations
- * @id java/example/implementations
- * @description Gets all implementations within scope
+ * @name Extensions
+ * @id java/example/extensions
+ * @description Detects all classes that extend within scope
  * @kind problem
  * @problem.severity warning
  */
@@ -13,12 +13,12 @@ boolean isGeneric(ClassOrInterface pt) {
 }
 
   string getRepresentation(ClassOrInterface c) {
-    if (isGeneric(c) = false) then result = c.getPackage() + "." + c
+    if (isGeneric(c) = false) then result = c.getPackage() + "." + c.getName()
     else if (isGeneric(c) = true) then result = c.getPackage().toString() + "." + c.(ParameterizedType).getGenericType()
     else result = "Something went wrong"
 }
 
-from ClassOrInterface c, Interface superclass
-where superclass = c.getASourceSupertype() and superclass.getCompilationUnit().fromSource()
+from ClassOrInterface c, Class superclass
+where superclass = c.getASourceSupertype() and superclass.getCompilationUnit().fromSource() 
       and (not getRepresentation(c) = getRepresentation(superclass)) //Tuple<K,V> is derived from Tuple
 select getRepresentation(c), getRepresentation(superclass)        

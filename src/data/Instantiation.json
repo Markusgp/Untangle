@@ -1,8 +1,8 @@
 {"#select":{"columns":[
-   {"kind":"String"}
-  ,{"kind":"String"}]
- ,"tuples":[
-   ["BFST21Group6.AddressDataStructureTest","BFST21Group6.AddressDataStructure"]
+  {"kind":"String"}
+,{"kind":"String"}]
+,"tuples":[
+    ["BFST21Group6.AddressDataStructureTest","BFST21Group6.AddressDataStructure"]
   ,["BFST21Group6.AddressDataStructureTest","BFST21Group6.osm.Address"]
   ,["BFST21Group6.DiGraphTest","BFST21Group6.DiGraph"]
   ,["BFST21Group6.DiGraphTest","BFST21Group6.Edge"]
@@ -91,4 +91,4 @@
   ,["java.lang.new Runnable(...) { ... }","BFST21Group6.Model"]
   ,["java.lang.new Runnable(...) { ... }","BFST21Group6.ShortestPath"]
   ,["java.lang.new Runnable(...) { ... }","BFST21Group6.osm.Way"]]
- }}
+}}

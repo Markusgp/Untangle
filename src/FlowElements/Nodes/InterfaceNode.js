@@ -1,6 +1,6 @@
 import { Handle, Position } from 'reactflow';
 import './NodeStyles.css'
-import FileLogo from './Assets/File.svg'
+import FileLogo from '../Assets/File.svg'
 import { useState } from "react";
 
 const iconWrapperStyle  = {
@@ -10,21 +10,19 @@ const iconWrapperStyle  = {
   justifyContent: "flex-start"
 }
 
-function ClassNode({data}) {
-  const {id, label} = data;
-  const [focused, setIsFocused] = useState(false);
-
+function InterfaceNode({data}) {
+    const {id, label, isSelected} = data;
   const classNodeStyle = {
-    border: focused ? '5px solid #292929' : '5px solid #FBA500',
-    boxShadow: focused ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
+    border: isSelected ? '5px solid #292929' : '5px solid #58BF62',
+    boxShadow: isSelected ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
   };
 
-    const onClick = () => {
-        console.log(`${id}`); // log the node id
-    };
+   const onClick = () => {
+     console.log(`${id}`); // log the node id
+   };
 
-    const onFocus = () => { /* setIsFocused(true);*/ };
-    const onBlur = () => { /*setIsFocused(false);*/ };
+  const onFocus = () => { /* setIsFocused(true);*/ };
+  const onBlur = () => { /*setIsFocused(false);*/ };
 
    return (
      <div className="nodeDefault" style={classNodeStyle} tabIndex="1" onClick={onClick} onFocus={onFocus} onBlur={onBlur}>
@@ -35,10 +33,10 @@ function ClassNode({data}) {
            <img className="nodeIcon" src={FileLogo} alt="Package-icon"/>
          </div>
          <div className="nodeNameLabel">{label}</div>
-         <p className="nodeTypeLabel">&lt;Class&gt;</p>
+         <p className="nodeTypeLabel">&lt;Interface&gt;</p>
        </div>
      </div>
    );
 }
 
-export default ClassNode;
+export default InterfaceNode;

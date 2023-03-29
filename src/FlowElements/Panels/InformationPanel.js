@@ -4,7 +4,7 @@ import ObjectLogo from "../Assets/Object.svg"
 import Drop from "../Assets/Drop.svg"
 
 
-const InformationPanel = ({name, pack, visible}) => {
+const InformationPanel = (props) => {
     const toggle = () => setOpen(!open);
 
     const [open, setOpen] = useState(true);
@@ -33,22 +33,30 @@ const InformationPanel = ({name, pack, visible}) => {
                                 <span className="dot"></span>
                                 <p><strong>Name:</strong></p>
                             </div>
-                            <p>{name}</p>
+                            <p>{props.name}</p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Q-Name:</strong></p>
                             </div>
-                            <p>{pack}</p>
+                            <p>{props.pack}</p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Hidden:</strong></p>
                             </div>
-                            <p>{(!visible).toString()}</p>
+                            <p>{(!props.visible).toString()}</p>
                         </div>
+                        {props.linesOfCode != null && (<div className="listElementHolder">
+                            <div className="leftFloat">
+                                <span className="dot"></span>
+                                <p><strong>Lines of Code:</strong></p>
+                            </div>
+
+                            <p>{props.linesOfCode.toString()}</p>
+                        </div>)}
                     </div>
                 </div>
             )}

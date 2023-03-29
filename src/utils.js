@@ -1,7 +1,6 @@
 import { Position, MarkerType } from 'reactflow';
-import { tree } from "./Parse"
-import { JavaClass } from "./JavaClass"
-import { JavaPackage } from './JavaPackage';
+import { tree } from "./Model/Parse"
+import { JavaClass } from "./Model/JavaClass"
 
 // this helper function returns the intersection point
 // of the line between the center of the intersectionNode and the target node
@@ -111,6 +110,10 @@ function calculateEdges(nodes) {
                 markerEnd: {
                     type: MarkerType.Arrow,
                 },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
+                }
             })
         })
         cls.classImplements.forEach(implementedClass => {
@@ -128,6 +131,10 @@ function calculateEdges(nodes) {
                 markerEnd: {
                     type: MarkerType.Arrow,
                 },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
+                }
             })
         })
         cls.classInherits.forEach(inheritedClass => {
@@ -145,6 +152,10 @@ function calculateEdges(nodes) {
                 markerEnd: {
                     type: MarkerType.Arrow,
                 },
+                data: {
+                    isSelected : false,
+                    nonSelected : true
+                }
             })
         })
     })
@@ -156,10 +167,9 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
     let edges = [];
     let oldNodes = prevNodes
     let oldEdges = prevEdges
-    
     // Create nodes for each class
     const myNodes = tree.getPackageContent(param)
-    
+
     myNodes.forEach(cls => {
         const nodeId = cls.pack
         if(tree.getNode(nodeId).children.size === 0) {
@@ -173,7 +183,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
                         type: 'classNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
                         position: { x: 0, y: 0}
                     }
@@ -186,7 +197,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
                         type: 'interfaceNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
                         position: { x: 0, y: 0},
                     }
@@ -200,7 +212,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
                 type: 'packageNode',
                 data: {
                     id: nodeId,
-                    label: cls.name
+                    label: cls.name,
+                    isSelected: false
                 },
                 position: { x: 0, y: 0}
             }
@@ -222,7 +235,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
     }
     const numNodes = nodes.length;
 
-    let radius = 200 + (numNodes - 5) * 20;
+    let radius = 0
     let totalWidth = 0
     let totalCircumference = 0
     let angleSoFar = 0
