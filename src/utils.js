@@ -89,6 +89,21 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
+function getNestedMembers(packageName) {
+    const node = tree.getNode(packageName);
+    const nestedMembers = [];
+  
+    node.children.forEach(child => {
+      if (child instanceof JavaClass) {
+        nestedMembers.push(child.pack);
+      } else {
+        nestedMembers.push(...getNestedMembers(child.pack));
+      }
+    });
+  
+    return nestedMembers;
+  }
+
 export function createNodesAndEdges(param, useBarycenter) {
     const nodes = [];
     const edges = [];
@@ -98,59 +113,55 @@ export function createNodesAndEdges(param, useBarycenter) {
 
     myNodes.forEach(cls => {
         const nodeId = cls.pack
+        const nestedMembers = getNestedMembers(nodeId);
+        const weight = nestedMembers.length;
         if(tree.getNode(nodeId).children.size === 0) {
-
+            // Create node for class/interface
             if (tree.getNode(nodeId) instanceof (JavaClass)) {
-
                 const nodeTmp = tree.getNode(nodeId);
+                let nodeType;
                 if (nodeTmp.type === "class") {
-                    const node = {
-                        id: nodeId,
-                        type: 'classNode',
-                        data: {
-                            id: nodeId,
-                            label: cls.name,
-                            isSelected: false
-                        },
-                        position: { x: 0, y: 0}
-                    }
-                    nodes.push(node)
-
+                    nodeType = 'classNode';
                 } else if (nodeTmp.type === "interface") {
-                    const node = {
-                        id: nodeId,
-                        type: 'interfaceNode',
-                        data: {
-                            id: nodeId,
-                            label: cls.name,
-                            isSelected: false
-                        },
-                        position: { x: 0, y: 0}
-                    }
-                    nodes.push(node)
+                    nodeType = 'interfaceNode';
                 }
+                const node = {
+                    id: nodeId,
+                    type: nodeType,
+                    data: {
+                        id: nodeId,
+                        label: cls.name,
+                        isSelected: false,
+                        weight: weight,
+                    },
+                    position: { x: 0, y: 0}
+                }
+                nodes.push(node)
             }
         } else {
+            // Create node for package
             const node = {
                 id: nodeId,
                 type: 'packageNode',
                 data: {
                     id: nodeId,
                     label: cls.name,
-                    isSelected: false
+                    isSelected: false,
+                    weight: weight,
                 },
                 position: { x: 0, y: 0}
             }
             nodes.push(node)
         }
-
-      })
+    })
 
     myNodes.forEach(cls => {
-        const node = nodes.find(n => n.id === cls.pack)
+        const node = nodes.find(n => n.id === cls.pack);
+        const nestedMembers = getNestedMembers(cls.pack);
         cls.classInvokation.forEach(invokedClass => {
-            const inheritedNode = nodes.find(n => n.id === invokedClass)
-            if (inheritedNode === undefined) return
+            const inheritedNode = nodes.find(n => n.id === invokedClass);
+            if (inheritedNode === undefined) return;
+            const edgeWeight = nestedMembers.length + getNestedMembers(invokedClass).length;
             edges.push({
                 id: `${node.id}-invokes-${inheritedNode.id}`,
                 source: node.id,
@@ -164,13 +175,15 @@ export function createNodesAndEdges(param, useBarycenter) {
                 },
                 data: {
                     isSelected : false,
-                    nonSelected : true
+                    nonSelected : true,
+                    weight: edgeWeight,
                 }
             })
         })
         cls.classImplements.forEach(implementedClass => {
-            const implementedNode = nodes.find(n => n.id === implementedClass)
-            if (implementedNode === undefined) return
+            const implementedNode = nodes.find(n => n.id === implementedClass);
+            if (implementedNode === undefined) return;
+            const edgeWeight = nestedMembers.length + getNestedMembers(implementedClass).length;
             edges.push({
                 id: `${node.id}-implements-${implementedNode.id}`,
                 source: node.id,
@@ -184,13 +197,15 @@ export function createNodesAndEdges(param, useBarycenter) {
                 },
                 data: {
                     isSelected : false,
-                    nonSelected : true
+                    nonSelected : true,
+                    weight: edgeWeight,
                 }
             })
         })
         cls.classInherits.forEach(inheritedClass => {
-            const inheritedNode = nodes.find(n => n.id === inheritedClass)
-            if (inheritedNode === undefined) return
+            const inheritedNode = nodes.find(n => n.id === inheritedClass);
+            if (inheritedNode === undefined) return;
+            const edgeWeight = nestedMembers.length + getNestedMembers(inheritedClass).length;
             edges.push({
                 id: `${node.id}-inherits-${inheritedNode.id}`,
                 source: node.id,
@@ -198,37 +213,35 @@ export function createNodesAndEdges(param, useBarycenter) {
                 type: "floating",
                 animated: false,
                 label: "inherits",
-                labelStyle: { fill: "#FF0000", fontWeight: 900 },
+                labelStyle: { fill: "#00FFFF", fontWeight: 900 },
                 markerEnd: {
                     type: MarkerType.Arrow,
                 },
                 data: {
                     isSelected : false,
-                    nonSelected : true
+                    nonSelected : true,
+                    weight: edgeWeight,
                 }
             })
         })
-        
     })
 
-    // Calculate the positions of the nodes in a circular layout
-    const numNodes = nodes.length;
-    if (useBarycenter) {
-        const barycenters = calculateBarycenters(nodes, edges);
-        nodes.sort((a, b) => {
-            const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
-            const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
-            return aBarycenter - bBarycenter;
-        });
-    }
-    const radius = 200 + (numNodes - 5) * 20;
-    nodes.forEach((node, index) => {
-        const angle = (index / numNodes) * 2 * Math.PI;
-        node.position = {
-            x: Math.cos(angle) * radius + 400,
-            y: Math.sin(angle) * radius + 300
-        };
-    });
-
+     // Calculate the positions of the nodes in a circular layout
+     const numNodes = nodes.length;
+     const barycenters = calculateBarycenters(nodes, edges);
+     nodes.sort((a, b) => {
+         const aBarycenter = barycenters.find((bc) => bc.nodeId === a.id).barycenter;
+         const bBarycenter = barycenters.find((bc) => bc.nodeId === b.id).barycenter;
+         return aBarycenter - bBarycenter;
+     });
+     const radius = 200 + (numNodes - 5) * 20;
+     nodes.forEach((node, index) => {
+         const angle = (index / numNodes) * 2 * Math.PI;
+         node.position = {
+             x: Math.cos(angle) * radius + 400,
+             y: Math.sin(angle) * radius + 300
+         };
+     });
     return { nodes, edges };
 }
+
