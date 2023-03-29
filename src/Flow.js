@@ -19,6 +19,7 @@ import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
 import { tree } from "./Model/Parse"
+import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
 
@@ -37,6 +38,34 @@ const edgeTypes = {
 let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [classesToggled, setClassesToggled] = useState(true);
+  const [interfacesToggled, setInterfacesToggled] = useState(true);
+  const [modulesToggled, setModulesToggled] = useState(true);
+  const [abstractionsToggled, setAbstractionsToggled] = useState(true);
+  const [invocationsToggled, setInvocationsToggled] = useState(true);
+  const [implementationsToggled, setImplementationsToggled] = useState(true);
+
+  function nodeShouldBeDrawn(node) {
+    if (node.type === "classNode" && classesToggled) {
+      return true;
+    } else if (node.type === "interfaceNode" && interfacesToggled) {
+      return true;
+    } else if (node.type === "packageNode" && modulesToggled) {
+      return true;
+    }
+    return false;
+  }
+
+  function edgeShouldBeDrawn(edge) {
+    if (edge.label === "invokes" && invocationsToggled) {
+      return true;
+    } else if (edge.label === "inherits" && abstractionsToggled) {
+      return true;
+    } else if (edge.label === "implements" && implementationsToggled) {
+      return true;
+    }
+    return false;
+  }
 
   const expandPackage = (_, node) => {
     if (node.type === "packageNode") {
@@ -106,7 +135,7 @@ let NodeAsHandleFlow = () => {
     <>
       <div className="panelHolder" id="leftFloat">
         <div className="panelStyle">
-          <ExamplePanel/>
+          <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled}/>
         </div>
         <div className="panelStyle">
           <ExamplePanel/>
@@ -122,8 +151,8 @@ let NodeAsHandleFlow = () => {
       </div>
     <div className="FlowWrapper">
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={nodes.filter(nodeShouldBeDrawn)}
+        edges={edges.filter(edgeShouldBeDrawn)}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClicked}
