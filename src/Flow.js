@@ -41,17 +41,11 @@ let NodeAsHandleFlow = () => {
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const expandPackage = (evt,nd) => {
-    console.log(nd.type);
-    console.log(nodes)
     let tempNodes = nodes
     let tempEdges = edges
     if (nd.type === "packageNode") {
       const {nodes, edges} = createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter);
       setSelectNode(null);
-      console.log("after cacll")
-      console.log(nodes)
-      console.log("next time")
-      console.log("l",createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter))
       setNodes(nodes);
       setEdges(edges);
     }
