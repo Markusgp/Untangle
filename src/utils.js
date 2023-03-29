@@ -256,14 +256,11 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter) {
             tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
 
             oldNodes.forEach((node) => {
-                //const radius = totalCircumference / (2 * Math.PI * (angleSoFar + (node.width / totalCircumference) * (2 * Math.PI)));
                 if (node.parentNode === tempNode.id){
                     const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
                     angleSoFar += angle/2
-                    const xPos = 50+radius + radius * Math.cos(angleSoFar) - node.width/2;
+                    const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
                     const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
-                    // const xPos = 200+radius + radius * Math.cos(angleSoFar) - node.width/2;
-                    // const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
                     angleSoFar += angle/2;
                     node.position = {
                         x: xPos,
