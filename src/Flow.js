@@ -13,6 +13,7 @@ import { createNodesAndEdges } from './utils.js';
 import PackageNode from './FlowElements/Nodes/PackageNode.js';
 import ClassNode from './FlowElements/Nodes/ClassNode'
 import InterfaceNode from "./FlowElements/Nodes/InterfaceNode";
+import OpenedPackageNode from "./FlowElements/Nodes/OpenedPackageNode";
 
 import './index.css';
 import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
@@ -23,12 +24,13 @@ import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges(tree.getTopLevelPackages()[0].name, useBaryCenter);
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([],[],tree.getTopLevelPackages()[0].name, useBaryCenter,"Circle");
 
 const nodeTypes = {
   packageNode: PackageNode,
   classNode: ClassNode,
-  interfaceNode: InterfaceNode
+  interfaceNode: InterfaceNode,
+  openedPackageNode: OpenedPackageNode
 };
 
 const edgeTypes = {
@@ -52,7 +54,7 @@ let NodeAsHandleFlow = () => {
       return true;
     } else if (node.type === "packageNode" && modulesToggled) {
       return true;
-    }
+    } else if (node.type === "openedPackageNode") return true;
     return false;
   }
 
@@ -66,24 +68,25 @@ let NodeAsHandleFlow = () => {
     }
     return false;
   }
+  const [selectedNode, setSelectNode] = useState(null);
 
-  const expandPackage = (_, node) => {
-    if (node.type === "packageNode") {
-      const {nodes, edges} = createNodesAndEdges(node.id, useBaryCenter);
+  const expandPackage = (_,nd) => {
+    let tempNodes = nodes
+    let tempEdges = edges
+    if (nd.type === "packageNode") {
+      const {nodes, edges} = createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter,'Circle');
+      console.log(nodes,edges)
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
     }
   }
 
-  const [selectedNode, setSelectNode] = useState(null);
 
 
   const redrawSelectedNodes = (node) => {
-    let selectNode = nodes.splice(nodes.findIndex(e => e.id === node.id), 1)[0];
-    selectNode.data.isSelected = !selectNode.data.isSelected;
-    nodes.push(selectNode);
-    setNodes(nodes);
+    let selectNode = nodes.find(e => e.id === node.id)
+    selectNode.data.isSelected = !selectNode.data.isSelected
     onNodesChange([]);
   }
 
@@ -161,6 +164,7 @@ let NodeAsHandleFlow = () => {
         fitView
         onLoad={(_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)}
         edgeTypes={edgeTypes}
+        minZoom={0.1}
         nodeTypes={nodeTypes}
         nodesConnectable={false}
         nodesDraggable={false}

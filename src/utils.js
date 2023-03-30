@@ -91,6 +91,86 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
+function calculateEdges(nodes) {
+    let edges = []
+    nodes.forEach(node => {
+        if (node.type === 'openedPackageNode') return
+        const cls = tree.getNode(node.id)
+        const nestedMembers = getNestedMembers(cls.pack);
+        if (cls === undefined) return
+        cls.classInvokation.forEach(invokedClass => {
+            const invokedNode = nodes.find(n => n.id === invokedClass)
+            if (invokedNode == undefined) return
+            if (invokedNode.type === 'openedPackageNode') return
+            const edgeWeight = nestedMembers.length + getNestedMembers(invokedClass).length;
+            edges.push({
+                id: `${node.id}-invokes-${invokedNode.id}`,
+                source: node.id,
+                target: invokedNode.id,
+                type: "floating",
+                animated: false,
+                label: "invokes",
+                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true,
+                    weight: edgeWeight,
+                }
+            })
+        })
+        cls.classImplements.forEach(implementedClass => {
+            const implementedNode = nodes.find(n => n.id === implementedClass)
+            if (implementedNode == undefined) return
+            if (implementedNode.type === 'openedPackageNode') return
+            const edgeWeight = nestedMembers.length + getNestedMembers(implementedClass).length;
+            edges.push({
+                id: `${node.id}-implements-${implementedNode.id}`,
+                source: node.id,
+                target: implementedNode.id,
+                type: "floating",
+                animated: false,
+                label: "implements",
+                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true,
+                    weight: edgeWeight,
+                }
+            })
+        })
+        cls.classInherits.forEach(inheritedClass => {
+            const inheritedNode = nodes.find(n => n.id === inheritedClass)
+            if (inheritedNode == undefined) return
+            if (inheritedNode.type === 'openedPackageNode') return
+            const edgeWeight = nestedMembers.length + getNestedMembers(inheritedClass).length;
+            edges.push({
+                id: `${node.id}-inherits-${inheritedNode.id}`,
+                source: node.id,
+                target: inheritedNode.id,
+                type: "floating",
+                animated: false,
+                label: "inherits",
+                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                markerEnd: {
+                    type: MarkerType.Arrow,
+                },
+                data: {
+                    isSelected : false,
+                    nonSelected : true,
+                    weight: edgeWeight,
+                }
+            })
+        })
+    })
+    return edges
+}
+
 function getNestedMembers(packageName) {
     const node = tree.getNode(packageName);
     const nestedMembers = [];
@@ -158,9 +238,11 @@ function simulateForceLayout(nodes, edges) {
     return { nodes, edges };
 }
 
-export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
-    const nodes = [];
-    const edges = [];
+export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, layout) {
+    let nodes = [];
+    let edges = [];
+    let oldNodes = prevNodes
+    let oldEdges = prevEdges
 
     // Create nodes for each class
     const myNodes = tree.getPackageContent(param)
@@ -168,12 +250,11 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
     myNodes.forEach(cls => {
         const nodeId = cls.pack
         const nestedMembers = getNestedMembers(nodeId);
-        const weight = nestedMembers.length;
         if(tree.getNode(nodeId).children.size === 0) {
-            // Create node for class/interface
+
             if (tree.getNode(nodeId) instanceof (JavaClass)) {
+
                 const nodeTmp = tree.getNode(nodeId);
-                let nodeType;
                 if (nodeTmp.type === "class") {
                     const node = {
                         id: nodeId,
@@ -185,6 +266,7 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
                         },
                         position: { x: 0, y: 0}
                     }
+                    if (prevNodes.length > 0) node.parentNode = param
                     nodes.push(node)
 
                 } else if (nodeTmp.type === "interface") {
@@ -196,8 +278,9 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
                             label: cls.name,
                             isSelected: false
                         },
-                        position: { x: 0, y: 0}
+                        position: { x: 0, y: 0},
                     }
+                    if (oldNodes.length > 0) node.parentNode = param
                     nodes.push(node)
                 }
             }
@@ -212,87 +295,23 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
                 },
                 position: { x: 0, y: 0}
             }
+            if (oldNodes.length > 0) node.parentNode = param
             nodes.push(node)
         }
-    })
 
-    myNodes.forEach(cls => {
-        const node = nodes.find(n => n.id === cls.pack);
-        const nestedMembers = getNestedMembers(cls.pack);
-        cls.classInvokation.forEach(invokedClass => {
-            const inheritedNode = nodes.find(n => n.id === invokedClass);
-            if (inheritedNode === undefined) return;
-            const edgeWeight = nestedMembers.length + getNestedMembers(invokedClass).length;
-            edges.push({
-                id: `${node.id}-invokes-${inheritedNode.id}`,
-                source: node.id,
-                target: inheritedNode.id,
-                type: "floating",
-                animated: false,
-                label: "invokes",
-                labelStyle: { width: "50px", height: "20px", fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                },
-                data: {
-                    isSelected : false,
-                    nonSelected : true,
-                    weight: edgeWeight,
-                }
-            })
-        })
-        cls.classImplements.forEach(implementedClass => {
-            const implementedNode = nodes.find(n => n.id === implementedClass);
-            if (implementedNode === undefined) return;
-            const edgeWeight = nestedMembers.length + getNestedMembers(implementedClass).length;
-            edges.push({
-                id: `${node.id}-implements-${implementedNode.id}`,
-                source: node.id,
-                target: implementedNode.id,
-                type: "floating",
-                animated: false,
-                label: "implements",
-                labelStyle: { fill: "#0000FF", fontWeight: 900 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                },
-                data: {
-                    isSelected : false,
-                    nonSelected : true,
-                    weight: edgeWeight,
-                }
-            })
-        })
-        cls.classInherits.forEach(inheritedClass => {
-            const inheritedNode = nodes.find(n => n.id === inheritedClass);
-            if (inheritedNode === undefined) return;
-            const edgeWeight = nestedMembers.length + getNestedMembers(inheritedClass).length;
-            edges.push({
-                id: `${node.id}-inherits-${inheritedNode.id}`,
-                source: node.id,
-                target: inheritedNode.id,
-                type: "floating",
-                animated: false,
-                label: "inherits",
-                labelStyle: { fill: "#00FFFF", fontWeight: 900 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                },
-                data: {
-                    isSelected : false,
-                    nonSelected : true,
-                    weight: edgeWeight,
-                }
-            })
-        })
+      })
+      console.log(nodes)
+      edges = calculateEdges(nodes)
+      console.log(edges)
+      console.log(oldNodes)
+    // Calculate the positions of the nodes in a circular layout
+    
 
-    })
     if (layout === 'force') {
         const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
         return { nodes: forceNodes, edges: forceEdges };
     } else {
-        // Calculate the positions of the nodes in a circular layout
-        const numNodes = nodes.length;
+        console.log(nodes)
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {
@@ -301,15 +320,105 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
                 return aBarycenter - bBarycenter;
             });
         }
-        const radius = 200 + (numNodes - 5) * 20;
-        nodes.forEach((node, index) => {
-            const angle = (index / numNodes) * 2 * Math.PI;
+        const numNodes = nodes.length;
+    
+        let radius = 0
+        let totalWidth = 0
+        let totalCircumference = 0
+        let angleSoFar = 0
+        if (oldNodes.length > 0){
+            let packageNode = oldNodes.find(n => n.id === param)
+            packageNode.type = "openedPackageNode"
+    
+            totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
+            totalCircumference = totalWidth * 130 / 100
+            radius = totalCircumference / (2*Math.PI)
+            packageNode.width = radius*2+150
+            packageNode.height = radius*2+150
+            packageNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.4)',width: radius*2+150, height: radius*2+150}
+            
+            let tempNode = packageNode
+            console.log(tempNode)
+            console.log(tempNode.parentNode)
+            while (tempNode.parentNode !== undefined){
+                console.log(nodes)
+    
+                totalWidth = oldNodes.reduce((sum, node) => {
+                    if (node.parentNode === tempNode.parentNode){
+                        return sum + node.width
+                    } 
+                    else return sum 
+                }, 0);
+                totalCircumference = totalWidth * 130 / 100
+                radius = totalCircumference / (2*Math.PI)
+                angleSoFar = 0
+                tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+    
+                tempNode.width = radius*2 + 150
+                tempNode.height = radius*2 + 150
+                tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+    
+                oldNodes.forEach((node) => {
+                    if (node.parentNode === tempNode.id){
+                        const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                        angleSoFar += angle/2
+                        const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
+                        const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
+                        angleSoFar += angle/2;
+                        node.position = {
+                            x: xPos,
+                            y: yPos
+                        }
+                    }
+                });
+    
+            }
+            totalWidth = oldNodes.reduce((sum, node) => {
+                if (node.parentNode === undefined) return sum + node.width
+                else return sum 
+            }, 0);
+            totalCircumference = totalWidth * 130 / 100
+            radius = totalCircumference / (2*Math.PI)
+            angleSoFar = 0
+            oldNodes.forEach((node) => {
+                if (node.parentNode === undefined){
+                    const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                    angleSoFar += angle/2
+                    const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
+                    const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
+                    angleSoFar += angle/2;
+        
+                    node.position = {
+                        x: xPos,
+                        y: yPos
+                    }
+                }
+                
+            });
+    
+        }
+        totalWidth = nodes.reduce((sum, node) => sum + 110 , 0);
+        totalCircumference = totalWidth * 1.3
+    
+        radius = totalCircumference / (2*Math.PI)
+        angleSoFar = 0
+        nodes.forEach((node) =>{
+            const angle = (110/ totalCircumference) * (2 * Math.PI) * 1.3;
+            angleSoFar += angle/2
+            const xPos =  200+radius + radius * Math.cos(angleSoFar) - 55-100;
+            const yPos =  50+radius + radius * Math.sin(angleSoFar) - 20;
+            angleSoFar += angle/2;
             node.position = {
-                x: Math.cos(angle) * radius + 400,
-                y: Math.sin(angle) * radius + 300
-            };
-        });
-
+                x: xPos,
+                y: yPos
+            }
+        })
+       
+        if (oldNodes.length > 0){
+            nodes = oldNodes.concat(nodes)
+            edges = calculateEdges(nodes)
+            return { nodes, edges}
+        }
         return { nodes, edges };
     }
 }
