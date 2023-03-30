@@ -3,11 +3,11 @@ import { JavaPackage } from "./JavaPackage"
 
 export class ClassTree {
     constructor() {
-        this.root = new JavaPackage("src","")
+        this.root = new JavaPackage("src","", "package")
     }
 
     add(name, pack, type, linesOfCode){
-        const node = new JavaClass(name, pack, type,linesOfCode)
+        const node = new JavaClass(name, pack, type, linesOfCode)
 
         if (!this.root) {
             this.root = node
@@ -21,7 +21,7 @@ export class ClassTree {
                 if (current.children.has(packages[i]))
                     current = current.children.get(packages[i])
                 else {
-                    const newNode = new JavaPackage(packages[i],packages[i])
+                    const newNode = new JavaPackage(packages[i], packages[i], "package")
                     current.children.set(newNode.pack,newNode)
                     current = newNode
                 }
@@ -29,7 +29,7 @@ export class ClassTree {
                 if (current.children.has(current.pack+"."+packages[i]))
                     current = current.children.get(current.pack+"."+packages[i])
                 else{
-                    const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i])
+                    const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i], "package")
                     current.children.set(newNode.pack,newNode)
                     current = newNode
                 }

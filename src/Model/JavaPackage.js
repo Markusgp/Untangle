@@ -5,9 +5,10 @@ export class JavaPackage {
     #packageInvokes = new Set()
     #children = new Map()
 
-    constructor(name, pack){
+    constructor(name, pack, type){
         this.name = name
         this.pack = pack
+        this.type = type
         this.visible = true
     }
     //make sure there is no duplicates
@@ -18,7 +19,7 @@ export class JavaPackage {
         this.#classInherits.add(x)
     }
     set classImplements(x){
-        this.classImplements.add(x)
+        this.#classImplements.add(x)
     }
     set packageInvokation(x){
         this.#packageInvokes.add(x)
