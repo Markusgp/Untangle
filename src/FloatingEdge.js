@@ -3,11 +3,11 @@ import { useStore, getStraightPath } from 'reactflow';
 
 import { getEdgeParams } from './utils.js';
 
-function FloatingEdge({ id, source, target, markerEnd, data }) {
+function FloatingEdge({id, source, target, markerEnd, data}) {
     const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
     const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
 
-    const { isSelected, nonSelected } = data;
+    const { isSelected, nonSelected, weight } = data;
     if (!sourceNode || !targetNode) {
         return null;
     }
@@ -25,8 +25,8 @@ function FloatingEdge({ id, source, target, markerEnd, data }) {
 
     const edgeStyle = {
         stroke: isSelected ?  "black" : "#b1b1b7",
-        strokeWidth: "2px",
-        opacity: isSelected ? "100%" : (nonSelected ? "75%" : "10%")
+        strokeWidth: `${Math.sqrt(weight) + 1}px`,
+        opacity: isSelected ? 1 : (nonSelected ? 0.75 : 0.1)
     }
 
     return (

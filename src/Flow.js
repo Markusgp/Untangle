@@ -130,7 +130,7 @@ let NodeAsHandleFlow = () => {
       setSelectNode(null);
     }
   }
-
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
   return (
     <>
       <div className="panelHolder" id="leftFloat">
@@ -159,6 +159,7 @@ let NodeAsHandleFlow = () => {
         onNodeDoubleClick={expandPackage}
         onPaneClick={onPaneClicked}
         fitView
+        onLoad={(_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)}
         edgeTypes={edgeTypes}
         nodeTypes={nodeTypes}
         nodesConnectable={false}
