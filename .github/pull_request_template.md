@@ -11,7 +11,6 @@
 - [ ] PR changes requires documentation change
     - [ ] I have updated the documentation accordingly
 - [ ] I have tested my change, and run all unit tests <!-- Further description required below -->
-- [ ] I ran ``dotnet format`` and committed+pushed the result
 
 ## Description
 <!-- Clear and concise description of your changes -->
