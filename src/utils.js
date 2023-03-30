@@ -175,17 +175,15 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
                 const nodeTmp = tree.getNode(nodeId);
                 let nodeType;
                 if (nodeTmp.type === "class") {
-                    nodeType = 'classNode';
-                } else if (nodeTmp.type === "interface") {
-                    nodeType = 'interfaceNode';
                     const node = {
                         id: nodeId,
                         type: 'classNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
-                        position: { x: 0, y: 0 }
+                        position: { x: 0, y: 0}
                     }
                     nodes.push(node)
 
@@ -195,37 +193,24 @@ export function createNodesAndEdges(param, useBarycenter, layout = 'force') {
                         type: 'interfaceNode',
                         data: {
                             id: nodeId,
-                            label: cls.name
+                            label: cls.name,
+                            isSelected: false
                         },
-                        position: { x: 0, y: 0 }
+                        position: { x: 0, y: 0}
                     }
                     nodes.push(node)
                 }
-                const node = {
-                    id: nodeId,
-                    type: nodeType,
-                    data: {
-                        id: nodeId,
-                        label: cls.name,
-                        isSelected: false,
-                        weight: weight,
-                    },
-                    position: { x: 0, y: 0}
-                }
-                nodes.push(node)
             }
         } else {
-            // Create node for package
             const node = {
                 id: nodeId,
                 type: 'packageNode',
                 data: {
                     id: nodeId,
                     label: cls.name,
-                    isSelected: false,
-                    weight: weight,
+                    isSelected: false
                 },
-                position: { x: 0, y: 0 }
+                position: { x: 0, y: 0}
             }
             nodes.push(node)
         }
