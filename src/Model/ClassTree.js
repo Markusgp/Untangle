@@ -176,4 +176,56 @@ export class ClassTree {
         })
         return numImplementations
     }
+
+    getDependantNodes(node) {
+        const dependantNodes = new Set();
+        const targetNode = node;
+    
+        if (targetNode instanceof JavaClass) {
+            const checkDependencies = (dependencySet) => {
+                dependencySet.forEach(dependency => {
+                    const dependantNode = dependency;
+                    if (dependantNode && !dependantNodes.has(dependantNode)) {
+                        dependantNodes.add(dependantNode);
+                        checkDependencies(dependantNode.classInherits);
+                        checkDependencies(dependantNode.classInvokation);
+                        checkDependencies(dependantNode.classImplements);
+                    }
+                });
+            };
+    
+            checkDependencies(targetNode.classInherits);
+            checkDependencies(targetNode.classInvokation);
+            checkDependencies(targetNode.classImplements);
+        }
+    
+        return Array.from(dependantNodes);
+    }
+    
+    getNotDependantNodes(node) {
+        const allNodes = this.getAllLeaves();
+        const dependantNodes = this.getDependantNodes(node);
+        const dependantNodeSet = new Set(dependantNodes);
+        dependantNodeSet.add(node);
+    
+        return allNodes.filter(leafNode => !dependantNodeSet.has(leafNode));
+    }
+    
+
+    updateOpacityOnSelection(selectedNode) {
+        const dependantNodes = this.getDependantNodes(selectedNode.id);
+        const notDependantNodes = this.getNotDependantNodes(selectedNode.id);
+        const updateOpacity = (nodes, alpha) => {
+            nodes.forEach(node => {
+                const foundNode = nodes.find(e => e.id === node.id);
+                if (foundNode) {
+                    foundNode.opacity = alpha;
+                }
+            });
+        };
+    
+        updateOpacity(dependantNodes, 1);
+        updateOpacity(notDependantNodes, 0.5);
+    }
+    
 }

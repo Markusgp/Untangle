@@ -120,17 +120,46 @@ function Flow() {
     onEdgesChange([]);
   }
 
+  const updateNodeOpacity = (selectedNode) => {
+    const updatedNodes = nodes.map((node) => {
+      const edgeExists = edges.some(
+        (edge) =>
+          (edge.source === selectedNode.id && edge.target === node.id) ||
+          (edge.target === selectedNode.id && edge.source === node.id) || selectedNode.id === node.id
+      );
+      return {
+        ...node,
+        style: { ...node.style, opacity: edgeExists ? 1 : 0.5 },
+      };
+    });
+    setNodes(updatedNodes);
+  };
+
+  const resetNodeOpacity = () => {
+    const updatedNodes = nodes.map((node) => {
+      return {
+        ...node,
+        style: { ...node.style, opacity: 1 },
+      };
+    });
+    setNodes(updatedNodes);
+  };
+
   const onNodeClicked = (_, node) => {
     if (selectedNode !== null) {
       const selNode = nodes.find(e => e.id === selectedNode.id)
       redrawSelectedNodes(selNode);
       redrawSelectedEdges(selNode, true);
       setSelectNode(null);
+      updateNodeOpacity(node);
     }
     redrawSelectedNodes(node);
     redrawSelectedEdges(node, false)
     setSelectNode(node);
+    updateNodeOpacity(node);
   };
+
+
 
   const onPaneClicked = () => {
     if (selectedNode !== null) {
@@ -138,6 +167,7 @@ function Flow() {
       redrawSelectedNodes(prevSelectNode);
       redrawSelectedEdges(prevSelectNode, true)
       setSelectNode(null);
+      resetNodeOpacity();
     }
   }
   const [reactFlowInstance, setReactFlowInstance] = useState(null);

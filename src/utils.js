@@ -101,7 +101,7 @@ function calculateEdges(nodes) {
         const invokedNode = nodes.find(n => n.id === invokedClass)
         if (invokedNode == undefined) return
         if (invokedNode.type === 'openedPackageNode') return
-        const edgeWeight = tree.getNumInvocations(node.id)*2-10;
+        const edgeWeight = tree.getNumInvocations(node.id)*2-15;
         edges.push({
           id: `${node.id}-invokes-${invokedNode.id}`,
           source: node.id,
@@ -125,7 +125,7 @@ function calculateEdges(nodes) {
         const implementedNode = nodes.find(n => n.id === implementedClass)
         if (implementedNode == undefined) return
         if (implementedNode.type === 'openedPackageNode') return
-        const edgeWeight = tree.getNumImplementations(node.id)*2-10;
+        const edgeWeight = tree.getNumImplementations(node.id)*2-15;
         edges.push({
           id: `${node.id}-implements-${implementedNode.id}`,
           source: node.id,
@@ -149,7 +149,7 @@ function calculateEdges(nodes) {
         const inheritedNode = nodes.find(n => n.id === inheritedClass)
         if (inheritedNode == undefined) return
         if (inheritedNode.type === 'openedPackageNode') return
-        const edgeWeight = tree.getNumInheritances(node.id)*2-10;
+        const edgeWeight = tree.getNumInheritances(node.id)*2-15;
         edges.push({
           id: `${node.id}-inherits-${inheritedNode.id}`,
           source: node.id,
@@ -252,7 +252,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                             label: cls.name,
                             isSelected: false
                         },
-                        position: { x: 0, y: 0}
+                        position: { x: 0, y: 0},
                     }
                     if (prevNodes.length > 0) node.parentNode = param
                     nodes.push(node)
@@ -281,7 +281,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                     label: cls.name,
                     isSelected: false
                 },
-                position: { x: 0, y: 0}
+                position: { x: 0, y: 0},
             }
             if (oldNodes.length > 0) node.parentNode = param
             nodes.push(node)
@@ -289,8 +289,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
 
       })
       edges = calculateEdges(nodes)
-    // Calculate the positions of the nodes in a circular layout
-    
+
 
     if (layout === 'force') {
         const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
@@ -396,6 +395,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                 x: xPos,
                 y: yPos
             }
+
         })
        
         if (oldNodes.length > 0){
@@ -403,6 +403,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
             edges = calculateEdges(nodes)
             return { nodes, edges}
         }
+        
         return { nodes, edges };
     }
 }
