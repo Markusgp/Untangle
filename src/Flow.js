@@ -1,9 +1,11 @@
-import React, {useState} from 'react';
+import React, { useRef, useState } from 'react';
 import ReactFlow, {
   Background,
   Controls,
   useNodesState,
   useEdgesState,
+  ReactFlowProvider,
+  useReactFlow,
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
@@ -24,7 +26,7 @@ import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([],[],tree.getTopLevelPackages()[0].name, useBaryCenter,"Circle");
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, "Circle");
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -37,7 +39,8 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
-let NodeAsHandleFlow = () => {
+function Flow() {
+  const flowinstance = useReactFlow();
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [classesToggled, setClassesToggled] = useState(true);
@@ -46,6 +49,7 @@ let NodeAsHandleFlow = () => {
   const [abstractionsToggled, setAbstractionsToggled] = useState(true);
   const [invocationsToggled, setInvocationsToggled] = useState(true);
   const [implementationsToggled, setImplementationsToggled] = useState(true);
+
 
   function nodeShouldBeDrawn(node) {
     if (node.type === "classNode" && classesToggled) {
@@ -70,15 +74,20 @@ let NodeAsHandleFlow = () => {
   }
   const [selectedNode, setSelectNode] = useState(null);
 
-  const expandPackage = (_,nd) => {
+  const expandPackage = (_, nd) => {
     let tempNodes = nodes
     let tempEdges = edges
     if (nd.type === "packageNode") {
-      const {nodes, edges} = createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter,'Circle');
-      console.log(nodes,edges)
+      const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, 'Circle');
+      console.log(nodes, edges)
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
+      setTimeout(() => {
+        flowinstance.fitView();
+      }, 0);
+      
+      console.log(flowinstance.fitView())
     }
   }
 
@@ -92,17 +101,17 @@ let NodeAsHandleFlow = () => {
 
   const redrawSelectedEdges = (node, unselect) => {
     if (unselect) {
-      edges.forEach(function(e) {
+      edges.forEach(function (e) {
         e.data.isSelected = false;
         e.data.nonSelected = true;
         e.animated = false;
       });
     } else if (!unselect) {
-      edges.forEach(function(e) {
+      edges.forEach(function (e) {
         const sourceSplit = e.source.split(".");
         const targetSplit = e.target.split(".");
         const nodeName = node.id.split(".");
-        if (sourceSplit.includes(nodeName[nodeName.length-1]) || targetSplit.includes(nodeName[nodeName.length-1])) {
+        if (sourceSplit.includes(nodeName[nodeName.length - 1]) || targetSplit.includes(nodeName[nodeName.length - 1])) {
           e.data.isSelected = !e.data.isSelected;
           e.animated = !e.animated;
         }
@@ -134,46 +143,51 @@ let NodeAsHandleFlow = () => {
     }
   }
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  
+  return (<><div className="panelHolder" id="leftFloat">
+    <div className="panelStyle">
+      <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled} />
+    </div>
+    <div className="panelStyle">
+      <ExamplePanel />
+    </div>
+  </div><div className="panelHolder" id="rightFloat">
+      {selectedNode != null && (
+        <div className="panelStyleInformation">
+          <InformationPanel {...tree.getNode(selectedNode.id)} />
+        </div>
+      )}
+    </div><ReactFlow
+      nodes={nodes.filter(nodeShouldBeDrawn)}
+      edges={edges.filter(edgeShouldBeDrawn)}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onNodeClick={onNodeClicked}
+      onNodeDoubleClick={expandPackage}
+      onPaneClick={onPaneClicked}
+      fitView
+      onLoad={(_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)}
+      edgeTypes={edgeTypes}
+      minZoom={0.1}
+      nodeTypes={nodeTypes}
+      nodesConnectable={false}
+      nodesDraggable={false}
+      zoomOnDoubleClick={false}
+      ref={flowinstance}
+    >
+      <Background />
+      <Controls />
+    </ReactFlow></>);
+}
+let NodeAsHandleFlow = () => {
+
   return (
     <>
-      <div className="panelHolder" id="leftFloat">
-        <div className="panelStyle">
-          <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled}/>
-        </div>
-        <div className="panelStyle">
-          <ExamplePanel/>
-        </div>
+      <div className="FlowWrapper">
+        <ReactFlowProvider>
+          <Flow />
+        </ReactFlowProvider>
       </div>
-      <div className="panelHolder" id="rightFloat">
-          { selectedNode != null && (
-            <div className="panelStyleInformation">
-              <InformationPanel {... tree.getNode(selectedNode.id)}/>
-            </div>
-            )
-          }
-      </div>
-    <div className="FlowWrapper">
-      <ReactFlow
-        nodes={nodes.filter(nodeShouldBeDrawn)}
-        edges={edges.filter(edgeShouldBeDrawn)}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onNodeClick={onNodeClicked}
-        onNodeDoubleClick={expandPackage}
-        onPaneClick={onPaneClicked}
-        fitView
-        onLoad={(_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)}
-        edgeTypes={edgeTypes}
-        minZoom={0.1}
-        nodeTypes={nodeTypes}
-        nodesConnectable={false}
-        nodesDraggable={false}
-        zoomOnDoubleClick={false}
-      >
-        <Background />
-        <Controls />
-      </ReactFlow>
-    </div>
     </>
   );
 };
