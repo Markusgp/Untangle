@@ -92,99 +92,87 @@ function calculateBarycenters(nodes, edges) {
 }
 
 function calculateEdges(nodes) {
-    let edges = []
+    let edges = [];
     nodes.forEach(node => {
-        if (node.type === 'openedPackageNode') return
-        const cls = tree.getNode(node.id)
-        const nestedMembers = getNestedMembers(cls.pack);
-        if (cls === undefined) return
-        cls.classInvokation.forEach(invokedClass => {
-            const invokedNode = nodes.find(n => n.id === invokedClass)
-            if (invokedNode == undefined) return
-            if (invokedNode.type === 'openedPackageNode') return
-            const edgeWeight = nestedMembers.length + getNestedMembers(invokedClass).length;
-            edges.push({
-                id: `${node.id}-invokes-${invokedNode.id}`,
-                source: node.id,
-                target: invokedNode.id,
-                type: "floating",
-                animated: false,
-                label: "invokes",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                },
-                data: {
-                    isSelected : false,
-                    nonSelected : true,
-                    weight: edgeWeight,
-                }
-            })
+      if (node.type === 'openedPackageNode') return
+      const cls = tree.getNode(node.id)
+      if (cls === undefined) return
+      cls.classInvokation.forEach(invokedClass => {
+        const invokedNode = nodes.find(n => n.id === invokedClass)
+        if (invokedNode == undefined) return
+        if (invokedNode.type === 'openedPackageNode') return
+        const edgeWeight = tree.getNumInvocations(node.id)*2-10;
+        edges.push({
+          id: `${node.id}-invokes-${invokedNode.id}`,
+          source: node.id,
+          target: invokedNode.id,
+          type: "floating",
+          animated: false,
+          label: "invokes",
+          labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+          markerEnd: {
+            type: MarkerType.Arrow,
+            width: 15,
+          },
+          data: {
+            isSelected : false,
+            nonSelected : true,
+            weight: edgeWeight,
+          }
         })
-        cls.classImplements.forEach(implementedClass => {
-            const implementedNode = nodes.find(n => n.id === implementedClass)
-            if (implementedNode == undefined) return
-            if (implementedNode.type === 'openedPackageNode') return
-            const edgeWeight = nestedMembers.length + getNestedMembers(implementedClass).length;
-            edges.push({
-                id: `${node.id}-implements-${implementedNode.id}`,
-                source: node.id,
-                target: implementedNode.id,
-                type: "floating",
-                animated: false,
-                label: "implements",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                },
-                data: {
-                    isSelected : false,
-                    nonSelected : true,
-                    weight: edgeWeight,
-                }
-            })
+      })
+      cls.classImplements.forEach(implementedClass => {
+        const implementedNode = nodes.find(n => n.id === implementedClass)
+        if (implementedNode == undefined) return
+        if (implementedNode.type === 'openedPackageNode') return
+        const edgeWeight = tree.getNumImplementations(node.id)*2-10;
+        edges.push({
+          id: `${node.id}-implements-${implementedNode.id}`,
+          source: node.id,
+          target: implementedNode.id,
+          type: "floating",
+          animated: false,
+          label: "implements",
+          labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+          markerEnd: {
+            type: MarkerType.Arrow,
+            width: 15,
+          },
+          data: {
+            isSelected : false,
+            nonSelected : true,
+            weight: edgeWeight,
+          }
         })
-        cls.classInherits.forEach(inheritedClass => {
-            const inheritedNode = nodes.find(n => n.id === inheritedClass)
-            if (inheritedNode == undefined) return
-            if (inheritedNode.type === 'openedPackageNode') return
-            const edgeWeight = nestedMembers.length + getNestedMembers(inheritedClass).length;
-            edges.push({
-                id: `${node.id}-inherits-${inheritedNode.id}`,
-                source: node.id,
-                target: inheritedNode.id,
-                type: "floating",
-                animated: false,
-                label: "inherits",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                },
-                data: {
-                    isSelected : false,
-                    nonSelected : true,
-                    weight: edgeWeight,
-                }
-            })
+      })
+      cls.classInherits.forEach(inheritedClass => {
+        const inheritedNode = nodes.find(n => n.id === inheritedClass)
+        if (inheritedNode == undefined) return
+        if (inheritedNode.type === 'openedPackageNode') return
+        const edgeWeight = tree.getNumInheritances(node.id)*2-10;
+        edges.push({
+          id: `${node.id}-inherits-${inheritedNode.id}`,
+          source: node.id,
+          target: inheritedNode.id,
+          type: "floating",
+          animated: false,
+          label: "inherits",
+          labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+          markerEnd: {
+            type: MarkerType.Arrow,
+            width: 15,
+          },
+          data: {
+            isSelected : false,
+            nonSelected : true,
+            weight: edgeWeight,
+          }
         })
+      })
     })
     return edges
-}
-
-function getNestedMembers(packageName) {
-    const node = tree.getNode(packageName);
-    const nestedMembers = [];
-  
-    node.children.forEach(child => {
-      if (child instanceof JavaClass) {
-        nestedMembers.push(child.pack);
-      } else {
-        nestedMembers.push(...getNestedMembers(child.pack));
-      }
-    });
-  
-    return nestedMembers;
   }
+  
 
   
 function dependencyForce(nodes, edges, strength = 50) {
@@ -249,7 +237,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
 
     myNodes.forEach(cls => {
         const nodeId = cls.pack
-        const nestedMembers = getNestedMembers(nodeId);
+
         if(tree.getNode(nodeId).children.size === 0) {
 
             if (tree.getNode(nodeId) instanceof (JavaClass)) {
@@ -300,10 +288,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
         }
 
       })
-      console.log(nodes)
       edges = calculateEdges(nodes)
-      console.log(edges)
-      console.log(oldNodes)
     // Calculate the positions of the nodes in a circular layout
     
 
@@ -311,7 +296,6 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
         const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
         return { nodes: forceNodes, edges: forceEdges };
     } else {
-        console.log(nodes)
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {

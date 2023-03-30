@@ -144,4 +144,36 @@ export class ClassTree {
         return current
     }
 
+    getNumInvocations(node){
+        let current = this.getNode(node)
+        let numInvocations = current.classInvokation.size
+        current.children.forEach(child => {
+            if (child instanceof JavaClass) {
+                numInvocations += child.classInvokation.size
+            }
+        })
+        return numInvocations
+    }
+
+    getNumInheritances(node){
+        let current = this.getNode(node)
+        let numInheritances = current.classInherits.size
+        current.children.forEach(child => {
+            if (child instanceof JavaClass) {
+                numInheritances += child.classInherits.size
+            }
+        })
+        return numInheritances
+    }
+
+    getNumImplementations(node){
+        let current = this.getNode(node)
+        let numImplementations = current.classImplements.size
+        current.children.forEach(child => {
+            if (child instanceof JavaClass) {
+                numImplementations += child.classImplements.size
+            }
+        })
+        return numImplementations
+    }
 }

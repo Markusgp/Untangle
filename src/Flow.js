@@ -25,8 +25,9 @@ import { tree } from "./Model/Parse"
 import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
+const layout = "Circle"
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, "Circle");
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -78,16 +79,13 @@ function Flow() {
     let tempNodes = nodes
     let tempEdges = edges
     if (nd.type === "packageNode") {
-      const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, 'Circle');
-      console.log(nodes, edges)
+      const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout);
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
       setTimeout(() => {
         flowinstance.fitView();
       }, 0);
-      
-      console.log(flowinstance.fitView())
     }
   }
 
@@ -173,7 +171,6 @@ function Flow() {
       nodesConnectable={false}
       nodesDraggable={false}
       zoomOnDoubleClick={false}
-      ref={flowinstance}
     >
       <Background />
       <Controls />
