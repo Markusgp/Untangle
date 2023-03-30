@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -89,8 +89,6 @@ function Flow() {
     }
   }
 
-
-
   const redrawSelectedNodes = (node) => {
     let selectNode = nodes.find(e => e.id === node.id)
     selectNode.data.isSelected = !selectNode.data.isSelected
@@ -158,8 +156,6 @@ function Flow() {
     setSelectNode(node);
     updateNodeOpacity(node);
   };
-
-
 
   const onPaneClicked = () => {
     if (selectedNode !== null) {
