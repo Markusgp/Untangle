@@ -20,10 +20,11 @@ import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
 import { tree } from "./Model/Parse"
+import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([],[],tree.getTopLevelPackages()[0].name, useBaryCenter);
+let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([],[],tree.getTopLevelPackages()[0].name, useBaryCenter,"Circle");
 
 const nodeTypes = {
   packageNode: PackageNode,
@@ -39,19 +40,48 @@ const edgeTypes = {
 let NodeAsHandleFlow = () => {
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [classesToggled, setClassesToggled] = useState(true);
+  const [interfacesToggled, setInterfacesToggled] = useState(true);
+  const [modulesToggled, setModulesToggled] = useState(true);
+  const [abstractionsToggled, setAbstractionsToggled] = useState(true);
+  const [invocationsToggled, setInvocationsToggled] = useState(true);
+  const [implementationsToggled, setImplementationsToggled] = useState(true);
+
+  function nodeShouldBeDrawn(node) {
+    if (node.type === "classNode" && classesToggled) {
+      return true;
+    } else if (node.type === "interfaceNode" && interfacesToggled) {
+      return true;
+    } else if (node.type === "packageNode" && modulesToggled) {
+      return true;
+    } else if (node.type === "openedPackageNode") return true;
+    return false;
+  }
+
+  function edgeShouldBeDrawn(edge) {
+    if (edge.label === "invokes" && invocationsToggled) {
+      return true;
+    } else if (edge.label === "inherits" && abstractionsToggled) {
+      return true;
+    } else if (edge.label === "implements" && implementationsToggled) {
+      return true;
+    }
+    return false;
+  }
+  const [selectedNode, setSelectNode] = useState(null);
 
   const expandPackage = (_,nd) => {
     let tempNodes = nodes
     let tempEdges = edges
     if (nd.type === "packageNode") {
-      const {nodes, edges} = createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter);
+      const {nodes, edges} = createNodesAndEdges(tempNodes,tempEdges,nd.id, useBaryCenter,'Circle');
+      console.log(nodes,edges)
       setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
     }
   }
 
-  const [selectedNode, setSelectNode] = useState(null);
 
 
   const redrawSelectedNodes = (node) => {
@@ -103,12 +133,12 @@ let NodeAsHandleFlow = () => {
       setSelectNode(null);
     }
   }
-
+  const [reactFlowInstance, setReactFlowInstance] = useState(null);
   return (
     <>
       <div className="panelHolder" id="leftFloat">
         <div className="panelStyle">
-          <ExamplePanel/>
+          <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled}/>
         </div>
         <div className="panelStyle">
           <ExamplePanel/>
@@ -124,14 +154,15 @@ let NodeAsHandleFlow = () => {
       </div>
     <div className="FlowWrapper">
       <ReactFlow
-        nodes={nodes}
-        edges={edges}
+        nodes={nodes.filter(nodeShouldBeDrawn)}
+        edges={edges.filter(edgeShouldBeDrawn)}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClicked}
         onNodeDoubleClick={expandPackage}
         onPaneClick={onPaneClicked}
         fitView
+        onLoad={(_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)}
         edgeTypes={edgeTypes}
         minZoom={0.1}
         nodeTypes={nodeTypes}
