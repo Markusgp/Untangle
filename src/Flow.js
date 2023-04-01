@@ -127,7 +127,7 @@ function Flow() {
       );
       return {
         ...node,
-        style: { ...node.style, opacity: edgeExists ? 1 : 0.5 },
+        style: { ...node.style, opacity: edgeExists ? 1 : 0.2 },
       };
     });
     setNodes(updatedNodes);
