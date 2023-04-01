@@ -147,6 +147,7 @@ function Flow() {
   };
 
   const onNodeClicked = (_, node) => {
+    resetNodeOpacity(nodes);
     if (selectedNode !== null) {
       const selNode = nodes.find(e => e.id === selectedNode.id)
       redrawSelectedNodes(selNode);
