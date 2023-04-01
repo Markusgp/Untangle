@@ -84,6 +84,7 @@ function Flow() {
       setNodes(nodes);
       setEdges(edges);
       setTimeout(() => {
+        resetNodeOpacity(nodes);
         flowinstance.fitView();
       }, 0);
     }
@@ -119,21 +120,23 @@ function Flow() {
   }
 
   const updateNodeOpacity = (selectedNode) => {
-    const updatedNodes = nodes.map((node) => {
-      const edgeExists = edges.some(
-        (edge) =>
-          (edge.source === selectedNode.id && edge.target === node.id) ||
-          (edge.target === selectedNode.id && edge.source === node.id) || selectedNode.id === node.id
-      );
-      return {
-        ...node,
-        style: { ...node.style, opacity: edgeExists ? 1 : 0.2 },
-      };
-    });
-    setNodes(updatedNodes);
-  };
+    if (selectedNode.type !== "openedPackageNode") {
+      const updatedNodes = nodes.map((node) => {
+        const edgeExists = edges.some(
+          (edge) =>
+            (edge.source === selectedNode.id && edge.target === node.id) ||
+            (edge.target === selectedNode.id && edge.source === node.id) || selectedNode.id === node.id
+        );
+        return {
+          ...node,
+          style: { ...node.style, opacity: edgeExists ? 1 : 0.2 },
+        };
+      });
+      setNodes(updatedNodes);
+    };
+  }
 
-  const resetNodeOpacity = () => {
+  const resetNodeOpacity = (nodes) => {
     const updatedNodes = nodes.map((node) => {
       return {
         ...node,
@@ -163,11 +166,11 @@ function Flow() {
       redrawSelectedNodes(prevSelectNode);
       redrawSelectedEdges(prevSelectNode, true)
       setSelectNode(null);
-      resetNodeOpacity();
+      resetNodeOpacity(nodes);
     }
   }
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  
+
   return (<><div className="panelHolder" id="leftFloat">
     <div className="panelStyle">
       <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled} />
