@@ -205,12 +205,12 @@ function simulateForceLayout(nodes, edges) {
     const simulation = forceSimulation(nodes)
         .force("charge", forceManyBody())
         .force("center", forceCenter(400, 300))
-        .force("collide", forceCollide(150))
+        .force("collide", forceCollide(130))
         .force("dependency", dependencyForce(nodes, edges))
         .stop();
 
     // Run simulation for a fixed number of iterations
-    const numIterations = 100; // Increase the number of iterations for better convergence
+    const numIterations = 200; // Increase the number of iterations for better convergence
     for (let i = 0; i < numIterations; ++i) {
         simulation.tick();
     }
@@ -289,9 +289,57 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
 
     if (layout === 'force') {
-        const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
-        return { nodes: forceNodes, edges: forceEdges };
-    } else {
+        if (oldNodes.length > 0) {
+            let packageNode = oldNodes.find(n => n.id === param);
+            packageNode.type = "openedPackageNode";
+    
+            // Run simulation for oldNodes
+            const oldNodesEdges = calculateEdges(oldNodes);
+            const oldNodesSimulationResult = simulateForceLayout(oldNodes, oldNodesEdges);
+            oldNodes = oldNodesSimulationResult.nodes;
+    
+            // Move oldNodes away from the expanded packageNode
+            const distanceToMove = 200; // Adjust this value as needed
+            oldNodes.forEach(node => {
+                if (node.id !== packageNode.id) {
+                    const dx = node.position.x - packageNode.position.x;
+                    const dy = node.position.y - packageNode.position.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const ratio = (distance + distanceToMove) / distance;
+                    node.position.x = packageNode.position.x + dx * ratio;
+                    node.position.y = packageNode.position.y + dy * ratio;
+                }
+            });
+    
+            // Set initial positions for childNodes near the packageNode
+            nodes.forEach(node => {
+                if (node.parentNode.name === packageNode.name) {
+                    node.x = packageNode.position.x;
+                    node.y = packageNode.position.y;
+                }
+            });
+    
+            // Run simulation for the children of the packageNode
+            const childNodes = nodes.filter(node => node.parentNode.name === packageNode.name);
+            const childEdges = calculateEdges(childNodes);
+            const childSimulationResult = simulateForceLayout(childNodes, childEdges);
+    
+            // Combine oldNodes and childNodes
+            nodes = oldNodes.concat(childSimulationResult.nodes);
+            edges = calculateEdges(nodes);
+        } else {
+            edges = calculateEdges(nodes);
+            const simulationResult = simulateForceLayout(nodes, edges);
+            nodes = simulationResult.nodes;
+        }
+    
+        return { nodes, edges };
+    }
+    
+    
+    
+    
+     else {
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {
@@ -300,7 +348,6 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                 return aBarycenter - bBarycenter;
             });
         }
-        const numNodes = nodes.length;
 
         let radius = 0
         let totalWidth = 0

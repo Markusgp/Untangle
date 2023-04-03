@@ -11,7 +11,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
-import { createNodesAndEdges } from './utils.js';
+import { createNodesAndEdges, simulateForceLayout } from './utils.js';
 import PackageNode from './FlowElements/Nodes/PackageNode.js';
 import ClassNode from './FlowElements/Nodes/ClassNode'
 import InterfaceNode from "./FlowElements/Nodes/InterfaceNode";
@@ -25,7 +25,7 @@ import { tree } from "./Model/Parse"
 import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
-const layout = "Circle"
+const layout = "force";
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
