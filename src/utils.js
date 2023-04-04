@@ -210,7 +210,7 @@ function simulateForceLayout(nodes, edges) {
         .stop();
 
     // Run simulation for a fixed number of iterations
-    const numIterations = 200; // Increase the number of iterations for better convergence
+    const numIterations = 300; // Increase the number of iterations for better convergence
     for (let i = 0; i < numIterations; ++i) {
         simulation.tick();
     }
@@ -293,12 +293,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
             let packageNode = oldNodes.find(n => n.id === param);
             packageNode.type = "openedPackageNode";
     
-            // Run simulation for oldNodes
-            const oldNodesEdges = calculateEdges(oldNodes);
-            const oldNodesSimulationResult = simulateForceLayout(oldNodes, oldNodesEdges);
-            oldNodes = oldNodesSimulationResult.nodes;
-    
-            // Move oldNodes away from the expanded packageNode
+            // Move oldNodes away from the expanded packageNode using cosinus and
             const distanceToMove = 200; // Adjust this value as needed
             oldNodes.forEach(node => {
                 if (node.id !== packageNode.id) {
@@ -311,21 +306,34 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                 }
             });
     
-            // Set initial positions for childNodes near the packageNode
-            nodes.forEach(node => {
-                if (node.parentNode.name === packageNode.name) {
-                    node.x = packageNode.position.x;
-                    node.y = packageNode.position.y;
-                }
+            //Place the children of the packageNode randomly around it
+            const childNodes = nodes.filter(node => node.parentNode === packageNode.id);
+            //Define childEdges
+            const childEdges = edges.filter(edge => childNodes.find(node => node.id === edge.source) || childNodes.find(node => node.id === edge.target));
+            //Simulate the children
+            const simulationResult = simulateForceLayout(childNodes, childEdges);
+            childNodes.forEach(node => {
+                //Set the nodes position to its position in the simulation within a bound box limiting them to the space that was created by pushing away the oldNodes
+                const boundBox = {
+                    x: packageNode.position.x - distanceToMove,
+                    y: packageNode.position.y - distanceToMove,
+                    width: distanceToMove*2,
+                    height: distanceToMove*2,
+                };
+                node.position.x = Math.max(boundBox.x, Math.min(boundBox.x + boundBox.width, node.position.x));
+                node.position.y = Math.max(boundBox.y, Math.min(boundBox.y + boundBox.height, node.position.y));
+                
+                node.position.x -= packageNode.position.x;
+                node.position.y -= packageNode.position.y;
+                
             });
-    
-            // Run simulation for the children of the packageNode
-            const childNodes = nodes.filter(node => node.parentNode.name === packageNode.name);
-            const childEdges = calculateEdges(childNodes);
-            const childSimulationResult = simulateForceLayout(childNodes, childEdges);
-    
+
+            //Place the packageNode at the top left of the new group of children and make a big blue bounding box around all the children and the packageNode
+            
+            
             // Combine oldNodes and childNodes
-            nodes = oldNodes.concat(childSimulationResult.nodes);
+            nodes = oldNodes.concat(childNodes);
+            
             edges = calculateEdges(nodes);
         } else {
             edges = calculateEdges(nodes);
@@ -334,12 +342,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
         }
     
         return { nodes, edges };
-    }
-    
-    
-    
-    
-     else {
+    }else {
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {
