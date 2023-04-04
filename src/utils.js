@@ -203,9 +203,9 @@ function dependencyForce(nodes, edges, strength = 50) {
 
 function simulateForceLayout(nodes, edges) {
     const simulation = forceSimulation(nodes)
-        .force("charge", forceManyBody())
-        .force("center", forceCenter(400, 300))
-        .force("collide", forceCollide(130))
+        //.force("charge", forceManyBody())
+        //.force("center", forceCenter(400, 300))
+        .force("collide", forceCollide(150))
         .force("dependency", dependencyForce(nodes, edges))
         .stop();
 
@@ -290,59 +290,16 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
     if (layout === 'force') {
         if (oldNodes.length > 0) {
-            let packageNode = oldNodes.find(n => n.id === param);
-            packageNode.type = "openedPackageNode";
-    
-            // Move oldNodes away from the expanded packageNode using cosinus and
-            const distanceToMove = 200; // Adjust this value as needed
-            oldNodes.forEach(node => {
-                if (node.id !== packageNode.id) {
-                    const dx = node.position.x - packageNode.position.x;
-                    const dy = node.position.y - packageNode.position.y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const ratio = (distance + distanceToMove) / distance;
-                    node.position.x = packageNode.position.x + dx * ratio;
-                    node.position.y = packageNode.position.y + dy * ratio;
-                }
-            });
-    
-            //Place the children of the packageNode randomly around it
+        //If the packageNode is expanded add the children to the nodes array and simulate the whole graph again
+            const packageNode = oldNodes.find(n => n.id === param)
+            packageNode.type = "openedPackageNode"
             const childNodes = nodes.filter(node => node.parentNode === packageNode.id);
-            //Define childEdges
             const childEdges = edges.filter(edge => childNodes.find(node => node.id === edge.source) || childNodes.find(node => node.id === edge.target));
-            //Simulate the children
-            const simulationResult = simulateForceLayout(childNodes, childEdges);
-            childNodes.forEach(node => {
-                //Set the nodes position to its position in the simulation within a bound box limiting them to the space that was created by pushing away the oldNodes
-                const boundBox = {
-                    x: packageNode.position.x - distanceToMove,
-                    y: packageNode.position.y - distanceToMove,
-                    width: distanceToMove*2,
-                    height: distanceToMove*2,
-                };
-                node.position.x = Math.max(boundBox.x, Math.min(boundBox.x + boundBox.width, node.position.x));
-                node.position.y = Math.max(boundBox.y, Math.min(boundBox.y + boundBox.height, node.position.y));
-                
-                node.position.x -= packageNode.position.x;
-                node.position.y -= packageNode.position.y;
-                
-            });
-
-            //Place the packageNode at the top left of the new group of children and make a big blue bounding box around all the children and the packageNode
-            
-            
-            // Combine oldNodes and childNodes
-            nodes = oldNodes.concat(childNodes);
-            
-            edges = calculateEdges(nodes);
-        } else {
-            edges = calculateEdges(nodes);
-            const simulationResult = simulateForceLayout(nodes, edges);
-            nodes = simulationResult.nodes;
+            nodes = oldNodes.concat(childNodes)
+            edges = oldEdges.concat(childEdges)
         }
-    
-        return { nodes, edges };
-    }else {
+        return simulateForceLayout(nodes, edges)
+    } else {
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {

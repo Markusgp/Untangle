@@ -80,7 +80,6 @@ function Flow() {
     let tempEdges = edges
     if (nd.type === "packageNode") {
       const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout);
-      setSelectNode(null);
       setNodes(nodes);
       setEdges(edges);
       setTimeout(() => {
