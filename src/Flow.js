@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactFlow, {
   Background,
   Controls,
@@ -7,7 +7,7 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow';
-
+import ReactSwitch from 'react-switch';
 import 'reactflow/dist/style.css';
 
 import FloatingEdge from './FloatingEdge.js';
@@ -25,7 +25,7 @@ import { tree } from "./Model/Parse"
 import TogglePanel from "./FlowElements/Panels/TogglePanel";
 
 const useBaryCenter = true;
-const layout = "force";
+const layout = 'Circle';
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
@@ -50,7 +50,6 @@ function Flow() {
   const [abstractionsToggled, setAbstractionsToggled] = useState(true);
   const [invocationsToggled, setInvocationsToggled] = useState(true);
   const [implementationsToggled, setImplementationsToggled] = useState(true);
-
 
   function nodeShouldBeDrawn(node) {
     if (node.type === "classNode" && classesToggled) {
@@ -119,31 +118,56 @@ function Flow() {
   }
 
   const updateNodeOpacity = (selectedNode) => {
-    if (selectedNode.type !== "openedPackageNode") {
-      const updatedNodes = nodes.map((node) => {
-        const edgeExists = edges.some(
+    const updatedNodes = nodes.map((node) => {
+      let edgeExists = false;
+      let isChild = false;
+
+      if (selectedNode.type !== "openedPackageNode") {
+        edgeExists = edges.some(
           (edge) =>
             (edge.source === selectedNode.id && edge.target === node.id) ||
-            (edge.target === selectedNode.id && edge.source === node.id) || selectedNode.id === node.id
+            (edge.target === selectedNode.id && edge.source === node.id)
         );
-        return {
-          ...node,
-          style: { ...node.style, opacity: edgeExists ? 0.90 : 0.2 },
-        };
-      });
-      setNodes(updatedNodes);
-    };
+      }
+
+      if (selectedNode.type === "openedPackageNode") {
+        const childNodes = tree.getPackageContent(selectedNode.id);
+        isChild = childNodes.some(
+          (child) => node.id.startsWith(child.pack)
+        );
+        edgeExists = edges.some((edge) => {
+          return childNodes.some((child) => {
+            const childId = child.pack;
+            return (
+              (edge.source === childId && edge.target === node.id) ||
+              (edge.target === childId && edge.source === node.id)
+            );
+          });
+        });
+      }
+
+      const shouldHighlight = edgeExists || isChild || node.id === selectedNode.id;
+      const opacity = shouldHighlight ? 0.90 : 0.2;
+      const color = isChild && selectedNode.type === "openedPackageNode" ? "rgba(135, 206, 250)" : node.style.color;
+
+      return {
+        ...node,
+        style: { ...node.style, opacity, color },
+      };
+    });
+    setNodes(updatedNodes);
   }
 
   const resetNodeOpacity = (nodes) => {
     const updatedNodes = nodes.map((node) => {
       return {
         ...node,
-        style: { ...node.style, opacity: 1 },
+        style: { ...node.style, opacity: 1, color: "rgba(0,0,0)" },
       };
     });
     setNodes(updatedNodes);
   };
+
 
   const onNodeClicked = (_, node) => {
     resetNodeOpacity(nodes);
@@ -169,6 +193,9 @@ function Flow() {
       resetNodeOpacity(nodes);
     }
   }
+
+  
+
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   return (<><div className="panelHolder" id="leftFloat">
@@ -176,7 +203,9 @@ function Flow() {
       <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled} />
     </div>
     <div className="panelStyle">
-      <ExamplePanel />
+      <ExamplePanel>
+      </ExamplePanel>
+
     </div>
   </div><div className="panelHolder" id="rightFloat">
       {selectedNode != null && (
@@ -205,6 +234,7 @@ function Flow() {
       <Controls />
     </ReactFlow></>);
 }
+
 let NodeAsHandleFlow = () => {
 
   return (

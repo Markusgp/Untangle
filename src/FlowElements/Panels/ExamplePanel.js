@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import "./PanelStyles.css"
 import FileLogo from "../Assets/File.svg"
 import Drop from "../Assets/Drop.svg";
+import ToggleSwitch from './ToggleSwitch.js';
 
 
 const ExamplePanel = () => {
@@ -26,7 +27,7 @@ const ExamplePanel = () => {
     {open && (
       <div className="content">
         <span className="contentDivider"/>
-        <p>Content here</p>
+        <ToggleSwitch />
       </div>
     )}
     </>

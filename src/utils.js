@@ -201,16 +201,16 @@ function dependencyForce(nodes, edges, strength = 50) {
     return force;
 }
 
-function simulateForceLayout(nodes, edges) {
-    const simulation = forceSimulation(nodes)
-        .force("charge", forceManyBody())
-        .force("center", forceCenter(400, 300))
-        .force("collide", forceCollide(150))
-        .force("dependency", dependencyForce(nodes, edges))
-        .stop();
+function simulateForceLayout(nodes, edges, hiddenNodes) {
+    const simulationNodes = nodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
+    const simulationEdges = edges.filter(edge => !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.source) && !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.target));
+    const simulation = forceSimulation(simulationNodes)
+    .force("collide", forceCollide(150))
+    .force("dependency", dependencyForce(simulationNodes, simulationEdges))
+    .stop();
 
     // Run simulation for a fixed number of iterations
-    const numIterations = 300; // Increase the number of iterations for better convergence
+    const numIterations = 600; // Increase the number of iterations for better convergence
     for (let i = 0; i < numIterations; ++i) {
         simulation.tick();
     }
@@ -292,12 +292,15 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
         let packageNode = oldNodes.find(n => n.id === param);
         let updatedNodes = nodes;
         let updatedEdges = edges;
+        let hiddenNodes = []
         if (packageNode) {
             if (packageNode.type == "packageNode") {
+                hiddenNodes.push(packageNode)
                 packageNode.type = "openedPackageNode";
                 const childNodes = nodes.filter(node => node.parentNode === packageNode.id); 
                 updatedNodes = prevNodes.concat(childNodes);
             } else if (packageNode.type == "openedPackageNode") {
+                hiddenNodes = [];
                 packageNode.type = "packageNode";
                 const childNodes = oldNodes.filter(node => node.parentNode === packageNode.id);
                 updatedNodes = oldNodes.filter(node => !childNodes.find(childNode => childNode.id === node.id));
@@ -307,9 +310,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
             updatedEdges = edges;
         }
         updatedEdges = calculateEdges(updatedNodes);
-        console.log(updatedEdges)
-        console.log(updatedNodes)
-        return simulateForceLayout(updatedNodes, updatedEdges);
+        return simulateForceLayout(updatedNodes, updatedEdges, hiddenNodes);
         
     }
 
