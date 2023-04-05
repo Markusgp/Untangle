@@ -19,7 +19,7 @@ const ExamplePanel = () => {
     <div className="topBar">
       <div className="identifierSection">
         <img className="panelIcon" src={FileLogo}/>
-        <p className="panelName">Example Panel</p>
+        <p className="panelName">Design</p>
       </div>
 
       <img className="dropBtn" src={Drop} style={dropStyle} alt={"toggleOpen"} onClick={toggle}/>

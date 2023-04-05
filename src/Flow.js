@@ -7,9 +7,8 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow';
-import ReactSwitch from 'react-switch';
 import 'reactflow/dist/style.css';
-
+import './FlowElements/Panels/ToggleSwitch.js';
 import FloatingEdge from './FloatingEdge.js';
 import { createNodesAndEdges, simulateForceLayout } from './utils.js';
 import PackageNode from './FlowElements/Nodes/PackageNode.js';
@@ -23,9 +22,10 @@ import InformationPanel from "./FlowElements/Panels/InformationPanel";
 
 import { tree } from "./Model/Parse"
 import TogglePanel from "./FlowElements/Panels/TogglePanel";
+import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 
 const useBaryCenter = true;
-const layout = 'Circle';
+const layout = 'force';
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
