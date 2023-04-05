@@ -78,7 +78,7 @@ function Flow() {
   const expandPackage = (_, nd) => {
     let tempNodes = nodes
     let tempEdges = edges
-    if (nd.type === "packageNode") {
+    if (nd.type === "packageNode" || nd.type === "openedPackageNode") {
       const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout);
       setNodes(nodes);
       setEdges(edges);
@@ -128,7 +128,7 @@ function Flow() {
         );
         return {
           ...node,
-          style: { ...node.style, opacity: edgeExists ? 1 : 0.2 },
+          style: { ...node.style, opacity: edgeExists ? 0.90 : 0.2 },
         };
       });
       setNodes(updatedNodes);

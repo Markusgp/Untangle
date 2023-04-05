@@ -1,4 +1,4 @@
-import { Position, MarkerType } from 'reactflow';
+import { Position, MarkerType, StepEdge } from 'reactflow';
 import { tree } from "./Model/Parse";
 import { JavaClass } from "./Model/JavaClass";
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
@@ -203,8 +203,8 @@ function dependencyForce(nodes, edges, strength = 50) {
 
 function simulateForceLayout(nodes, edges) {
     const simulation = forceSimulation(nodes)
-        //.force("charge", forceManyBody())
-        //.force("center", forceCenter(400, 300))
+        .force("charge", forceManyBody())
+        .force("center", forceCenter(400, 300))
         .force("collide", forceCollide(150))
         .force("dependency", dependencyForce(nodes, edges))
         .stop();
@@ -289,17 +289,31 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
 
     if (layout === 'force') {
-        if (oldNodes.length > 0) {
-        //If the packageNode is expanded add the children to the nodes array and simulate the whole graph again
-            const packageNode = oldNodes.find(n => n.id === param)
-            packageNode.type = "openedPackageNode"
-            const childNodes = nodes.filter(node => node.parentNode === packageNode.id);
-            const childEdges = edges.filter(edge => childNodes.find(node => node.id === edge.source) || childNodes.find(node => node.id === edge.target));
-            nodes = oldNodes.concat(childNodes)
-            edges = oldEdges.concat(childEdges)
+        let packageNode = oldNodes.find(n => n.id === param);
+        let updatedNodes = nodes;
+        let updatedEdges = edges;
+        if (packageNode) {
+            if (packageNode.type == "packageNode") {
+                packageNode.type = "openedPackageNode";
+                const childNodes = nodes.filter(node => node.parentNode === packageNode.id); 
+                updatedNodes = prevNodes.concat(childNodes);
+            } else if (packageNode.type == "openedPackageNode") {
+                packageNode.type = "packageNode";
+                const childNodes = oldNodes.filter(node => node.parentNode === packageNode.id);
+                updatedNodes = oldNodes.filter(node => !childNodes.find(childNode => childNode.id === node.id));
+            }
+        } else {
+            updatedNodes = nodes;
+            updatedEdges = edges;
         }
-        return simulateForceLayout(nodes, edges)
-    } else {
+        updatedEdges = calculateEdges(updatedNodes);
+        console.log(updatedEdges)
+        console.log(updatedNodes)
+        return simulateForceLayout(updatedNodes, updatedEdges);
+        
+    }
+
+    else {
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {
