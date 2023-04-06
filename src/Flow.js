@@ -152,7 +152,7 @@ function Flow() {
   </div><div className="panelHolder" id="rightFloat">
       {selectedNode != null && (
         <div className="panelStyleInformation">
-          <InformationPanel treeNode={tree.getNode(selectedNode.id)} node={selectedNode}/>
+          <InformationPanel treeNode={tree.getNode(selectedNode.id)} node={selectedNode} expandFunc={expandPackage}/>
         </div>
       )}
     </div><ReactFlow

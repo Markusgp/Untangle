@@ -6,13 +6,11 @@ import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { CgExpand, CgCompressRight } from "react-icons/cg";
 import openedPackageNode from "../Nodes/OpenedPackageNode";
 
-const InformationPanel = ({treeNode, node}) => {
+const InformationPanel = ({treeNode, node, expandFunc}) => {
     const toggle = () => setOpen(!open);
 
     const isPackage = treeNode.type === "package";
     const isOpenedPackage = node.type === "openedPackageNode";
-
-
     const [open, setOpen] = useState(true);
 
     const dropStyle = {
@@ -73,7 +71,7 @@ const InformationPanel = ({treeNode, node}) => {
                     </div>
                     <div className="buttonWrapper">
                         {isPackage && !isOpenedPackage && (
-                          <div className="iconButton">
+                          <div className="iconButton" onClick={() => expandFunc(null, node)}>
                               <p>Expand</p>
                               <CgExpand className="ExpandIcon"></CgExpand>
                           </div>
