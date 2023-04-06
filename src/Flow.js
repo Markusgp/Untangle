@@ -26,7 +26,7 @@ import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 
 
 const useBaryCenter = true;
-const layout = 'force';
+const layout = 'Circle';
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
@@ -42,7 +42,7 @@ const edgeTypes = {
 };
 
 function Flow() {
-  const [layout, setLayout] = useState("force");
+  const [layout, setLayout] = useState('Circle');
   const flowinstance = useReactFlow();
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -53,7 +53,6 @@ function Flow() {
   const [invocationsToggled, setInvocationsToggled] = useState(true);
   const [implementationsToggled, setImplementationsToggled] = useState(true);
 
-// Replace the existing useEffect with this:
 useEffect(() => {
   let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
   setNodes(initialNodes);
