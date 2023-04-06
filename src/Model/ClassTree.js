@@ -53,8 +53,16 @@ export class ClassTree {
             else current = current.children.get(current.pack+"."+packages[i])
             if (current == null) return false
         }
+    }
 
-
+    calculateLinesOfCodeRecursively(node) {
+        if (node.children.size > 0) {
+            let sum = Array.from(node.children.values()).reduce((acc, val) => acc + this.calculateLinesOfCodeRecursively(val), 0);
+            node.linesOfCode = sum;
+            return sum;
+        } else {
+            return node.linesOfCode;
+        }
     }
 
     addDependency(from, to, dependencyType){
