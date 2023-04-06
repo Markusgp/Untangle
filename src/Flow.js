@@ -148,11 +148,12 @@ function Flow() {
 
       const shouldHighlight = edgeExists || isChild || node.id === selectedNode.id;
       const opacity = shouldHighlight ? 0.90 : 0.2;
-      const color = isChild && selectedNode.type === "openedPackageNode" ? "rgba(135, 206, 250)" : node.style.color;
+      //Code to set color of open packages to blue
+      //const color = isChild && selectedNode.type === "openedPackageNode" ? "rgba(135, 206, 250)" : node.style.color;
 
       return {
         ...node,
-        style: { ...node.style, opacity, color },
+        style: { ...node.style, opacity },
       };
     });
     setNodes(updatedNodes);
@@ -162,7 +163,7 @@ function Flow() {
     const updatedNodes = nodes.map((node) => {
       return {
         ...node,
-        style: { ...node.style, opacity: 1, color: "rgba(0,0,0)" },
+        style: { ...node.style, opacity: 1 },
       };
     });
     setNodes(updatedNodes);
