@@ -24,6 +24,7 @@ import { tree } from "./Model/Parse"
 import TogglePanel from "./FlowElements/Panels/TogglePanel";
 import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 
+
 const useBaryCenter = true;
 const layout = 'force';
 
@@ -41,6 +42,7 @@ const edgeTypes = {
 };
 
 function Flow() {
+  const [layout, setLayout] = useState("force");
   const flowinstance = useReactFlow();
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -50,6 +52,22 @@ function Flow() {
   const [abstractionsToggled, setAbstractionsToggled] = useState(true);
   const [invocationsToggled, setInvocationsToggled] = useState(true);
   const [implementationsToggled, setImplementationsToggled] = useState(true);
+
+// Replace the existing useEffect with this:
+useEffect(() => {
+  let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
+  setNodes(initialNodes);
+  setEdges(initialEdges);
+}, [layout]);
+
+useEffect(() => {
+  if (flowinstance) {
+    setTimeout(() => {
+      flowinstance.fitView();
+    }, 0);
+  }
+}, [nodes, edges, flowinstance]);
+
 
   function nodeShouldBeDrawn(node) {
     if (node.type === "classNode" && classesToggled) {
@@ -186,6 +204,9 @@ function Flow() {
   };
 
   const onPaneClicked = () => {
+    //Print out the state of the toggle for the layout
+    console.log(layout);
+
     if (selectedNode !== null) {
       let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
       redrawSelectedNodes(prevSelectNode);
@@ -204,7 +225,8 @@ function Flow() {
       <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled} />
     </div>
     <div className="panelStyle">
-      <ExamplePanel>
+    <ExamplePanel>
+        <ToggleSwitch layout={layout} setLayout={setLayout} />
       </ExamplePanel>
 
     </div>
