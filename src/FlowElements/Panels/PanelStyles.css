@@ -108,6 +108,41 @@
     white-space: nowrap;
 }
 
+.content .buttonWrapper {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.content .buttonWrapper .iconButton {
+    width: 90px;
+    height: 25px;
+    border-radius: 15px;
+    border: 4px solid #FF6C69;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 20px;
+}
+.content .iconButton .Eyeicon {
+    width: 15px;
+    height: 15px;
+    margin: 0;
+}
+.content .iconButton .ExpandIcon {
+    width: 20px;
+    height: 20px;
+}
+
+.content .buttonWrapper .iconButton:hover {
+    color: white;
+    background-color: #FF6C69;
+}
+
 .faEye {
     vertical-align: middle;
     padding-bottom: 2px;
