@@ -86,8 +86,6 @@ function Flow() {
       setTimeout(() => {
         flowinstance.fitView();
       }, 0);
-      
-      console.log(flowinstance.fitView())
     }
   }
 
@@ -154,7 +152,7 @@ function Flow() {
   </div><div className="panelHolder" id="rightFloat">
       {selectedNode != null && (
         <div className="panelStyleInformation">
-          <InformationPanel {...tree.getNode(selectedNode.id)} />
+          <InformationPanel treeNode={tree.getNode(selectedNode.id)} node={selectedNode}/>
         </div>
       )}
     </div><ReactFlow

@@ -137,6 +137,11 @@
     width: 20px;
     height: 20px;
 }
+.content .iconButton .CollapseIcon {
+    width: 16px;
+    height: 16px;
+}
+
 
 .content .buttonWrapper .iconButton:hover {
     color: white;

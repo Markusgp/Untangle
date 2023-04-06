@@ -3,12 +3,15 @@ import "./PanelStyles.css"
 import ObjectLogo from "../Assets/Object.svg"
 import Drop from "../Assets/Drop.svg"
 import { FaEyeSlash, FaEye } from "react-icons/fa";
-import { CgExpand } from "react-icons/cg";
+import { CgExpand, CgCompressRight } from "react-icons/cg";
+import openedPackageNode from "../Nodes/OpenedPackageNode";
 
-const InformationPanel = (props) => {
+const InformationPanel = ({treeNode, node}) => {
     const toggle = () => setOpen(!open);
 
-    const isPackage = props.type === "package";
+    const isPackage = treeNode.type === "package";
+    const isOpenedPackage = node.type === "openedPackageNode";
+
 
     const [open, setOpen] = useState(true);
 
@@ -36,46 +39,52 @@ const InformationPanel = (props) => {
                                 <span className="dot"></span>
                                 <p><strong>Type:</strong></p>
                             </div>
-                            <p><i>{props.type.charAt(0).toUpperCase() + props.type.slice(1)}</i></p>
+                            <p><i>{treeNode.type.charAt(0).toUpperCase() + treeNode.type.slice(1)}</i></p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Name:</strong></p>
                             </div>
-                            <p><i>{props.name}</i></p>
+                            <p><i>{treeNode.name}</i></p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Q-Name:</strong></p>
                             </div>
-                            <p><i>{props.pack}</i></p>
+                            <p><i>{treeNode.pack}</i></p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Hidden:</strong></p>
                             </div>
-                            <p><i>{(!props.visible).toString()}</i></p>
+                            <p><i>{(!treeNode.visible).toString()}</i></p>
                         </div>
-                        {props.linesOfCode != null && (<div className="listElementHolder">
+                        {treeNode.linesOfCode != null && (<div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p><strong>Lines of Code:</strong></p>
                             </div>
 
-                            <p><i>{props.linesOfCode.toString()}</i></p>
+                            <p><i>{treeNode.linesOfCode.toString()}</i></p>
                         </div>)}
                     </div>
                     <div className="buttonWrapper">
-                        {isPackage && (
-                          <div className="iconButton" id="expand">
+                        {isPackage && !isOpenedPackage && (
+                          <div className="iconButton">
                               <p>Expand</p>
                               <CgExpand className="ExpandIcon"></CgExpand>
                           </div>
                         )}
-                        <div className="iconButton" id="hide">
+                        {isPackage && isOpenedPackage && (
+                          <div className="iconButton">
+                              <p>Collapse</p>
+                              <CgCompressRight className="CollapseIcon"></CgCompressRight>
+                          </div>
+                        )}
+                        <div className="iconButton">
                             <p>Hide</p>
                             <FaEye className="EyeIcon"></FaEye>
                         </div>
