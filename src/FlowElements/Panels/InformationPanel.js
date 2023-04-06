@@ -4,13 +4,13 @@ import ObjectLogo from "../Assets/Object.svg"
 import Drop from "../Assets/Drop.svg"
 import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { CgExpand, CgCompressRight } from "react-icons/cg";
-import openedPackageNode from "../Nodes/OpenedPackageNode";
 
 const InformationPanel = ({treeNode, node, expandFunc}) => {
     const toggle = () => setOpen(!open);
 
     const isPackage = treeNode.type === "package";
     const isOpenedPackage = node.type === "openedPackageNode";
+    const isHidden = treeNode.visible === false;
     const [open, setOpen] = useState(true);
 
     const dropStyle = {
@@ -82,10 +82,18 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                               <CgCompressRight className="CollapseIcon"></CgCompressRight>
                           </div>
                         )}
-                        <div className="iconButton">
-                            <p>Hide</p>
-                            <FaEye className="EyeIcon"></FaEye>
-                        </div>
+                        { !isHidden && (
+                          <div className="iconButton">
+                              <p>Hide</p>
+                              <FaEyeSlash className="EyeIcon"></FaEyeSlash>
+                          </div>
+                        )}
+                        { isHidden && (
+                          <div className="iconButton">
+                              <p>Unhide</p>
+                              <FaEye className="EyeIcon"></FaEye>
+                          </div>
+                        )}
                     </div>
                 </div>
             )}
