@@ -77,7 +77,7 @@ function Flow() {
   const expandPackage = (_, nd) => {
     let tempNodes = nodes
     let tempEdges = edges
-    if (nd.type === "packageNode") {
+    if (nd.type === "packageNode" || nd.type === "openedPackageNode") {
       const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, 'Circle');
       console.log(nodes, edges)
       setSelectNode(null);
