@@ -49,16 +49,16 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
-                                <p>Name:</p>
+                                <p>Name</p>
                             </div>
                             <p><i>{treeNode.name}</i></p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
-                                <p>Q-Name:</p>
+                                <p>Parent</p>
                             </div>
-                            <p><i>{treeNode.pack}</i></p>
+                            <p><i>{treeNode.pack.substring(0, treeNode.pack.lastIndexOf(".")-1)}.*</i></p>
                         </div>
                         {/*
                             <div className="listElementHolder">
@@ -72,7 +72,7 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                         {treeNode.linesOfCode != null && (<div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
-                                <p>Lines of Code:</p>
+                                <p>LoC</p>
                             </div>
 
                             <p><i>{treeNode.linesOfCode.toString()}</i></p>
