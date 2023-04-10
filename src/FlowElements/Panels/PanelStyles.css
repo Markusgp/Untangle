@@ -69,7 +69,12 @@
 }
 .content li {
     font-size: 14px;
+}
 
+.content .sectionHeader {
+    font-size: 16px;
+    margin: 12px 0;
+    font-weight: 700;
 }
 
 .content .listHolder {
@@ -93,19 +98,17 @@
     width: 5px;
     background-color: #FF6C69;
     border-radius: 20px;
-    margin: 0 5px 0 5px;
+    margin: 0 5px 0 0px;
 }
 .content .listElementHolder p {
     margin: 5px;
-    font-size: 12px;
-    overflow: hidden;
+    font-size: 13px;
     text-wrap: avoid;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .content .buttonWrapper {
-    margin-top: 20px;
     width: 100%;
     display: flex;
     justify-content: flex-end;
@@ -138,7 +141,6 @@
     height: 16px;
 }
 
-
 .content .buttonWrapper .iconButton:hover {
     color: white;
     background-color: #FF6C69;
@@ -153,7 +155,6 @@
 .nodesList {
     margin-top: 5px
 }
-
 
 .toggleHeader {
     font-weight: bold;

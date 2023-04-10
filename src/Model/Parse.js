@@ -107,5 +107,5 @@ for (let i = 0; i < genericInstantiationTuples.length; i++){
 
 console.log(tree.root);
 tree.calculateLinesOfCodeRecursively(tree.root);
-
+tree.createJSONTreeRecursively(tree.root);
 export {tree}

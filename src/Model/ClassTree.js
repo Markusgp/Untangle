@@ -65,6 +65,24 @@ export class ClassTree {
         }
     }
 
+    createJSONTreeRecursively(node) {
+        if (node.children.size > 0) {
+            let tmpJsonArr = [];
+            let children = Array.from(node.children.values());
+            for (let i = 0; i < children.length; i++) {
+                let tmp = this.createJSONTreeRecursively(children[i]);
+                tmpJsonArr.push(tmp);
+            }
+            let jsonRep = {'name': node.name, 'children' :  tmpJsonArr};
+            node.jsonRep = jsonRep;
+            return jsonRep;
+        } else {
+            let jsonRep = {"name": node.name, "value": node.linesOfCode};
+            node.jsonRep = jsonRep;
+            return jsonRep;
+        }
+    }
+
     addDependency(from, to, dependencyType){
         const lastIndex = from.lastIndexOf(".")
 

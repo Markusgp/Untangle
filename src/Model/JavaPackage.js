@@ -10,6 +10,7 @@ export class JavaPackage {
         this.pack = pack
         this.type = type
         this.visible = true
+        this.jsonRep = null;
     }
     //make sure there is no duplicates
     set classInvokation(x){
