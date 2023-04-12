@@ -18,7 +18,7 @@ function InterfaceNode({data}) {
   };
 
    const onClick = () => {
-     console.log(`${id}`); // log the node id
+     
    };
 
   const onFocus = () => { /* setIsFocused(true);*/ };

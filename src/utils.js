@@ -260,6 +260,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                             isSelected: false
                         },
                         position: { x: 0, y: 0 },
+                        width: 110,
+                        height: 100,
                     }
                     if (prevNodes.length > 0) node.parentNode = param
                     nodes.push(node)
@@ -274,6 +276,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                             isSelected: false
                         },
                         position: { x: 0, y: 0 },
+                        width: 110,
+                        height: 100,
                     }
                     if (oldNodes.length > 0) node.parentNode = param
                     nodes.push(node)
@@ -289,6 +293,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                     isSelected: false
                 },
                 position: { x: 0, y: 0 },
+                width: 110,
+                height: 100,
             }
             if (oldNodes.length > 0) node.parentNode = param
             nodes.push(node)
@@ -307,7 +313,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
             if (packageNode.type == "packageNode") {
                 hiddenNodes.push(packageNode)
                 packageNode.type = "openedPackageNode";
-                const childNodes = filterNodes(oldNodes,packageNode)
+                const childNodes = nodes.filter(node => node.parentNode === packageNode.id); 
                 updatedNodes = prevNodes.concat(childNodes);
             } else if (packageNode.type == "openedPackageNode") {
                 hiddenNodes = [];

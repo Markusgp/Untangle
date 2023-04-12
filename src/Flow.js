@@ -219,9 +219,6 @@ useEffect(() => {
   };
 
   const onPaneClicked = () => {
-    //Print out the state of the toggle for the layout
-    console.log(layout);
-
     if (selectedNode !== null) {
       let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
       redrawSelectedNodes(prevSelectNode);
