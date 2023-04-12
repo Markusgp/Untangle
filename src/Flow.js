@@ -84,9 +84,7 @@ function Flow() {
   const [viewShouldFit, setViewShouldFit] = useState(false);
 
 const updateData = () => {
-  if (selectedNode !== null) {
-    setSelectNode(null);
-  }
+  setSelectNode(null);
   setNodes(oldNodes);
   setEdges(oldEdges);
   oldNodes = nodes;
