@@ -1,13 +1,10 @@
-import { Position, MarkerType } from 'reactflow';
+import { Position, MarkerType, StepEdge } from 'reactflow';
 import { tree } from "./Model/Parse";
 import { JavaClass } from "./Model/JavaClass";
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 
-
-// this helper function returns the intersection point
-// of the line between the center of the intersectionNode and the target node
+//This function returns the border point of the node that is closest to the target node
 function getNodeIntersection(intersectionNode, targetNode) {
-    // https://math.stackexchange.com/questions/1724792/an-algorithm-for-finding-the-intersection-point-between-a-center-of-vision-and-a
     const {
         width: intersectionNodeWidth,
         height: intersectionNodeHeight,
@@ -34,7 +31,7 @@ function getNodeIntersection(intersectionNode, targetNode) {
     return { x, y };
 }
 
-// returns the position (top,right,bottom or right) passed node compared to the intersection point
+//Returns the position (top,right,bottom or right) passed node compared to the intersection point
 function getEdgePosition(node, intersectionPoint) {
     const n = { ...node.positionAbsolute, ...node };
     const nx = Math.round(n.x);
@@ -58,7 +55,7 @@ function getEdgePosition(node, intersectionPoint) {
     return Position.Top;
 }
 
-// returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
+//Returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
 export function getEdgeParams(source, target) {
     const sourceIntersectionPoint = getNodeIntersection(source, target);
     const targetIntersectionPoint = getNodeIntersection(target, source);
@@ -92,17 +89,16 @@ function calculateBarycenters(nodes, edges) {
 }
 
 function calculateEdges(nodes) {
-    let edges = []
+    let edges = [];
     nodes.forEach(node => {
         if (node.type === 'openedPackageNode') return
         const cls = tree.getNode(node.id)
-        const nestedMembers = getNestedMembers(cls.pack);
         if (cls === undefined) return
         cls.classInvokation.forEach(invokedClass => {
             const invokedNode = nodes.find(n => n.id === invokedClass)
             if (invokedNode == undefined) return
             if (invokedNode.type === 'openedPackageNode') return
-            const edgeWeight = nestedMembers.length + getNestedMembers(invokedClass).length;
+            const edgeWeight = tree.getNumInvocations(node.id) * 2 - 15;
             edges.push({
                 id: `${node.id}-invokes-${invokedNode.id}`,
                 source: node.id,
@@ -113,10 +109,11 @@ function calculateEdges(nodes) {
                 labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                    width: 15,
                 },
                 data: {
-                    isSelected : false,
-                    nonSelected : true,
+                    isSelected: false,
+                    nonSelected: true,
                     weight: edgeWeight,
                 }
             })
@@ -125,7 +122,7 @@ function calculateEdges(nodes) {
             const implementedNode = nodes.find(n => n.id === implementedClass)
             if (implementedNode == undefined) return
             if (implementedNode.type === 'openedPackageNode') return
-            const edgeWeight = nestedMembers.length + getNestedMembers(implementedClass).length;
+            const edgeWeight = tree.getNumImplementations(node.id) * 2 - 15;
             edges.push({
                 id: `${node.id}-implements-${implementedNode.id}`,
                 source: node.id,
@@ -136,10 +133,11 @@ function calculateEdges(nodes) {
                 labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                    width: 15,
                 },
                 data: {
-                    isSelected : false,
-                    nonSelected : true,
+                    isSelected: false,
+                    nonSelected: true,
                     weight: edgeWeight,
                 }
             })
@@ -148,7 +146,7 @@ function calculateEdges(nodes) {
             const inheritedNode = nodes.find(n => n.id === inheritedClass)
             if (inheritedNode == undefined) return
             if (inheritedNode.type === 'openedPackageNode') return
-            const edgeWeight = nestedMembers.length + getNestedMembers(inheritedClass).length;
+            const edgeWeight = tree.getNumInheritances(node.id) * 2 - 15;
             edges.push({
                 id: `${node.id}-inherits-${inheritedNode.id}`,
                 source: node.id,
@@ -159,10 +157,11 @@ function calculateEdges(nodes) {
                 labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
                 markerEnd: {
                     type: MarkerType.Arrow,
+                    width: 15,
                 },
                 data: {
-                    isSelected : false,
-                    nonSelected : true,
+                    isSelected: false,
+                    nonSelected: true,
                     weight: edgeWeight,
                 }
             })
@@ -171,22 +170,8 @@ function calculateEdges(nodes) {
     return edges
 }
 
-function getNestedMembers(packageName) {
-    const node = tree.getNode(packageName);
-    const nestedMembers = [];
-  
-    node.children.forEach(child => {
-      if (child instanceof JavaClass) {
-        nestedMembers.push(child.pack);
-      } else {
-        nestedMembers.push(...getNestedMembers(child.pack));
-      }
-    });
-  
-    return nestedMembers;
-  }
 
-  
+
 function dependencyForce(nodes, edges, strength = 50) {
     const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
@@ -216,40 +201,37 @@ function dependencyForce(nodes, edges, strength = 50) {
     return force;
 }
 
-<<<<<<< Updated upstream
-function simulateForceLayout(nodes, edges) {
-    const simulation = forceSimulation(nodes)
-        .force("charge", forceManyBody())
-        .force("center", forceCenter(400, 300))
-        .force("collide", forceCollide(150))
-        .force("dependency", dependencyForce(nodes, edges))
-        .stop();
-=======
 function simulateForceLayout(nodes, edges, hiddenNodes) {
-    // Update node positions based on simulation results
-    nodes.forEach((node, index) => {
-        node.position = { x: 0, y: 0 };
-    });
     const simulationNodes = nodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
     const simulationEdges = edges.filter(edge => !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.source) && !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.target));
     const simulation = forceSimulation(simulationNodes)
     .force("collide", forceCollide(150))
     .force("dependency", dependencyForce(simulationNodes, simulationEdges))
     .stop();
->>>>>>> Stashed changes
+
 
     // Run simulation for a fixed number of iterations
-    const numIterations = 100; // Increase the number of iterations for better convergence
+    const numIterations = 600; // Increase the number of iterations for better convergence
     for (let i = 0; i < numIterations; ++i) {
         simulation.tick();
     }
 
     // Update node positions based on simulation results
-    nodes.forEach((node, index) => {
-        node.position = { x: nodes[index].x, y: nodes[index].y };
+    simulationNodes.forEach((node, index) => {
+        node.position = { x: simulationNodes[index].x, y: simulationNodes[index].y };
     });
 
     return { nodes, edges };
+}
+
+function filterNodes(nodes, parent){
+    let filteredNodes = []
+
+    filteredNodes = nodes.filter(node => node.parentNode === parent.id)
+    if (filteredNodes.length <= 0 ) return []
+    filteredNodes.forEach(node => filteredNodes.push(...filterNodes(nodes,node)))
+
+    return filteredNodes
 }
 
 export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, layout) {
@@ -263,8 +245,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
 
     myNodes.forEach(cls => {
         const nodeId = cls.pack
-        const nestedMembers = getNestedMembers(nodeId);
-        if(tree.getNode(nodeId).children.size === 0) {
+
+        if (tree.getNode(nodeId).children.size === 0) {
 
             if (tree.getNode(nodeId) instanceof (JavaClass)) {
 
@@ -278,7 +260,9 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                             label: cls.name,
                             isSelected: false
                         },
-                        position: { x: 0, y: 0}
+                        position: { x: 0, y: 0 },
+                        width: 110,
+                        height: 100,
                     }
                     if (prevNodes.length > 0) node.parentNode = param
                     nodes.push(node)
@@ -292,7 +276,9 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                             label: cls.name,
                             isSelected: false
                         },
-                        position: { x: 0, y: 0},
+                        position: { x: 0, y: 0 },
+                        width: 110,
+                        height: 100,
                     }
                     if (oldNodes.length > 0) node.parentNode = param
                     nodes.push(node)
@@ -307,27 +293,19 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                     label: cls.name,
                     isSelected: false
                 },
-                position: { x: 0, y: 0}
+                position: { x: 0, y: 0 },
+                width: 110,
+                height: 100,
             }
             if (oldNodes.length > 0) node.parentNode = param
             nodes.push(node)
         }
 
-      })
-      console.log(nodes)
-      edges = calculateEdges(nodes)
-      console.log(edges)
-      console.log(oldNodes)
-    // Calculate the positions of the nodes in a circular layout
-    
+    })
+    edges = calculateEdges(nodes)
+
 
     if (layout === 'force') {
-<<<<<<< Updated upstream
-        const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
-        return { nodes: forceNodes, edges: forceEdges };
-    } else {
-        console.log(nodes)
-=======
         let packageNode = oldNodes.find(n => n.id === param);
         let updatedNodes = nodes;
         let updatedEdges = edges;
@@ -355,7 +333,6 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
     }
 
     else {
->>>>>>> Stashed changes
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {
@@ -364,105 +341,171 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                 return aBarycenter - bBarycenter;
             });
         }
-        const numNodes = nodes.length;
-    
+
         let radius = 0
         let totalWidth = 0
         let totalCircumference = 0
         let angleSoFar = 0
-        if (oldNodes.length > 0){
+        if (oldNodes.length > 0) {
             let packageNode = oldNodes.find(n => n.id === param)
-            packageNode.type = "openedPackageNode"
+            if (packageNode.type === "packageNode") {
+                packageNode.type = "openedPackageNode"
     
-            totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
-            totalCircumference = totalWidth * 130 / 100
-            radius = totalCircumference / (2*Math.PI)
-            packageNode.width = radius*2+150
-            packageNode.height = radius*2+150
-            packageNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.4)',width: radius*2+150, height: radius*2+150}
-            
-            let tempNode = packageNode
-            console.log(tempNode)
-            console.log(tempNode.parentNode)
-            while (tempNode.parentNode !== undefined){
-                console.log(nodes)
-    
+                totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
+                totalCircumference = totalWidth * 130 / 100
+                radius = totalCircumference / (2*Math.PI)
+                packageNode.width = radius*2+150
+                packageNode.height = radius*2+150
+                packageNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.4)',width: radius*2+150, height: radius*2+150}
+                
+                let tempNode = packageNode
+                while (tempNode.parentNode !== undefined){    
+                    totalWidth = oldNodes.reduce((sum, node) => {
+                        if (node.parentNode === tempNode.parentNode){
+                            return sum + node.width
+                        } 
+                        else return sum 
+                    }, 0);
+                    totalCircumference = totalWidth * 130 / 100
+                    radius = totalCircumference / (2*Math.PI)
+                    angleSoFar = 0
+                    tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+        
+                    tempNode.width = radius*2 + 150
+                    tempNode.height = radius*2 + 150
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+        
+                    oldNodes.forEach((node) => {
+                        if (node.parentNode === tempNode.id){
+                            const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                            angleSoFar += angle/2
+                            const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
+                            const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
+                            angleSoFar += angle/2;
+                            node.position = {
+                                x: xPos,
+                                y: yPos
+                            }
+                        }
+                    });
+        
+                }
                 totalWidth = oldNodes.reduce((sum, node) => {
-                    if (node.parentNode === tempNode.parentNode){
-                        return sum + node.width
-                    } 
+                    if (node.parentNode === undefined) return sum + node.width
                     else return sum 
                 }, 0);
                 totalCircumference = totalWidth * 130 / 100
-                radius = totalCircumference / (2*Math.PI)
+                radius = totalCircumference / (2 * Math.PI)
                 angleSoFar = 0
-                tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
-    
-                tempNode.width = radius*2 + 150
-                tempNode.height = radius*2 + 150
-                tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
-    
                 oldNodes.forEach((node) => {
-                    if (node.parentNode === tempNode.id){
+                    if (node.parentNode === undefined){
                         const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
                         angleSoFar += angle/2
-                        const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
-                        const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
+                        const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
+                        const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
                         angleSoFar += angle/2;
+            
                         node.position = {
                             x: xPos,
                             y: yPos
                         }
                     }
+                    
                 });
-    
             }
-            totalWidth = oldNodes.reduce((sum, node) => {
-                if (node.parentNode === undefined) return sum + node.width
-                else return sum 
-            }, 0);
-            totalCircumference = totalWidth * 130 / 100
-            radius = totalCircumference / (2*Math.PI)
-            angleSoFar = 0
-            oldNodes.forEach((node) => {
-                if (node.parentNode === undefined){
-                    const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
-                    angleSoFar += angle/2
-                    const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
-                    const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
-                    angleSoFar += angle/2;
+            else {
+                packageNode.type = "packageNode"
+                packageNode.style = {}
+                packageNode.width = 110
+                packageNode.height = 100
+
+                const childNodes = filterNodes(oldNodes,packageNode)
+
+                oldNodes = oldNodes.filter(node => !childNodes.includes(node))
+                let tempNode = packageNode
+                while (tempNode.parentNode !== undefined){    
+                    totalWidth = oldNodes.reduce((sum, node) => {
+                        if (node.parentNode === tempNode.parentNode){
+                            return sum + node.width
+                        } 
+                        else return sum 
+                    }, 0);
+                    totalCircumference = totalWidth * 130 / 100
+                    radius = totalCircumference / (2*Math.PI)
+                    angleSoFar = 0
+                    tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
         
-                    node.position = {
-                        x: xPos,
-                        y: yPos
-                    }
+                    tempNode.width = radius*2 + 150
+                    tempNode.height = radius*2 + 150
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+        
+                    oldNodes.forEach((node) => {
+                        if (node.parentNode === tempNode.id){
+                            const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                            angleSoFar += angle/2
+                            const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
+                            const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
+                            angleSoFar += angle/2;
+                            node.position = {
+                                x: xPos,
+                                y: yPos
+                            }
+                        }
+                    });
+        
                 }
-                
-            });
+                totalWidth = oldNodes.reduce((sum, node) => {
+                    if (node.parentNode === undefined) return sum + node.width
+                    else return sum 
+                }, 0);
+                totalCircumference = totalWidth * 130 / 100
+                radius = totalCircumference / (2*Math.PI)
+                angleSoFar = 0
+                oldNodes.forEach((node) => {
+                    if (node.parentNode === undefined){
+                        const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                        angleSoFar += angle/2
+                        const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
+                        const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
+                        angleSoFar += angle/2;
+            
+                        node.position = {
+                            x: xPos,
+                            y: yPos
+                        }
+                    }
+                    
+                });
+                edges = calculateEdges(oldNodes)
+                nodes = oldNodes
+                return {nodes, edges}
+            }
     
         }
-        totalWidth = nodes.reduce((sum, node) => sum + 110 , 0);
+        totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
         totalCircumference = totalWidth * 1.3
-    
-        radius = totalCircumference / (2*Math.PI)
+
+        radius = totalCircumference / (2 * Math.PI)
         angleSoFar = 0
-        nodes.forEach((node) =>{
-            const angle = (110/ totalCircumference) * (2 * Math.PI) * 1.3;
-            angleSoFar += angle/2
-            const xPos =  200+radius + radius * Math.cos(angleSoFar) - 55-100;
-            const yPos =  50+radius + radius * Math.sin(angleSoFar) - 20;
-            angleSoFar += angle/2;
+        nodes.forEach((node) => {
+            const angle = (110 / totalCircumference) * (2 * Math.PI) * 1.3;
+            angleSoFar += angle / 2
+            const xPos = 200 + radius + radius * Math.cos(angleSoFar) - 55 - 100;
+            const yPos = 50 + radius + radius * Math.sin(angleSoFar) - 20;
+            angleSoFar += angle / 2;
             node.position = {
                 x: xPos,
                 y: yPos
             }
+
         })
-       
-        if (oldNodes.length > 0){
+
+        if (oldNodes.length > 0) {
             nodes = oldNodes.concat(nodes)
             edges = calculateEdges(nodes)
-            return { nodes, edges}
+            return { nodes, edges }
         }
+
         return { nodes, edges };
     }
 }
