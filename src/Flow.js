@@ -84,7 +84,13 @@ function Flow() {
   const [viewShouldFit, setViewShouldFit] = useState(false);
 
 const updateData = () => {
-  setSelectNode(null);
+  if (selectedNode !== null) {
+    let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
+    redrawSelectedNodes(prevSelectNode);
+    redrawSelectedEdges(prevSelectNode, true)
+    setSelectNode(null);
+    resetNodeOpacity(nodes);
+  }
   setNodes(oldNodes);
   setEdges(oldEdges);
   oldNodes = nodes;
