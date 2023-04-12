@@ -202,6 +202,10 @@ function dependencyForce(nodes, edges, strength = 50) {
 }
 
 function simulateForceLayout(nodes, edges, hiddenNodes) {
+    //Reset position of nodes to 0
+    nodes.forEach((node) => {
+        node.position = { x: 0, y: 0 };
+    });
     const simulationNodes = nodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
     const simulationEdges = edges.filter(edge => !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.source) && !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.target));
     const simulation = forceSimulation(simulationNodes)
@@ -215,6 +219,8 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
     for (let i = 0; i < numIterations; ++i) {
         simulation.tick();
     }
+
+
 
     // Update node positions based on simulation results
     simulationNodes.forEach((node, index) => {

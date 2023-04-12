@@ -112,8 +112,6 @@ useEffect(() => {
   }
 }, [nodes, edges, viewShouldFit]);
 
-
-
   const expandPackage = (_, nd) => {
     let tempNodes = nodes
     let tempEdges = edges
