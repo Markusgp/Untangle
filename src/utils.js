@@ -223,7 +223,17 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
     return { nodes, edges };
 }
 
-export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout) {
+function filterNodes(nodes, parent){
+    let filteredNodes = []
+
+    filteredNodes = nodes.filter(node => node.parentNode === parent.id)
+    if (filteredNodes.length <= 0 ) return []
+    filteredNodes.forEach(node => filteredNodes.push(...filterNodes(nodes,node)))
+
+    return filteredNodes
+}
+
+export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, layout) {
     let nodes = [];
     let edges = [];
     let oldNodes = prevNodes
@@ -297,12 +307,12 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
             if (packageNode.type == "packageNode") {
                 hiddenNodes.push(packageNode)
                 packageNode.type = "openedPackageNode";
-                const childNodes = nodes.filter(node => node.parentNode === packageNode.id); 
+                const childNodes = filterNodes(oldNodes,packageNode)
                 updatedNodes = prevNodes.concat(childNodes);
             } else if (packageNode.type == "openedPackageNode") {
                 hiddenNodes = [];
                 packageNode.type = "packageNode";
-                const childNodes = oldNodes.filter(node => node.parentNode === packageNode.id);
+                const childNodes = filterNodes(oldNodes,packageNode)
                 updatedNodes = oldNodes.filter(node => !childNodes.find(childNode => childNode.id === node.id));
             }
         } else {
@@ -330,70 +340,139 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
         let angleSoFar = 0
         if (oldNodes.length > 0) {
             let packageNode = oldNodes.find(n => n.id === param)
-            packageNode.type = "openedPackageNode"
-
-            totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
-            totalCircumference = totalWidth * 130 / 100
-            radius = totalCircumference / (2 * Math.PI)
-            packageNode.width = radius * 2 + 150
-            packageNode.height = radius * 2 + 150
-            packageNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.4)', width: radius * 2 + 150, height: radius * 2 + 150 }
-
-            let tempNode = packageNode
-            while (tempNode.parentNode !== undefined) {
+            if (packageNode.type === "packageNode") {
+                packageNode.type = "openedPackageNode"
+    
+                totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
+                totalCircumference = totalWidth * 130 / 100
+                radius = totalCircumference / (2*Math.PI)
+                packageNode.width = radius*2+150
+                packageNode.height = radius*2+150
+                packageNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.4)',width: radius*2+150, height: radius*2+150}
+                
+                let tempNode = packageNode
+                while (tempNode.parentNode !== undefined){    
+                    totalWidth = oldNodes.reduce((sum, node) => {
+                        if (node.parentNode === tempNode.parentNode){
+                            return sum + node.width
+                        } 
+                        else return sum 
+                    }, 0);
+                    totalCircumference = totalWidth * 130 / 100
+                    radius = totalCircumference / (2*Math.PI)
+                    angleSoFar = 0
+                    tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+        
+                    tempNode.width = radius*2 + 150
+                    tempNode.height = radius*2 + 150
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+        
+                    oldNodes.forEach((node) => {
+                        if (node.parentNode === tempNode.id){
+                            const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                            angleSoFar += angle/2
+                            const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
+                            const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
+                            angleSoFar += angle/2;
+                            node.position = {
+                                x: xPos,
+                                y: yPos
+                            }
+                        }
+                    });
+        
+                }
                 totalWidth = oldNodes.reduce((sum, node) => {
-                    if (node.parentNode === tempNode.parentNode) {
-                        return sum + node.width
-                    }
-                    else return sum
+                    if (node.parentNode === undefined) return sum + node.width
+                    else return sum 
                 }, 0);
                 totalCircumference = totalWidth * 130 / 100
                 radius = totalCircumference / (2 * Math.PI)
                 angleSoFar = 0
-                tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
-
-                tempNode.width = radius * 2 + 150
-                tempNode.height = radius * 2 + 150
-                tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: radius * 2 + 150, height: radius * 2 + 150 }
-
                 oldNodes.forEach((node) => {
-                    if (node.parentNode === tempNode.id) {
+                    if (node.parentNode === undefined){
                         const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
-                        angleSoFar += angle / 2
-                        const xPos = 75 + radius + radius * Math.cos(angleSoFar) - node.width / 2;
-                        const yPos = 50 + radius + radius * Math.sin(angleSoFar) - node.height / 2;
-                        angleSoFar += angle / 2;
+                        angleSoFar += angle/2
+                        const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
+                        const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
+                        angleSoFar += angle/2;
+            
                         node.position = {
                             x: xPos,
                             y: yPos
                         }
                     }
+                    
                 });
-
             }
-            totalWidth = oldNodes.reduce((sum, node) => {
-                if (node.parentNode === undefined) return sum + node.width
-                else return sum
-            }, 0);
-            totalCircumference = totalWidth * 130 / 100
-            radius = totalCircumference / (2 * Math.PI)
-            angleSoFar = 0
-            oldNodes.forEach((node) => {
-                if (node.parentNode === undefined) {
-                    const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
-                    angleSoFar += angle / 2
-                    const xPos = 400 + radius * Math.cos(angleSoFar) - node.width / 2;
-                    const yPos = 300 + radius * Math.sin(angleSoFar) - node.height / 2;
-                    angleSoFar += angle / 2;
+            else {
+                packageNode.type = "packageNode"
+                packageNode.style = {}
+                packageNode.width = 110
+                packageNode.height = 100
 
-                    node.position = {
-                        x: xPos,
-                        y: yPos
-                    }
+                const childNodes = filterNodes(oldNodes,packageNode)
+
+                oldNodes = oldNodes.filter(node => !childNodes.includes(node))
+                let tempNode = packageNode
+                while (tempNode.parentNode !== undefined){    
+                    totalWidth = oldNodes.reduce((sum, node) => {
+                        if (node.parentNode === tempNode.parentNode){
+                            return sum + node.width
+                        } 
+                        else return sum 
+                    }, 0);
+                    totalCircumference = totalWidth * 130 / 100
+                    radius = totalCircumference / (2*Math.PI)
+                    angleSoFar = 0
+                    tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+        
+                    tempNode.width = radius*2 + 150
+                    tempNode.height = radius*2 + 150
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+        
+                    oldNodes.forEach((node) => {
+                        if (node.parentNode === tempNode.id){
+                            const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                            angleSoFar += angle/2
+                            const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
+                            const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
+                            angleSoFar += angle/2;
+                            node.position = {
+                                x: xPos,
+                                y: yPos
+                            }
+                        }
+                    });
+        
                 }
-
-            });
-
+                totalWidth = oldNodes.reduce((sum, node) => {
+                    if (node.parentNode === undefined) return sum + node.width
+                    else return sum 
+                }, 0);
+                totalCircumference = totalWidth * 130 / 100
+                radius = totalCircumference / (2*Math.PI)
+                angleSoFar = 0
+                oldNodes.forEach((node) => {
+                    if (node.parentNode === undefined){
+                        const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                        angleSoFar += angle/2
+                        const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
+                        const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
+                        angleSoFar += angle/2;
+            
+                        node.position = {
+                            x: xPos,
+                            y: yPos
+                        }
+                    }
+                    
+                });
+                edges = calculateEdges(oldNodes)
+                nodes = oldNodes
+                return {nodes, edges}
+            }
+    
         }
         totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
         totalCircumference = totalWidth * 1.3
