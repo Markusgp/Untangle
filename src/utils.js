@@ -216,6 +216,7 @@ function dependencyForce(nodes, edges, strength = 50) {
     return force;
 }
 
+<<<<<<< Updated upstream
 function simulateForceLayout(nodes, edges) {
     const simulation = forceSimulation(nodes)
         .force("charge", forceManyBody())
@@ -223,6 +224,19 @@ function simulateForceLayout(nodes, edges) {
         .force("collide", forceCollide(150))
         .force("dependency", dependencyForce(nodes, edges))
         .stop();
+=======
+function simulateForceLayout(nodes, edges, hiddenNodes) {
+    // Update node positions based on simulation results
+    nodes.forEach((node, index) => {
+        node.position = { x: 0, y: 0 };
+    });
+    const simulationNodes = nodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
+    const simulationEdges = edges.filter(edge => !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.source) && !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.target));
+    const simulation = forceSimulation(simulationNodes)
+    .force("collide", forceCollide(150))
+    .force("dependency", dependencyForce(simulationNodes, simulationEdges))
+    .stop();
+>>>>>>> Stashed changes
 
     // Run simulation for a fixed number of iterations
     const numIterations = 100; // Increase the number of iterations for better convergence
@@ -308,10 +322,40 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
     
 
     if (layout === 'force') {
+<<<<<<< Updated upstream
         const { nodes: forceNodes, edges: forceEdges } = simulateForceLayout(nodes, edges);
         return { nodes: forceNodes, edges: forceEdges };
     } else {
         console.log(nodes)
+=======
+        let packageNode = oldNodes.find(n => n.id === param);
+        let updatedNodes = nodes;
+        let updatedEdges = edges;
+        let hiddenNodes = []
+        if (packageNode) {
+            if (packageNode.type == "packageNode") {
+                hiddenNodes.push(packageNode)
+                packageNode.type = "openedPackageNode";
+                const childNodes = nodes.filter(node => node.parentNode === packageNode.id); 
+                updatedNodes = prevNodes.concat(childNodes);
+            } else if (packageNode.type == "openedPackageNode") {
+                hiddenNodes = [];
+                packageNode.type = "packageNode";
+                const childNodes = filterNodes(oldNodes,packageNode)
+                updatedNodes = oldNodes.filter(node => !childNodes.find(childNode => childNode.id === node.id));
+            }
+        } else {
+            updatedNodes = nodes;
+            updatedEdges = edges;
+        }
+        const simulationNodes = updatedNodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
+        updatedEdges = calculateEdges(simulationNodes);
+        return simulateForceLayout(updatedNodes, updatedEdges, hiddenNodes);
+        
+    }
+
+    else {
+>>>>>>> Stashed changes
         if (useBarycenter) {
             const barycenters = calculateBarycenters(nodes, edges);
             nodes.sort((a, b) => {
