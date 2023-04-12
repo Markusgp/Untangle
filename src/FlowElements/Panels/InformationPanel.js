@@ -7,7 +7,6 @@ import { CgExpand, CgCompressRight } from "react-icons/cg";
 import TreeMap from "./TreeMap";
 
 const InformationPanel = ({treeNode, node, expandFunc}) => {
-    console.log("opened")
     const toggle = () => setOpen(!open);
 
     const isPackage = treeNode.type === "package";
@@ -20,12 +19,18 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
     }
     const jsonData = ({'children' : treeNode.jsonRep.children});
 
+
+    const truncateString = (string, max) => {
+        if (string.length >= max) return string.substring(0, max) + "...";
+        else return string;
+    }
+
     return (
         <>
             <div className="topBar">
                 <div className="identifierSection">
                     <img className="objectIcon" src={ObjectLogo} alt="informationPanelLogo"/>
-                    <p className="panelName">{treeNode.name}</p>
+                    <p className="panelName">{truncateString(treeNode.name, 28)}</p>
                 </div>
                 <img className="dropBtn" src={Drop} style={dropStyle} alt={"toggleOpen"} onClick={toggle}/>
             </div>
@@ -33,7 +38,7 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                 <div className="content">
                     <span className="contentDivider"/>
                     {isPackage && (
-                        <TreeMap key={Math.random()} width={348} height={198} data={jsonData}></TreeMap>
+                        <TreeMap key={Math.random()} width={350} height={250} data={jsonData}></TreeMap>
                     )}
                     <p className="sectionHeader">Specifications</p>
                     <div className="listHolder">
@@ -51,14 +56,14 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                                 <span className="dot"></span>
                                 <p>Name</p>
                             </div>
-                            <p><i>{treeNode.name}</i></p>
+                            <p><i>{truncateString(treeNode.name, 30)}</i></p>
                         </div>
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
                                 <p>Parent</p>
                             </div>
-                            <p><i>{treeNode.pack.substring(0, treeNode.pack.lastIndexOf(".")-1)}.*</i></p>
+                            <p><i>{truncateString((treeNode.pack.substring(0, treeNode.pack.lastIndexOf(".")-1)+".*"),30)}</i></p>
                         </div>
                         {/*
                             <div className="listElementHolder">

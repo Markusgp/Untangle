@@ -19,67 +19,93 @@ function TreeMap({ width, height, data}) {
     draw();
   }, [data]);
 
-  const color = d3.scaleOrdinal().domain([]).range(["#9BF6FF","#FFD6A5","#FFADAD","#FDFFB6","#CAFFBF","#A0C4FF","#BDB2FF","#FFC6FF","#FFFFFC"]);
+  const color = d3.scaleOrdinal().domain([]).range(["#9BF6FF","#FFD6A5","#BDB2FF","#FFADAD","#CAFFBF","#FDFFB6","#FFC6FF","#FFFFFC"]);
 
   let draw = () => {
-    const svg = d3.select(ref.current).attr("width", width)
-        .attr("height", height)
-
+    const svg = d3.select(ref.current)
+      .attr("width", width)
+      .attr("height", height)
 
     const root = d3.hierarchy(data)
-        .sum(function(d){ return d.value})
-        .sort((a, b) => b.value - a.value);
+      .sum(function(d){ return d.value})
+      .sort((a, b) => b.value - a.value);
 
-    d3.treemap().size([width, height])(root);
+    //d3.treemapSlice(root, 0, 0, width, height)
+    d3.treemap().size([width, height]) (root);
 
     const opacity = d3.scaleLinear()
-        .domain([0, valueDelimeter])
-        .range([.2,1]);
+      .domain([0, valueDelimeter])
+      .range([.2,1]);
 
     const nodes = svg
-        .selectAll("rect")
-        .data(root.leaves());
+      .selectAll("rect")
+      .data(root.leaves());
 
     nodes.enter()
-        .append("rect")
-        .attr('x', function (d) { return d.x0; })
-        .attr('y', function (d) { return d.y0; })
-        .attr('width', function (d) { return d.x1 - d.x0; })
-        .attr('height', function (d) { return d.y1 - d.y0; })
-        .style("stroke", "white")
-        .style("fill", function(d){ return color(d.parent.data.name)} )
-        .style("opacity", function(d){ return opacity(d.data.value)})
+      .append("rect")
+      .attr('x', function (d) { return d.x0; })
+      .attr('y', function (d) { return d.y0; })
+      .attr('width', function (d) { return d.x1 - d.x0; })
+      .attr('height', function (d) { return d.y1 - d.y0; })
+      .style("stroke", "white")
+      .style("fill", function (d) { return color(d.parent.data.name) } )
+      .style("opacity", function (d) { return opacity(d.data.value) } )
 
     nodes.exit().remove()
 
     const nodeText = svg
-        .selectAll("text")
-        .data(root.leaves());
+      .selectAll("text")
+      .data(root.leaves());
+
 
     nodeText.enter()
-        .append("text")
-        .attr("x", function(d){ return d.x0+5})    // +10 to adjust position (more right)
-        .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
-        .text(function(d){ return d.data.name.replace('mister_','') })
-        .attr("font-size", "12px")
-        .attr("fill", "black")
+      .append("text")
+      .attr("x", function(d){ return d.x0+5})    // Offset right
+      .attr("y", function(d){ return d.y0+15})   // Offset down
+      .text(function(d){
+          if ((d.y1-d.y0) < (height/8) || (d.x1-d.x0) < (width/15)) return "";      //If height too small, don't print
+          if (d.data.name.length > 25) return (d.data.name.substring(0,25) +"..."); //Substring under 25 chars.
+          else return d.data.name
+        })
+      .attr("font-size", "1px")
+      .each(getSize)
+      .attr("font-size", function (d) {
+          if (d.scale * 1 > 12) {return 12 + "px";}
+          else {return d.scale * 1 + "px";}
+      })
+      .attr("fill", "black")
 
-    var nodeVals = svg
+    function getSize(d) {
+      let margin = 10
+      let boxwidth = d.x1 - d.x0;
+      let selfwidth = this.getBBox().width;
+      let scale;
+      if ((boxwidth - margin) < 0) scale = 0;
+      else scale = boxwidth - margin;
+      d.scale = scale / selfwidth
+    }
+
+    let nodeVals = svg
         .selectAll("vals")
         .data(root.leaves())
 
     nodeVals.enter()
-        .append("text")
-        .attr("x", function(d){ return d.x0+5 })    // +10 to adjust position (more right)
-        .attr("y", function(d){ return d.y0+35 })    // +20 to adjust position (lower)
-        .text(function(d){ return d.data.value })
-        .attr("font-size", "9px")
-        .attr("fill", "black")
+      .append("text")
+      .attr("x", function(d){ return d.x0+5 })    // Offset right
+      .attr("y", function(d){ return d.y0+28 })   // Offset down
+      .text(function(d){
+        if ((d.y1-d.y0) < (height/8) || (d.x1-d.x0) < (width/15)) return ""; //Don't print if box too small.
+        return d.data.value
+      })
+      .attr("font-size", "1px")
+      .each(getSize)
+      .attr("font-size", function (d) {
+        if (d.scale * 1 > 9) return "9px";
+        if (d.scale * 1 < 4) return "0px";
+        else return (d.scale * 1 - 2) + "px";
+      })
+      .attr("fill", "black")
   }
-
-
-
-
 
   return (
       <div className="chart">
