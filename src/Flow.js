@@ -58,24 +58,6 @@ function Flow() {
 
   const [selectedNode, setSelectNode] = useState(null);
 
-useEffect(() => {
-  if (selectedNode !== null) {
-  setSelectNode(null);
-  }
-  setNodes(oldNodes);
-  setEdges(oldEdges);
-  oldNodes = nodes;
-  oldEdges = edges;
-  setTimeout(() => {
-    flowinstance.fitView();
-  }, 100);
-}, [layout]);
-
-useEffect(() => {
-  if (flowinstance) {
-  }
-}, [layout]);
-
 
   function nodeShouldBeDrawn(node) {
     if (node.type === "classNode" && classesToggled) {
@@ -98,7 +80,34 @@ useEffect(() => {
     }
     return false;
   }
-  
+
+  const [viewShouldFit, setViewShouldFit] = useState(false);
+
+const updateData = () => {
+  if (selectedNode !== null) {
+    setSelectNode(null);
+  }
+  setNodes(oldNodes);
+  setEdges(oldEdges);
+  oldNodes = nodes;
+  oldEdges = edges;
+  setViewShouldFit(true); // Set viewShouldFit to true when layout changes or a package is expanded
+};
+
+useEffect(() => {
+  updateData();
+}, [layout]);
+
+useEffect(() => {
+  if (nodes !== oldNodes || edges !== oldEdges) {
+    if (viewShouldFit) {
+      flowinstance.fitView();
+      setViewShouldFit(false); // Reset viewShouldFit after fitView is called
+    }
+  }
+}, [nodes, edges, viewShouldFit]);
+
+
 
   const expandPackage = (_, nd) => {
     let tempNodes = nodes
