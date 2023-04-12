@@ -91,7 +91,8 @@ const updateData = () => {
     setSelectNode(null);
     resetNodeOpacity(nodes);
   }
-  setNodes(oldNodes);
+  
+  resetNodeOpacity(oldNodes);
   setEdges(oldEdges);
   oldNodes = nodes;
   oldEdges = edges;
