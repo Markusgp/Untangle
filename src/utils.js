@@ -216,8 +216,8 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
     }
 
     // Update node positions based on simulation results
-    nodes.forEach((node, index) => {
-        node.position = { x: nodes[index].x, y: nodes[index].y };
+    simulationNodes.forEach((node, index) => {
+        node.position = { x: simulationNodes[index].x, y: simulationNodes[index].y };
     });
 
     return { nodes, edges };

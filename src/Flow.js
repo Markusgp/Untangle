@@ -26,7 +26,7 @@ import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 
 
 const useBaryCenter = true;
-const layout = 'Circle';
+const layout = 'force';
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
@@ -41,8 +41,11 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
+let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, 'Circle');
+
+
 function Flow() {
-  const [layout, setLayout] = useState('Circle');
+  const [layout, setLayout] = useState(null);
   const flowinstance = useReactFlow();
   let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -53,19 +56,25 @@ function Flow() {
   const [invocationsToggled, setInvocationsToggled] = useState(true);
   const [implementationsToggled, setImplementationsToggled] = useState(true);
 
+  const [selectedNode, setSelectNode] = useState(null);
+
 useEffect(() => {
-  let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
-  setNodes(initialNodes);
-  setEdges(initialEdges);
+  if (selectedNode !== null) {
+  setSelectNode(null);
+  }
+  setNodes(oldNodes);
+  setEdges(oldEdges);
+  oldNodes = nodes;
+  oldEdges = edges;
+  setTimeout(() => {
+    flowinstance.fitView();
+  }, 100);
 }, [layout]);
 
 useEffect(() => {
   if (flowinstance) {
-    setTimeout(() => {
-      flowinstance.fitView();
-    }, 0);
   }
-}, [nodes, edges, flowinstance]);
+}, [layout]);
 
 
   function nodeShouldBeDrawn(node) {
@@ -89,7 +98,7 @@ useEffect(() => {
     }
     return false;
   }
-  const [selectedNode, setSelectNode] = useState(null);
+  
 
   const expandPackage = (_, nd) => {
     let tempNodes = nodes
