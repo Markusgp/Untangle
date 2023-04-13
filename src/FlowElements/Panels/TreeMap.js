@@ -5,6 +5,7 @@ import "./PanelStyles.css"
 function TreeMap({ width, height, data}) {
   let ref = useRef();
 
+  //Used for opacity calculation remove in cleanup
   const reduceJsonData = (data, acc) => {
     if (data.hasOwnProperty('children')) {
       return (reduceJsonData(data.children, acc));
@@ -14,6 +15,7 @@ function TreeMap({ width, height, data}) {
     }
   }
 
+  //Used for opacity calculation remove in cleanup
   let valueDelimeter = reduceJsonData(data, []);
 
   useEffect(() => {
