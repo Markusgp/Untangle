@@ -177,3 +177,9 @@ li::marker {
     stroke-width: 1px;
     margin-right: 8px;
 }
+
+#inspectionHolder {
+    width: 100%;
+    overflow: hidden;
+    font-size: 10px;
+}
