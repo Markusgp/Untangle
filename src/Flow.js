@@ -26,7 +26,7 @@ import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 
 
 const useBaryCenter = true;
-const layout = 'force';
+const layout = 'circle';
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout);
 
@@ -41,7 +41,7 @@ const edgeTypes = {
   floating: FloatingEdge,
 };
 
-let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, 'Circle');
+let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, 'force');
 
 
 function Flow() {
@@ -57,6 +57,7 @@ function Flow() {
   const [implementationsToggled, setImplementationsToggled] = useState(true);
 
   const [selectedNode, setSelectNode] = useState(null);
+  const [firstRender, setFirstRender] = useState(true);
 
 
   function nodeShouldBeDrawn(node) {
@@ -100,7 +101,8 @@ const updateData = () => {
 };
 
 useEffect(() => {
-  updateData();
+  if (firstRender) setFirstRender(false)
+  else updateData();
 }, [layout]);
 
 useEffect(() => {

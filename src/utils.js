@@ -205,6 +205,8 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
     //Reset position of nodes to 0
     nodes.forEach((node) => {
         node.position = { x: 0, y: 0 };
+        if (node.parentNode !== null) node.parent = node.parentNode
+        node.parentNode = null
     });
     const simulationNodes = nodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
     const simulationEdges = edges.filter(edge => !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.source) && !hiddenNodes.find(hiddenNode => hiddenNode.id === edge.target));
@@ -233,7 +235,7 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
 function filterNodes(nodes, parent){
     let filteredNodes = []
 
-    filteredNodes = nodes.filter(node => node.parentNode === parent.id)
+    filteredNodes = nodes.filter(node => node.parentNode === parent.id || node.parent === parent.id)
     if (filteredNodes.length <= 0 ) return []
     filteredNodes.forEach(node => filteredNodes.push(...filterNodes(nodes,node)))
 
@@ -320,7 +322,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
             if (packageNode.type == "packageNode") {
                 hiddenNodes.push(packageNode)
                 packageNode.type = "openedPackageNode";
-                const childNodes = filterNodes(nodes,packageNode)
+                const childNodes = nodes.filter(node => node.parentNode === packageNode.id || node.parent === packageNode.id)
                 updatedNodes = prevNodes.concat(childNodes);
             } else if (packageNode.type == "openedPackageNode") {
                 hiddenNodes = [];
