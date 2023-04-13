@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import "./PanelStyles.css"
-import FileLogo from "../Assets/File.svg"
 import Drop from "../Assets/Drop.svg";
 import { FaEyeSlash, FaEye } from "react-icons/fa";
+import { BiFilterAlt } from "react-icons/bi";
 
 
 const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, implementationsToggled, abstractionsToggled, invocationsToggled}) => {
@@ -46,7 +46,7 @@ const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, impleme
     <>
     <div className="topBar">
       <div className="identifierSection">
-        <img className="panelIcon" src={FileLogo}/>
+        <BiFilterAlt className="filterIcon"></BiFilterAlt>
         <p className="panelName">Filter</p>
       </div>
 
@@ -55,7 +55,7 @@ const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, impleme
     {open && (
       <div className="content">
         <span className="contentDivider"/>
-        <p className="toggleHeader">Nodes:</p>
+        <p className="toggleHeader" id="firstToggleHeader">Nodes:</p>
         <ul>{nodeTypeItems}</ul>
         <p className="toggleHeader">Edges:</p>
         <ul>{edgeTypeItems}</ul>

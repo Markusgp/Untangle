@@ -3,11 +3,11 @@ import { JavaPackage } from "./JavaPackage"
 
 export class ClassTree {
     constructor() {
-        this.root = new JavaPackage("src","")
+        this.root = new JavaPackage("src","", "package")
     }
 
     add(name, pack, type, linesOfCode){
-        const node = new JavaClass(name, pack, type,linesOfCode)
+        const node = new JavaClass(name, pack, type, linesOfCode)
 
         if (!this.root) {
             this.root = node
@@ -21,7 +21,7 @@ export class ClassTree {
                 if (current.children.has(packages[i]))
                     current = current.children.get(packages[i])
                 else {
-                    const newNode = new JavaPackage(packages[i],packages[i])
+                    const newNode = new JavaPackage(packages[i], packages[i], "package")
                     current.children.set(newNode.pack,newNode)
                     current = newNode
                 }
@@ -29,7 +29,7 @@ export class ClassTree {
                 if (current.children.has(current.pack+"."+packages[i]))
                     current = current.children.get(current.pack+"."+packages[i])
                 else{
-                    const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i])
+                    const newNode = new JavaPackage(packages[i],current?.pack+"."+packages[i], "package")
                     current.children.set(newNode.pack,newNode)
                     current = newNode
                 }
@@ -53,8 +53,34 @@ export class ClassTree {
             else current = current.children.get(current.pack+"."+packages[i])
             if (current == null) return false
         }
+    }
 
+    calculateLinesOfCodeRecursively(node) {
+        if (node.children.size > 0) {
+            let sum = Array.from(node.children.values()).reduce((acc, val) => acc + this.calculateLinesOfCodeRecursively(val), 0);
+            node.linesOfCode = sum;
+            return sum;
+        } else {
+            return node.linesOfCode;
+        }
+    }
 
+    createJSONTreeRecursively(node) {
+        if (node.children.size > 0) {
+            let tmpJsonArr = [];
+            let children = Array.from(node.children.values());
+            for (let i = 0; i < children.length; i++) {
+                let tmp = this.createJSONTreeRecursively(children[i]);
+                tmpJsonArr.push(tmp);
+            }
+            let jsonRep = {'name': node.name, 'children' :  tmpJsonArr};
+            node.jsonRep = jsonRep;
+            return jsonRep;
+        } else {
+            let jsonRep = {"name": node.name, "value": node.linesOfCode};
+            node.jsonRep = jsonRep;
+            return jsonRep;
+        }
     }
 
     addDependency(from, to, dependencyType){

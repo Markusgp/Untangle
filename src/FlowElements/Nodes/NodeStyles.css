@@ -43,5 +43,21 @@
     height: 14px;
 }
 
+.titleContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 0 20px;
+}
+
+.nodeExpanded {
+    border-radius: 20px;
+    background: none;
+    width: 100%;
+    height: 100%;
+    color: #292929
+}
+
 
 

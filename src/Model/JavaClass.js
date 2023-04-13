@@ -12,6 +12,7 @@ export class JavaClass {
         this.type = type
         this.linesOfCode = linesOfCode
         this.visible = true
+        this.jsonRep = null;
     }
     //make sure there is no duplicates
     set classInvokation(x){

@@ -250,7 +250,7 @@ useEffect(() => {
   </div><div className="panelHolder" id="rightFloat">
       {selectedNode != null && (
         <div className="panelStyleInformation">
-          <InformationPanel {...tree.getNode(selectedNode.id)} />
+          <InformationPanel treeNode={tree.getNode(selectedNode.id)} node={selectedNode} expandFunc={expandPackage}/>
         </div>
       )}
     </div><ReactFlow
