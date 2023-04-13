@@ -20,14 +20,14 @@ function PackageNode({data}) {
   };
 
     const onClick = () => {
-        console.log(`${id}`); // log the node id
+       
     };
 
     const onFocus = () => { /* setIsFocused(true);*/ };
     const onBlur = () => { /*setIsFocused(false);*/ };
 
   const expandModule = () => {
-    console.log(id + " was expanded");
+    
   };
 
    return (
