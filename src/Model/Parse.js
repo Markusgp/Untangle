@@ -104,5 +104,6 @@ for (let i = 0; i < genericInstantiationTuples.length; i++){
 
     tree.addDependency(from,to,"invokation")
 }
-
+tree.calculateLinesOfCodeRecursively(tree.root);
+tree.createJSONTreeRecursively(tree.root);
 export {tree}
