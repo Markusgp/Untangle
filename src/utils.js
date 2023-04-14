@@ -1,77 +1,7 @@
-import { Position, MarkerType, StepEdge } from 'reactflow';
+import { MarkerType, StepEdge } from 'reactflow';
 import { tree } from "./Model/Parse";
-import { JavaClass } from "./Model/JavaClass";
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 
-//This function returns the border point of the node that is closest to the target node
-function getNodeIntersection(intersectionNode, targetNode) {
-    const {
-        width: intersectionNodeWidth,
-        height: intersectionNodeHeight,
-        positionAbsolute: intersectionNodePosition,
-    } = intersectionNode;
-    const targetPosition = targetNode.positionAbsolute;
-
-    const w = intersectionNodeWidth / 2;
-    const h = intersectionNodeHeight / 2;
-
-    const x2 = intersectionNodePosition.x + w;
-    const y2 = intersectionNodePosition.y + h;
-    const x1 = targetPosition.x + w;
-    const y1 = targetPosition.y + h;
-
-    const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
-    const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
-    const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-    const xx3 = a * xx1;
-    const yy3 = a * yy1;
-    const x = w * (xx3 + yy3) + x2;
-    const y = h * (-xx3 + yy3) + y2;
-
-    return { x, y };
-}
-
-//Returns the position (top,right,bottom or right) passed node compared to the intersection point
-function getEdgePosition(node, intersectionPoint) {
-    const n = { ...node.positionAbsolute, ...node };
-    const nx = Math.round(n.x);
-    const ny = Math.round(n.y);
-    const px = Math.round(intersectionPoint.x);
-    const py = Math.round(intersectionPoint.y);
-
-    if (px <= nx + 1) {
-        return Position.Left;
-    }
-    if (px >= nx + n.width - 1) {
-        return Position.Right;
-    }
-    if (py <= ny + 1) {
-        return Position.Top;
-    }
-    if (py >= n.y + n.height - 1) {
-        return Position.Bottom;
-    }
-
-    return Position.Top;
-}
-
-//Returns the parameters (sx, sy, tx, ty, sourcePos, targetPos) you need to create an edge
-export function getEdgeParams(source, target) {
-    const sourceIntersectionPoint = getNodeIntersection(source, target);
-    const targetIntersectionPoint = getNodeIntersection(target, source);
-
-    const sourcePos = getEdgePosition(source, sourceIntersectionPoint);
-    const targetPos = getEdgePosition(target, targetIntersectionPoint);
-
-    return {
-        sx: sourceIntersectionPoint.x,
-        sy: sourceIntersectionPoint.y,
-        tx: targetIntersectionPoint.x,
-        ty: targetIntersectionPoint.y,
-        sourcePos,
-        targetPos,
-    };
-}
 
 function calculateBarycenters(nodes, edges) {
     const barycenters = nodes.map((node) => {
@@ -172,6 +102,8 @@ function calculateEdges(nodes) {
 
 
 
+
+
 function dependencyForce(nodes, edges, strength = 50) {
     const nodeById = new Map(nodes.map((node) => [node.id, node]));
 
@@ -217,6 +149,7 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
 
 
     // Run simulation for a fixed number of iterations
+    //TODO This should definitely be a property
     const numIterations = 600; // Increase the number of iterations for better convergence
     for (let i = 0; i < numIterations; ++i) {
         simulation.tick();
@@ -242,7 +175,8 @@ function filterNodes(nodes, parent){
     return filteredNodes
 }
 
-export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, layout) {
+
+export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout) {
     let nodes = [];
     let edges = [];
     let oldNodes = prevNodes
@@ -253,62 +187,21 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
 
     myNodes.forEach(cls => {
         const nodeId = cls.pack
-
-        if (tree.getNode(nodeId).children.size === 0) {
-
-            if (tree.getNode(nodeId) instanceof (JavaClass)) {
-
-                const nodeTmp = tree.getNode(nodeId);
-                if (nodeTmp.type === "class") {
-                    const node = {
-                        id: nodeId,
-                        type: 'classNode',
-                        data: {
-                            id: nodeId,
-                            label: cls.name,
-                            isSelected: false
-                        },
-                        position: { x: 0, y: 0 },
-                        width: 110,
-                        height: 100,
-                    }
-                    if (prevNodes.length > 0) node.parentNode = param
-                    nodes.push(node)
-
-                } else if (nodeTmp.type === "interface") {
-                    const node = {
-                        id: nodeId,
-                        type: 'interfaceNode',
-                        data: {
-                            id: nodeId,
-                            label: cls.name,
-                            isSelected: false
-                        },
-                        position: { x: 0, y: 0 },
-                        width: 110,
-                        height: 100,
-                    }
-                    if (oldNodes.length > 0) node.parentNode = param
-                    nodes.push(node)
-                }
-            }
-        } else {
-            const node = {
+        const nodeTmp = tree.getNode(nodeId);
+        const node = {
+            id: nodeId,
+            type: nodeTmp.type + "Node",
+            data: {
                 id: nodeId,
-                type: 'packageNode',
-                data: {
-                    id: nodeId,
-                    label: cls.name,
-                    isSelected: false
-                },
-                position: { x: 0, y: 0 },
-                width: 110,
-                height: 100,
-            }
-            if (oldNodes.length > 0) node.parentNode = param
-            nodes.push(node)
+                label: cls.name,
+                isSelected: false
+            },
+            position: { x: 0, y:0 },
+            width: 110,
+            height: 100,
         }
-
+        if (prevNodes.length > 0) node.parentNode = param
+        nodes.push(node);
     })
     edges = calculateEdges(nodes)
 
@@ -319,12 +212,12 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
         let updatedEdges = edges;
         let hiddenNodes = []
         if (packageNode) {
-            if (packageNode.type == "packageNode") {
+            if (packageNode.type === "packageNode") {
                 hiddenNodes.push(packageNode)
                 packageNode.type = "openedPackageNode";
                 const childNodes = nodes.filter(node => node.parentNode === packageNode.id || node.parent === packageNode.id)
                 updatedNodes = prevNodes.concat(childNodes);
-            } else if (packageNode.type == "openedPackageNode") {
+            } else if (packageNode.type === "openedPackageNode") {
                 hiddenNodes = [];
                 packageNode.type = "packageNode";
                 const childNodes = filterNodes(oldNodes,packageNode)
@@ -377,7 +270,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                     totalCircumference = totalWidth * 130 / 100
                     radius = totalCircumference / (2*Math.PI)
                     angleSoFar = 0
-                    tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+                    tempNode = oldNodes.find(n => n.id === tempNode.parentNode)
 
                     tempNode.width = radius*2 + 150
                     tempNode.height = radius*2 + 150

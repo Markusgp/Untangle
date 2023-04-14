@@ -11,7 +11,8 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import './index.css';
 
-import { createNodesAndEdges, simulateForceLayout } from './utils.js';
+//TODO Can we remove simulate force layout here?
+import { createNodesAndEdges, /*simulateForceLayout*/ } from './utils.js';
 
 import PackageNode from './FlowElements/Nodes/PackageNode.js';
 import ClassNode from './FlowElements/Nodes/ClassNode'
