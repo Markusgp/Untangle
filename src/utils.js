@@ -1,5 +1,6 @@
 import { MarkerType, StepEdge } from 'reactflow';
 import { tree } from "./Model/Parse";
+//TODO Markus bruger vi dem her?
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 
 
