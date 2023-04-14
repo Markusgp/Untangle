@@ -16,7 +16,7 @@ function PackageNode({data}) {
             <Handle type="source" position={Position.Bottom}/>
             <div className="nodeContentWrapper" id={nodeId}>
                 <div className="iconWrapper">
-                    <img className="nodeIcon" src={ComponentLogo} alt="File-icon"/>
+                    <img className="nodeIcon" src={ComponentLogo} alt="ComponentIcon"/>
                 </div>
                 <div className="nodeNameLabel">{label}.*</div>
                 <p className="nodeTypeLabel">&lt;Package&gt;</p>
