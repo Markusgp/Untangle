@@ -21,13 +21,13 @@ import OpenedPackageNode from "./FlowElements/Nodes/OpenedPackageNode";
 
 import FloatingEdge from './FloatingEdge.js';
 
-import ExamplePanel from "./FlowElements/Panels/ExamplePanel";
+import LayoutPanel from "./FlowElements/Panels/LayoutPanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
 import TogglePanel from "./FlowElements/Panels/TogglePanel";
 import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
+import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
 
 import {tree} from "./Model/Parse"
-import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
 
 const useBaryCenter = true;
 const layout = 'circle';
@@ -258,35 +258,38 @@ function Flow() {
     return (<>
         <div className="panelHolder" id="leftFloat">
             <div className="panelStyle">
-                <TogglePanel classesToggled={setClassesToggled}
-                             interfacesToggled={setInterfacesToggled}
-                             moduleToggled={setModulesToggled}
-                             implementationsToggled={setImplementationsToggled}
-                             abstractionsToggled={setAbstractionsToggled}
-                             invocationsToggled={setInvocationsToggled}/>
-            </div>
-            <div className="panelStyle">
-                <ExamplePanel>
+                <LayoutPanel>
                     <ToggleSwitch layout={layout} setLayout={setLayout}/>
-                </ExamplePanel>
+                </LayoutPanel>
             </div>
-            { hiddenNodes.length > 0 && (
-                <div className="panelStyle">
-                <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
-                </HiddenPanel>
-            </div>
-            )}
+                <div>
+                    <div className="panelStyle">
+                        <TogglePanel classesToggled={setClassesToggled}
+                                     interfacesToggled={setInterfacesToggled}
+                                     moduleToggled={setModulesToggled}
+                                     implementationsToggled={setImplementationsToggled}
+                                     abstractionsToggled={setAbstractionsToggled}
+                                     invocationsToggled={setInvocationsToggled}/>
+                    </div>
+                    { hiddenNodes.length > 0 && (
+                        <div className="panelStyle">
+                            <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
+                            </HiddenPanel>
+                        </div>
+                    )}
+                </div>
 
         </div>
         <div className="panelHolder" id="rightFloat">
-            {selectedNode != null && (
-                <div className="panelStyleInformation">
-                    <InformationPanel treeNode={tree.getNode(selectedNode.id)}
-                                      node={selectedNode}
-                                      expandFunc={expandPackage}
-                                      hideFunc={toggleHiddenNode}/>
-                </div>
-            )}
+                {selectedNode != null && (
+                    <div className="panelStyleInformation">
+                        <InformationPanel treeNode={tree.getNode(selectedNode.id)}
+                                          node={selectedNode}
+                                          expandFunc={expandPackage}
+                                          hideFunc={toggleHiddenNode}/>
+                    </div>
+                )}
+
         </div>
         <ReactFlow
             nodes={nodes.filter(nodeShouldBeDrawn)}
