@@ -36,6 +36,10 @@
 .dropBtn {
     margin-right: 5px;
 }
+.dropBtn:hover {
+    scale: 125%;
+}
+
 .content {
     display: flex;
     flex-direction: column;
@@ -82,12 +86,12 @@
     flex-direction: column;
     width: 100%;
 }
-.content .listHolder .listElementHolder {
+.listElementHolder {
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    width: 100%;
 }
 .content .listElementHolder .leftFloat {
     display: flex;
@@ -95,7 +99,7 @@
 }
 .dot {
     height: 5px;
-    width: 5px;
+    width: 4px;
     background-color: #FF6C69;
     border-radius: 20px;
     margin: 0 5px 0 0px;
@@ -151,6 +155,11 @@
     padding-bottom: 2px;
     padding-right: 2px;
 }
+.faEyeLarge {
+    width: 22px;
+    height: 20px;
+    margin: 0 8px 0 3px;
+}
 
 .nodesList {
     margin-top: 5px
@@ -178,8 +187,20 @@ li::marker {
     margin-right: 8px;
 }
 
-#inspectionHolder {
-    width: 100%;
-    overflow: hidden;
-    font-size: 10px;
+.hiddenCloseBtn {
+    width: 20px;
+    height: 20px;
+    color: #FF6C69;
+    border: none;
+    stroke-width: 1px;
+    margin-right: 4px;
+}
+
+.hiddenCloseBtn:hover {
+    stroke-width: 2px;
+    scale: 125%;
+}
+
+.listElementHolder:hover {
+    font-weight: bolder;
 }

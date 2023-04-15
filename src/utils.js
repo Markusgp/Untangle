@@ -1,5 +1,5 @@
 import { MarkerType, StepEdge } from 'reactflow';
-import { tree } from "./Model/Parse";
+//import { tree } from "./Model/Parse";
 //TODO Markus bruger vi dem her?
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 
@@ -19,7 +19,7 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
-function calculateEdges(nodes) {
+function calculateEdges(nodes, tree) {
     let edges = [];
     nodes.forEach(node => {
         if (node.type === 'openedPackageNode') return
@@ -177,34 +177,37 @@ function filterNodes(nodes, parent){
 }
 
 
-export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout) {
+export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout, tree) {
     let nodes = [];
     let edges = [];
     let oldNodes = prevNodes
     let oldEdges = prevEdges
 
-    // Create nodes for each class
-    const myNodes = tree.getPackageContent(param)
+    const myNodes = tree.getPackageContent(param);
 
     myNodes.forEach(cls => {
-        const nodeId = cls.pack
-        const nodeTmp = tree.getNode(nodeId);
-        const node = {
-            id: nodeId,
-            type: nodeTmp.type + "Node",
-            data: {
+        //Filter out all nodes marked as invisible in tree
+        if (cls.visible === true) {
+            const nodeId = cls.pack
+            const nodeTmp = tree.getNode(nodeId);
+            const node = {
                 id: nodeId,
-                label: cls.name,
-                isSelected: false
-            },
-            position: { x: 0, y:0 },
-            width: 110,
-            height: 100,
+                type: nodeTmp.type + "Node",
+                data: {
+                    id: nodeId,
+                    label: cls.name,
+                    isSelected: false,
+                    visible: true
+                },
+                position: { x: 0, y:0 },
+                width: 110,
+                height: 100,
+            }
+            if (prevNodes.length > 0) node.parentNode = param
+            nodes.push(node);
         }
-        if (prevNodes.length > 0) node.parentNode = param
-        nodes.push(node);
     })
-    edges = calculateEdges(nodes)
+    edges = calculateEdges(nodes, tree)
 
 
     if (layout === 'force') {
@@ -229,7 +232,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
             updatedEdges = edges;
         }
         const simulationNodes = updatedNodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
-        updatedEdges = calculateEdges(simulationNodes);
+        updatedEdges = calculateEdges(simulationNodes, tree);
         return simulateForceLayout(updatedNodes, updatedEdges, hiddenNodes);
 
     }
@@ -335,7 +338,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                     totalCircumference = totalWidth * 130 / 100
                     radius = totalCircumference / (2*Math.PI)
                     angleSoFar = 0
-                    tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+                    tempNode = oldNodes.find(n => n.id === tempNode.parentNode)
 
                     tempNode.width = radius*2 + 150
                     tempNode.height = radius*2 + 150
@@ -378,7 +381,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                     }
 
                 });
-                edges = calculateEdges(oldNodes)
+                edges = calculateEdges(oldNodes, tree)
                 nodes = oldNodes
                 return {nodes, edges}
             }
@@ -404,7 +407,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
         if (oldNodes.length > 0) {
             nodes = oldNodes.concat(nodes)
-            edges = calculateEdges(nodes)
+            edges = calculateEdges(nodes, tree)
             return { nodes, edges }
         }
 
