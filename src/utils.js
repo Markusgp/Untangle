@@ -362,15 +362,15 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                 totalWidth = nodes.reduce((sum, node) => sum + 110, 0);
                 totalCircumference = totalWidth * 130 / 100
                 radius = totalCircumference / (2*Math.PI)
-                packageNode.width = radius*2+150
-                packageNode.height = radius*2+150
-                packageNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.4)',width: radius*2+150, height: radius*2+150}
+                packageNode.width = radius*2+155
+                packageNode.height = radius*2+155
+                packageNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.4)',width: radius*2+155, height: radius*2+155}
 
                 let tempNode = packageNode
                 while (tempNode.parentNode !== undefined){
                     totalWidth = oldNodes.reduce((sum, node) => {
                         if (node.parentNode === tempNode.parentNode){
-                            return sum + node.width
+                            return sum + Math.max(node.width, node.height)
                         }
                         else return sum
                     }, 0);
@@ -379,13 +379,18 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                     angleSoFar = 0
                     tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
 
-                    tempNode.width = radius*2 + 150
-                    tempNode.height = radius*2 + 150
-                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+                    tempNode.width = radius*2 + 155
+                    tempNode.height = radius*2 + 155
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+155, height: radius*2+155}
+
+                    let adjustedLeftX = Number.MAX_VALUE
+                    let adJustedRightX = Number.MIN_VALUE
+                    let adjustedLeftY = Number.MAX_VALUE
+                    let adJustedRightY = Number.MIN_VALUE
 
                     oldNodes.forEach((node) => {
                         if (node.parentNode === tempNode.id){
-                            const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                            const angle = ((Math.max(node.width,node.height)) / totalCircumference) * (2 * Math.PI) * 1.3;
                             angleSoFar += angle/2
                             const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
                             const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
@@ -394,12 +399,27 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                                 x: xPos,
                                 y: yPos
                             }
+                            adjustedLeftX = Math.min(adjustedLeftX,node.position.x,0)
+                            adJustedRightX = Math.max(adJustedRightX,node.position.x+node.width,tempNode.width)
+                            adjustedLeftY = Math.min(adjustedLeftY,node.position.y,0)
+                            adJustedRightY = Math.max(adJustedRightY,node.position.y+node.height,tempNode.height)
                         }
                     });
+                    oldNodes.forEach((node) =>{
+                        if (node.parentNode === tempNode.id){
+                            node.position.x += Math.abs(adjustedLeftX)
+                            node.position.y += Math.abs(adjustedLeftY)
+                        }
+                    })
+
+                    tempNode.width = Math.abs(adJustedRightX-adjustedLeftX)
+                    tempNode.height = Math.abs(adJustedRightY-adjustedLeftY)
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: Math.abs(adJustedRightX-adjustedLeftX), height: Math.abs(adJustedRightY-adjustedLeftY)}
+                    //tempNode.width = adJustedRightX-adjustedLeftX
 
                 }
                 totalWidth = oldNodes.reduce((sum, node) => {
-                    if (node.parentNode === undefined) return sum + node.width
+                    if (node.parentNode === undefined) return sum + Math.max(node.width, node.height)
                     else return sum
                 }, 0);
                 totalCircumference = totalWidth * 130 / 100
@@ -407,7 +427,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                 angleSoFar = 0
                 oldNodes.forEach((node) => {
                     if (node.parentNode === undefined){
-                        const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                        const angle = ((Math.max(node.width,node.height)) / totalCircumference) * (2 * Math.PI) * 1.3;
                         angleSoFar += angle/2
                         const xPos = 400 + radius * Math.cos(angleSoFar) - node.width/2;
                         const yPos = 300 + radius * Math.sin(angleSoFar) - node.height/2;
@@ -434,7 +454,7 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                 while (tempNode.parentNode !== undefined){
                     totalWidth = oldNodes.reduce((sum, node) => {
                         if (node.parentNode === tempNode.parentNode){
-                            return sum + node.width
+                            return sum + Math.max(node.width, node.height)
                         }
                         else return sum
                     }, 0);
@@ -443,13 +463,13 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
                     angleSoFar = 0
                     tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
 
-                    tempNode.width = radius*2 + 150
-                    tempNode.height = radius*2 + 150
-                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+150, height: radius*2+150}
+                    tempNode.width = radius*2 + 155
+                    tempNode.height = radius*2 + 155
+                    tempNode.style = {backgroundColor: 'rgba(111, 168, 255, 0.2)',width: radius*2+155, height: radius*2+155}
 
                     oldNodes.forEach((node) => {
                         if (node.parentNode === tempNode.id){
-                            const angle = (node.width / totalCircumference) * (2 * Math.PI) * 1.3;
+                            const angle = ((Math.max(node.width,node.height)) / totalCircumference) * (2 * Math.PI) * 1.3;
                             angleSoFar += angle/2
                             const xPos = 75+radius + radius * Math.cos(angleSoFar) - node.width/2;
                             const yPos = 50+radius + radius * Math.sin(angleSoFar) - node.height/2;
@@ -498,8 +518,8 @@ export function createNodesAndEdges(prevNodes,prevEdges,param, useBarycenter, la
         nodes.forEach((node) => {
             const angle = (110 / totalCircumference) * (2 * Math.PI) * 1.3;
             angleSoFar += angle / 2
-            const xPos = 200 + radius + radius * Math.cos(angleSoFar) - 55 - 100;
-            const yPos = 50 + radius + radius * Math.sin(angleSoFar) - 20;
+            const xPos = 180 + radius + radius * Math.cos(angleSoFar) - 55 - 100;
+            const yPos = 60 + radius + radius * Math.sin(angleSoFar) - 20;
             angleSoFar += angle / 2;
             node.position = {
                 x: xPos,
