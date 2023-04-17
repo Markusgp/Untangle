@@ -7,7 +7,7 @@ function FloatingEdge({id, source, target, markerEnd, data}) {
     const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
     const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
 
-    const { isSelected, nonSelected, weight } = data;
+    const { isSelected, nonSelected, weight, isCircular } = data;
     if (!sourceNode || !targetNode) {
         return null;
     }
@@ -24,7 +24,7 @@ function FloatingEdge({id, source, target, markerEnd, data}) {
     });
 
     const edgeStyle = {
-        stroke: isSelected ?  "black" : "#b1b1b7",
+        stroke: isCircular ? isSelected ? "red" : "#ca7461" : isSelected ? "black" : "#b1b1b7",
         strokeWidth: `${Math.sqrt(weight) + 1}px`,
         opacity: isSelected ? 1 : (nonSelected ? 0.75 : 0.1)
     }

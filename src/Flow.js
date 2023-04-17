@@ -55,6 +55,7 @@ function Flow() {
   const [abstractionsToggled, setAbstractionsToggled] = useState(true);
   const [invocationsToggled, setInvocationsToggled] = useState(true);
   const [implementationsToggled, setImplementationsToggled] = useState(true);
+  const [circularToggled, setCircularToggled] = useState(true);
 
   const [selectedNode, setSelectNode] = useState(null);
   const [firstRender, setFirstRender] = useState(true);
@@ -78,7 +79,7 @@ function Flow() {
       return true;
     } else if (edge.label === "implements" && implementationsToggled) {
       return true;
-    }
+    } else if (edge.label === "circular" && circularToggled) return true;
     return false;
   }
 
@@ -241,7 +242,7 @@ useEffect(() => {
 
   return (<><div className="panelHolder" id="leftFloat">
     <div className="panelStyle">
-      <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled} />
+      <TogglePanel classesToggled={setClassesToggled} interfacesToggled={setInterfacesToggled} moduleToggled={setModulesToggled} implementationsToggled={setImplementationsToggled} abstractionsToggled={setAbstractionsToggled} invocationsToggled={setInvocationsToggled} circularToggled={setCircularToggled} />
     </div>
     <div className="panelStyle">
     <ExamplePanel>
