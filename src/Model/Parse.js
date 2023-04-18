@@ -70,7 +70,7 @@ for (let i = 0; i < initializationTuples.length; i++){
     tree.addDependency(from,to,"invokation")
 }
 
-const genericInitializationTuple = Initializations["#select"]["tuples"]
+const genericInitializationTuple = GenericInitializations["#select"]["tuples"]
 for (let i = 0; i < genericInitializationTuple.length; i++){
     const genIniTuple = genericInitializationTuple[i]
     let from = genIniTuple[0]
