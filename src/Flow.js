@@ -6,6 +6,7 @@ import ReactFlow, {
     useNodesState,
     useEdgesState,
     useReactFlow,
+    useNodes,
 } from 'reactflow';
 
 import 'reactflow/dist/style.css';
@@ -23,9 +24,10 @@ import FloatingEdge from './FloatingEdge.js';
 
 import LayoutPanel from "./FlowElements/Panels/LayoutPanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
-import TogglePanel from "./FlowElements/Panels/TogglePanel";
+import TogglePanel from "./FlowElements/Panels/FilterPanel";
 import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
+import ExpandedPackagePanel from "./FlowElements/Panels/ExpandedPackagePanel.js";
 
 import {tree} from "./Model/Parse"
 
@@ -240,6 +242,7 @@ function Flow() {
         redrawSelectedEdges(node, false)
         setSelectNode(node);
         updateNodeOpacity(node);
+        //console.log(node)
     };
 
     const onPaneClicked = () => {
@@ -262,22 +265,28 @@ function Flow() {
                     <ToggleSwitch layout={layout} setLayout={setLayout}/>
                 </LayoutPanel>
             </div>
-                <div>
-                    <div className="panelStyle">
-                        <TogglePanel classesToggled={setClassesToggled}
-                                     interfacesToggled={setInterfacesToggled}
-                                     moduleToggled={setModulesToggled}
-                                     implementationsToggled={setImplementationsToggled}
-                                     abstractionsToggled={setAbstractionsToggled}
-                                     invocationsToggled={setInvocationsToggled}/>
-                    </div>
-                    { hiddenNodes.length > 0 && (
-                        <div className="panelStyle">
-                            <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
-                            </HiddenPanel>
-                        </div>
-                    )}
+            
+            <div>
+                <div className="panelStyle">
+                    <TogglePanel classesToggled={setClassesToggled}
+                                    interfacesToggled={setInterfacesToggled}
+                                    moduleToggled={setModulesToggled}
+                                    implementationsToggled={setImplementationsToggled}
+                                    abstractionsToggled={setAbstractionsToggled}
+                                    invocationsToggled={setInvocationsToggled}/>
                 </div>
+                
+                { hiddenNodes.length > 0 && (
+                    <div className="panelStyle">
+                        <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
+                        </HiddenPanel>
+                    </div>
+                )}
+                <div className="panelStyle">
+                    
+                    <ExpandedPackagePanel nodes={nodes}>  </ExpandedPackagePanel>
+                </div>
+            </div>
 
         </div>
         <div className="panelHolder" id="rightFloat">
