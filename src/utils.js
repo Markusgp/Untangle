@@ -222,7 +222,6 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                 const childNodes = nodes.filter(node => node.parentNode === packageNode.id || node.parent === packageNode.id)
                 updatedNodes = prevNodes.concat(childNodes);
             } else if (packageNode.type === "openedPackageNode") {
-                hiddenNodes = [];
                 packageNode.type = "packageNode";
                 const childNodes = filterNodes(oldNodes,packageNode)
                 updatedNodes = oldNodes.filter(node => !childNodes.find(childNode => childNode.id === node.id));

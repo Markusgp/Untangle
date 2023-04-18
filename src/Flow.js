@@ -133,6 +133,13 @@ function Flow() {
     }, [nodes, edges, viewShouldFit]);
 
     const expandPackage = (_, nd) => {
+        if (selectedNode !== null) {
+            let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
+            redrawSelectedNodes(prevSelectNode);
+            redrawSelectedEdges(prevSelectNode, true)
+            setSelectNode(null);
+            resetNodeOpacity(nodes);
+        }
         const tempNodes = nodes
         const tempEdges = edges
         if (nd.type === "packageNode" || nd.type === "openedPackageNode") {
