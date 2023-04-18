@@ -9,101 +9,57 @@ import Instantiations from "../data/Instantiation.json"
 import GenericInitializations from "../data/GenericInitialization.json"
 import GenericInstantiations from "../data/GenericInstantiation.json"
 
+import { CodeQLType } from "./CodeQLType.js"
+
 const tree = new ClassTree()
 
-const classTuples = Classes["#select"]["tuples"]
-for (let i = 0; i < classTuples.length; i++) {
-    const tuple = classTuples[i]
-    const name = tuple[0]
-
-    if (name === "") continue;
-
-    const pack = tuple[1]
-    const lines = tuple[2]
-    tree.add(name,pack,"class",lines)
+function addDefinitionsTuples(tuples, type) {
+    for (let i = 0; i < tuples.length; i++) {
+        const tuple = tuples[i];
+        const name = tuple[0];
+        if (name === "") continue;
+        const pack = tuple[1];
+        const lines = tuple[2];
+        tree.add(name,pack,type,lines);
+    }
 }
+
+function addDependencyTuples(tuples, type) {
+    for (let i = 0; i < tuples.length; i++) {
+        const tuple = tuples[i];
+        let from = tuple[0];
+        let to = tuple[1];
+        if (from.endsWith("<>")) from = from.substring(0, from.length - 2);
+        if (from.endsWith(".")) continue;
+        tree.addDependency(from,to,type);
+    }
+}
+
+
+const classTuples = Classes["#select"]["tuples"]
+addDefinitionsTuples(classTuples, CodeQLType.Class);
 
 const interfaceTuples = Interfaces["#select"]["tuples"]
-for (let i = 0;i < interfaceTuples.length; i++) {
-    const tuple = interfaceTuples[i]
-    const name = tuple[0]
-
-    if (name === "") continue;
-
-    const pack = tuple[1]
-    const lines = tuple[2]
-    tree.add(name,pack,"interface",lines)
-}
+addDefinitionsTuples(interfaceTuples, CodeQLType.Interface);
 
 const implementsTuples = Implementations["#select"]["tuples"]
-for (let i = 0; i < implementsTuples.length; i++){
-    const implementTuple = implementsTuples[i]
-    let from = implementTuple[0]
-    const to = implementTuple[1]
-
-    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
-    if (from.endsWith(".")) continue;
-
-    tree.addDependency(from,to,"implementation")
-}
+addDependencyTuples(implementsTuples, CodeQLType.Implementation);
 
 const extensionTuples = Extensions["#select"]["tuples"]
-for (let i = 0; i < extensionTuples.length; i++){
-    const inheritTuple = extensionTuples[i]
-    let from = inheritTuple[0]
-    const to = inheritTuple[1]
-    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
-    if (from.endsWith(".")) continue;
-
-    tree.addDependency(from,to,"inheritance")
-}
+addDependencyTuples(extensionTuples, CodeQLType.Inheritance);
 
 const initializationTuples = Initializations["#select"]["tuples"]
-for (let i = 0; i < initializationTuples.length; i++){
-    const iniTuple = initializationTuples[i]
-    let from = iniTuple[0]
-    const to = iniTuple[1]
+addDependencyTuples(initializationTuples, CodeQLType.Invocation);
 
-    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
-    if (from.endsWith(".")) continue;
-
-    tree.addDependency(from,to,"invokation")
-}
-
-const genericInitializationTuple = Initializations["#select"]["tuples"]
-for (let i = 0; i < genericInitializationTuple.length; i++){
-    const genIniTuple = genericInitializationTuple[i]
-    let from = genIniTuple[0]
-    const to = genIniTuple[1]
-
-    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
-    if (from.endsWith(".")) continue;
-
-    tree.addDependency(from,to,"invokation")
-}
+const genericInitializationTuples = GenericInitializations["#select"]["tuples"]
+addDependencyTuples(genericInitializationTuples, CodeQLType.Invocation);
 
 const instantiationTuples = Instantiations["#select"]["tuples"]
-for (let i = 0; i < instantiationTuples.length; i++){
-    const instTuple = instantiationTuples[i]
-    let from = instTuple[0]
-    const to = instTuple[1]
+addDependencyTuples(instantiationTuples, CodeQLType.Invocation);
 
-    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
-    if (from.endsWith(".")) continue;
-
-    tree.addDependency(from,to,"invokation")
-}
 const genericInstantiationTuples = GenericInstantiations["#select"]["tuples"]
-for (let i = 0; i < genericInstantiationTuples.length; i++){
-    const genInstTuple = genericInstantiationTuples[i]
-    let from = genInstTuple[0]
-    const to = genInstTuple[1]
+addDependencyTuples(genericInstantiationTuples, CodeQLType.Invocation);
 
-    if (from.endsWith("<>")) from = from.substring(0, from.length - 2)
-    if (from.endsWith(".")) continue;
-
-    tree.addDependency(from,to,"invokation")
-}
 tree.calculateLinesOfCodeRecursively(tree.root);
 tree.createJSONTreeRecursively(tree.root);
 export {tree}

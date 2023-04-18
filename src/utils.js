@@ -25,7 +25,7 @@ function calculateEdges(nodes, tree) {
         if (node.type === 'openedPackageNode') return
         const cls = tree.getNode(node.id)
         if (cls === undefined) return
-        cls.classInvokation.forEach(invokedClass => {
+        cls.classInvocation.forEach(invokedClass => {
             const invokedNode = nodes.find(n => n.id === invokedClass)
             if (invokedNode === undefined) return
             if (invokedNode.type === 'openedPackageNode') return
