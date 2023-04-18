@@ -12,7 +12,6 @@ const ExpandedPackagePanel = (props) => {
       const openedPackages = props.nodes.filter(node => node.type === 'openedPackageNode');
       setExpandedPackages(openedPackages);
     };
-    console.log(props.nodes);
     updateExpandedPackages();
   }, [props.nodes]);
 
@@ -61,7 +60,7 @@ const ExpandedPackagePanel = (props) => {
       {open && (
         <div className="content">
           <span className="contentDivider" />
-          <ul class="tree">
+          <ul className="tree">
             {findRootPackages().map(packageNode => (
               <li key={packageNode.id}>
                 {packageNode.data.label}

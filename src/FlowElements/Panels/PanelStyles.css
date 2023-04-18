@@ -222,7 +222,7 @@ li::marker {
   }
   
   .tree ul li{
-    border-left : 2px solid #FF6C69;
+    border-left : px solid #FF6C69;
   }
   
   .tree ul li:last-child{
@@ -234,9 +234,9 @@ li::marker {
     display      : block;
     position     : absolute;
     top          : calc(var(--spacing) / -2);
-    left         : -2px;
+    left         : 0px;
     width        : calc(var(--spacing) + 2px);
-    height       : calc(var(--spacing) + 1px);
+    height       : calc(var(--spacing) + 0px);
     border       : solid #FF6C69;
     border-width : 0 0 2px 2px;
   }
