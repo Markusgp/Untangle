@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import "./PanelStyles.css"
 import Drop from "../Assets/Drop.svg";
-import { FaExpandAlt } from 'react-icons/fa';
+import { FaExpandAlt, FaEyeSlash, FaCompressAlt, FaEye } from 'react-icons/fa';
+import { CgExpand, CgCompressRight } from "react-icons/cg";
 
-const ExpandedPackagePanel = (props) => {
+const ExpandedPackagePanel = ({ nodes, expandFunc }) => {
   const [open, setOpen] = useState(false);
   const [expandedPackages, setExpandedPackages] = useState([]);
 
   useEffect(() => {
     const updateExpandedPackages = () => {
-      const openedPackages = props.nodes.filter(node => node.type === 'openedPackageNode');
+      const openedPackages = nodes.filter(node => node.type === 'openedPackageNode');
       setExpandedPackages(openedPackages);
     };
     updateExpandedPackages();
-  }, [props.nodes]);
+  }, [nodes]);
 
   const toggle = () => setOpen(!open);
 
@@ -36,6 +37,9 @@ const ExpandedPackagePanel = (props) => {
         {children.map(childNode => (
           <li key={childNode.id || childNode.name}>
             {childNode.data.label}
+            <div onClick={() => expandFunc(null, childNode)}>
+                    <CgCompressRight className="CollapseIcon"></CgCompressRight>
+                  </div>
             {renderPackageList(childNode.id)}
           </li>
         ))}
@@ -64,6 +68,7 @@ const ExpandedPackagePanel = (props) => {
             {findRootPackages().map(packageNode => (
               <li key={packageNode.id}>
                 {packageNode.data.label}
+                    <CgCompressRight className="CollapseIcon" onClick={() => expandFunc(null, packageNode)}></CgCompressRight>
                 {renderPackageList(packageNode.id)}
               </li>
             ))}

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactFlow, {
     Background,
     Controls,
@@ -29,7 +29,7 @@ import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
 import ExpandedPackagePanel from "./FlowElements/Panels/ExpandedPackagePanel.js";
 
-import {tree} from "./Model/Parse"
+import { tree } from "./Model/Parse"
 
 const useBaryCenter = true;
 const layout = 'circle';
@@ -43,7 +43,7 @@ const nodeTypes = {
     openedPackageNode: OpenedPackageNode
 };
 
-const edgeTypes = {floating: FloatingEdge,};
+const edgeTypes = { floating: FloatingEdge, };
 
 //TODO Why are we keeping two states here? Is it necessary? Is this not only invoked once?
 let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, 'force', tree, []);
@@ -72,7 +72,7 @@ function Flow() {
 
     function nodeShouldBeDrawn(node) {
         if (!node.data.visible) return false;
-        else if (node.type === "classNode" && classesToggled)  return true;
+        else if (node.type === "classNode" && classesToggled) return true;
         else if (node.type === "interfaceNode" && interfacesToggled) return true;
         else if (node.type === "packageNode" && modulesToggled) return true;
         else if (node.type === "openedPackageNode") return true;
@@ -136,7 +136,7 @@ function Flow() {
         const tempNodes = nodes
         const tempEdges = edges
         if (nd.type === "packageNode" || nd.type === "openedPackageNode") {
-            const {nodes, edges} = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout, tree);
+            const { nodes, edges } = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout, tree);
             setNodes(nodes);
             setEdges(edges);
             setTimeout(() => {
@@ -212,7 +212,7 @@ function Flow() {
 
             return {
                 ...node,
-                style: {...node.style, opacity},
+                style: { ...node.style, opacity },
             };
         });
         setNodes(updatedNodes);
@@ -222,7 +222,7 @@ function Flow() {
         const updatedNodes = nodes.map((node) => {
             return {
                 ...node,
-                style: {...node.style, opacity: 1},
+                style: { ...node.style, opacity: 1 },
             };
         });
         setNodes(updatedNodes);
@@ -262,42 +262,47 @@ function Flow() {
         <div className="panelHolder" id="leftFloat">
             <div className="panelStyle">
                 <LayoutPanel>
-                    <ToggleSwitch layout={layout} setLayout={setLayout}/>
+                    <ToggleSwitch layout={layout} setLayout={setLayout} />
                 </LayoutPanel>
             </div>
-            
+
             <div>
                 <div className="panelStyle">
                     <TogglePanel classesToggled={setClassesToggled}
-                                    interfacesToggled={setInterfacesToggled}
-                                    moduleToggled={setModulesToggled}
-                                    implementationsToggled={setImplementationsToggled}
-                                    abstractionsToggled={setAbstractionsToggled}
-                                    invocationsToggled={setInvocationsToggled}/>
+                        interfacesToggled={setInterfacesToggled}
+                        moduleToggled={setModulesToggled}
+                        implementationsToggled={setImplementationsToggled}
+                        abstractionsToggled={setAbstractionsToggled}
+                        invocationsToggled={setInvocationsToggled} />
                 </div>
-                
-                { hiddenNodes.length > 0 && (
+
+                {hiddenNodes.length > 0 && (
                     <div className="panelStyle">
                         <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
                         </HiddenPanel>
                     </div>
                 )}
                 <div className="panelStyle">
-                    
-                    <ExpandedPackagePanel nodes={nodes}>  </ExpandedPackagePanel>
+
+                    <ExpandedPackagePanel
+                        nodes={nodes}
+                        node={selectedNode}
+                        expandFunc={expandPackage}
+                        hideFunc={toggleHiddenNode}
+                    />
                 </div>
             </div>
 
         </div>
         <div className="panelHolder" id="rightFloat">
-                {selectedNode != null && (
-                    <div className="panelStyleInformation">
-                        <InformationPanel treeNode={tree.getNode(selectedNode.id)}
-                                          node={selectedNode}
-                                          expandFunc={expandPackage}
-                                          hideFunc={toggleHiddenNode}/>
-                    </div>
-                )}
+            {selectedNode != null && (
+                <div className="panelStyleInformation">
+                    <InformationPanel treeNode={tree.getNode(selectedNode.id)}
+                        node={selectedNode}
+                        expandFunc={expandPackage}
+                        hideFunc={toggleHiddenNode} />
+                </div>
+            )}
 
         </div>
         <ReactFlow
@@ -318,20 +323,20 @@ function Flow() {
             nodesDraggable={false}
             zoomOnDoubleClick={false}
         >
-            <Background/>
-            <Controls/>
+            <Background />
+            <Controls />
         </ReactFlow></>
     );
 }
 
 let NodeAsHandleFlow = () => {
-  return (
-      <div className="FlowWrapper">
-        <ReactFlowProvider>
-          <Flow/>
-        </ReactFlowProvider>
-      </div>
-  );
+    return (
+        <div className="FlowWrapper">
+            <ReactFlowProvider>
+                <Flow />
+            </ReactFlowProvider>
+        </div>
+    );
 };
 
 export default NodeAsHandleFlow;
