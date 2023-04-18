@@ -22,13 +22,12 @@ const ExpandedPackagePanel = (props) => {
     transform: open ? "rotate(180deg)" : "rotate(0)"
   }
 
-  const isChildOf = (childId, parentId) => {
-    const regex = new RegExp(`^${parentId}\.`);
-    return regex.test(childId);
+  const isChildOf = (childNode, parentNode) => {
+    return childNode.parentNode === parentNode.id;
   };
 
   const renderPackageList = (parentId) => {
-    const children = expandedPackages.filter(packageNode => isChildOf(packageNode.id, parentId));
+    const children = expandedPackages.filter(packageNode => isChildOf(packageNode, { id: parentId }));
     if (children.length === 0) {
       return null;
     }
@@ -46,7 +45,7 @@ const ExpandedPackagePanel = (props) => {
   };
 
   const findRootPackages = () => {
-    return expandedPackages.filter(packageNode => !expandedPackages.some(otherNode => isChildOf(packageNode.id, otherNode.id)));
+    return expandedPackages.filter(packageNode => !expandedPackages.some(otherNode => isChildOf(packageNode, otherNode)));
   };
 
   return (
