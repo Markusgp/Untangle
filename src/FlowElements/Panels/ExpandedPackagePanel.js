@@ -22,20 +22,31 @@ const ExpandedPackagePanel = (props) => {
     transform: open ? "rotate(180deg)" : "rotate(0)"
   }
 
-  const renderPackageList = (node) => {
-    if (node.children && node.children.length > 0) {
-      return (
-        <ul>
-          {node.children.map(childNode => (
-            <li key={childNode.id || childNode.name}>
-              {childNode.name}
-              {renderPackageList(childNode)}
-            </li>
-          ))}
-        </ul>
-      );
+  const isChildOf = (childId, parentId) => {
+    const regex = new RegExp(`^${parentId}\.`);
+    return regex.test(childId);
+  };
+
+  const renderPackageList = (parentId) => {
+    const children = expandedPackages.filter(packageNode => isChildOf(packageNode.id, parentId));
+    if (children.length === 0) {
+      return null;
     }
-    return null;
+
+    return (
+      <ul>
+        {children.map(childNode => (
+          <li key={childNode.id || childNode.name}>
+            {childNode.data.label}
+            {renderPackageList(childNode.id)}
+          </li>
+        ))}
+      </ul>
+    );
+  };
+
+  const findRootPackages = () => {
+    return expandedPackages.filter(packageNode => !expandedPackages.some(otherNode => isChildOf(packageNode.id, otherNode.id)));
   };
 
   return (
@@ -51,11 +62,11 @@ const ExpandedPackagePanel = (props) => {
       {open && (
         <div className="content">
           <span className="contentDivider" />
-          <ul>
-            {expandedPackages.map(packageNode => (
+          <ul class="tree">
+            {findRootPackages().map(packageNode => (
               <li key={packageNode.id}>
-                {packageNode.label}
-                {renderPackageList(packageNode)}
+                {packageNode.data.label}
+                {renderPackageList(packageNode.id)}
               </li>
             ))}
           </ul>
