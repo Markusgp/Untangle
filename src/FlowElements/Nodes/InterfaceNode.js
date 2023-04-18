@@ -1,42 +1,27 @@
-import { Handle, Position } from 'reactflow';
+import {Handle, Position} from 'reactflow';
 import './NodeStyles.css'
 import FileLogo from '../Assets/File.svg'
-import { useState } from "react";
-
-const iconWrapperStyle  = {
-  width: "100%",
-  display: "flex",
-  flexDirection: "row",
-  justifyContent: "flex-start"
-}
 
 function InterfaceNode({data}) {
-    const {id, label, isSelected} = data;
-  const classNodeStyle = {
-    border: isSelected ? '5px solid #292929' : '5px solid #58BF62',
-    boxShadow: isSelected ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
-  };
+    const {label, isSelected} = data;
+    const interfaceNodeStyle = {
+        border: isSelected ? '5px solid #292929' : '5px solid #58BF62',
+        boxShadow: isSelected ? '0px 5px 15px rgba(0, 0, 0, 0.5)' : '0px 5px 5px rgba(0, 0, 0, 0.3)',
+    };
 
-   const onClick = () => {
-     
-   };
-
-  const onFocus = () => { /* setIsFocused(true);*/ };
-  const onBlur = () => { /*setIsFocused(false);*/ };
-
-   return (
-     <div className="nodeDefault" style={classNodeStyle} tabIndex="1" onClick={onClick} onFocus={onFocus} onBlur={onBlur}>
-       <Handle type="target" position={Position.Top} />
-       <Handle type="source" position={Position.Bottom} />
-       <div className="nodeContentWrapper">
-         <div className="iconWrapper" style={iconWrapperStyle}>
-           <img className="nodeIcon" src={FileLogo} alt="Package-icon"/>
-         </div>
-         <div className="nodeNameLabel">{label}</div>
-         <p className="nodeTypeLabel">&lt;Interface&gt;</p>
-       </div>
-     </div>
-   );
+    return (
+        <div className="nodeDefault" style={interfaceNodeStyle}>
+            <Handle type="target" position={Position.Top}/>
+            <Handle type="source" position={Position.Bottom}/>
+            <div className="nodeContentWrapper">
+                <div className="iconWrapper">
+                    <img className="nodeIcon" src={FileLogo} alt="InterfaceIcon"/>
+                </div>
+                <div className="nodeNameLabel">{label}</div>
+                <p className="nodeTypeLabel">&lt;Interface&gt;</p>
+            </div>
+        </div>
+    );
 }
 
 export default InterfaceNode;

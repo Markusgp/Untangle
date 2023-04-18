@@ -1,16 +1,13 @@
 import { useCallback } from 'react';
 import { useStore, getStraightPath } from 'reactflow';
-
-import { getEdgeParams } from './utils.js';
+import { getEdgeParams } from './EdgeCalculations.js';
 
 function FloatingEdge({id, source, target, markerEnd, data}) {
     const sourceNode = useStore(useCallback((store) => store.nodeInternals.get(source), [source]));
     const targetNode = useStore(useCallback((store) => store.nodeInternals.get(target), [target]));
 
     const { isSelected, nonSelected, weight } = data;
-    if (!sourceNode || !targetNode) {
-        return null;
-    }
+    if (!sourceNode || !targetNode)  return null;
 
     const { sx, sy, tx, ty } = getEdgeParams(sourceNode, targetNode);
 

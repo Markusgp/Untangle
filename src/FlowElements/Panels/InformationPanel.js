@@ -6,7 +6,7 @@ import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { CgExpand, CgCompressRight } from "react-icons/cg";
 import TreeMap from "./TreeMap";
 
-const InformationPanel = ({treeNode, node, expandFunc}) => {
+const InformationPanel = ({treeNode, node, expandFunc, hideFunc}) => {
     const toggle = () => setOpen(!open);
 
     const isPackage = treeNode.type === "package";
@@ -42,15 +42,6 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                     )}
                     <p className="sectionHeader">Specifications</p>
                     <div className="listHolder">
-                        {/*
-                        <div className="listElementHolder">
-                            <div className="leftFloat">
-                                <span className="dot"></span>
-                                <p>Type:</p>
-                            </div>
-                            <p><i>{treeNode.type.charAt(0).toUpperCase() + treeNode.type.slice(1)}</i></p>
-                        </div>
-                        */}
                         <div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
@@ -63,17 +54,8 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                                 <span className="dot"></span>
                                 <p>Parent</p>
                             </div>
-                            <p><i>{truncateString((treeNode.pack.substring(0, treeNode.pack.lastIndexOf(".")-1)+".*"),30)}</i></p>
+                            <p><i>{truncateString(((treeNode.pack+".*").substring(0, treeNode.pack.lastIndexOf("."))),30)}</i></p>
                         </div>
-                        {/*
-                            <div className="listElementHolder">
-                            <div className="leftFloat">
-                                <span className="dot"></span>
-                                <p>Hidden:</p>
-                            </div>
-                            <p><i>{(!treeNode.visible).toString()}</i></p>
-                        </div>
-                        */}
                         {treeNode.linesOfCode != null && (<div className="listElementHolder">
                             <div className="leftFloat">
                                 <span className="dot"></span>
@@ -92,18 +74,18 @@ const InformationPanel = ({treeNode, node, expandFunc}) => {
                           </div>
                         )}
                         {isPackage && isOpenedPackage && (
-                          <div className="iconButton">
+                          <div className="iconButton" onClick={() => expandFunc(null, node)}>
                               <p>Collapse</p>
                               <CgCompressRight className="CollapseIcon"></CgCompressRight>
                           </div>
                         )}
-                        { !isHidden && (
-                          <div className="iconButton">
+                        { !isOpenedPackage && !isHidden && (
+                          <div className="iconButton" onClick={() => hideFunc(node)}>
                               <p>Hide</p>
                               <FaEyeSlash className="EyeIcon"></FaEyeSlash>
                           </div>
                         )}
-                        { isHidden && (
+                        { !isOpenedPackage && isHidden && (
                           <div className="iconButton">
                               <p>Unhide</p>
                               <FaEye className="EyeIcon"></FaEye>
