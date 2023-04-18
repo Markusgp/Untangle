@@ -62,12 +62,6 @@
     background-color: lightskyblue;
 }
 
-.content ul {
-    margin: 0;
-    padding: 0 0 0 20px;
-    text-align: left;
-}
-
 .content h5 {
     margin: 10px 0;
 }
@@ -175,6 +169,7 @@ li::marker {
 }
 
 .content ul {
+    text-align: left;
     padding: 0 0 0 16px;
     margin: 10px 0 10px 0;
 }
@@ -205,82 +200,51 @@ li::marker {
     font-weight: bolder;
 }
 
-.tree{
-    --spacing : 1.3rem;
-    --radius  : 8px;
-  }
-  
-  .tree li{
-    display      : block;
-    position     : relative;
-    padding-left : calc(2 * var(--spacing) - var(--radius) - 2px);
-  }
-  
-  .tree ul{
-    margin-left  : calc(var(--radius) - var(--spacing));
-    padding-left : 0;
-  }
-  
-  .tree ul li{
-    border-left : px solid #FF6C69;
-  }
-  
-  .tree ul li:last-child{
-    border-color : transparent;
-  }
-  
-  .tree ul li::before{
-    content      : '';
-    display      : block;
-    position     : absolute;
-    top          : calc(var(--spacing) / -2);
-    left         : 0px;
-    width        : calc(var(--spacing) + 2px);
-    height       : calc(var(--spacing) + 0px);
-    border       : solid #FF6C69;
-    border-width : 0 0 2px 2px;
-  }
-  
-  .tree summary{
-    display : block;
-    cursor  : pointer;
-  }
-  
-  .tree summary::marker,
-  .tree summary::-webkit-details-marker{
-    display : none;
-  }
-  
-  .tree summary:focus{
-    outline : none;
-  }
-  
-  .tree summary:focus-visible{
-    outline : 1px dotted #000;
-  }
-  
-  .tree li::after,
-  .tree summary::before{
-    content       : '';
-    display       : block;
-    position      : absolute;
-    top           : calc(var(--spacing) / 2 - var(--radius));
-    left          : calc(var(--spacing) - var(--radius) - 1px);
-    width         : calc(2 * var(--radius));
-    height        : calc(2 * var(--radius));
-    border-radius : 50%;
-    background    : #FF6C69;
-  }
-  
-  .tree summary::before{
-    content     : '+';
-    z-index     : 1;
-    background  : #696;
-    color       : #fff;
-    line-height : calc(2 * var(--radius) - 2px);
-    text-align  : center;
-  }
-  
-  .tree details[open] > summary::before{
-    content : '−';
-  }
+.ExpandedPackagesIcon {
+    width: 25px;
+    height: 25px;
+    margin: 0 7px 0 0;
+    stroke-width: 2px;
+}
+
+.treeRoot ul {
+    margin: 0px;
+}
+
+    .treeRoot li {
+        list-style: disc;
+    }
+
+    .treeRoot .child-item {
+        list-style: circle;
+        margin-top: 5px;
+    }
+
+    .treeRoot .CollapseIcon {
+        color: #FF6C69;
+        stroke-width: 0.5px;
+        height: 17px;
+        width: 17px;
+    }
+
+    .treeRoot .InspectIcon {
+        width: 17px;
+        height: 17px;
+        color: #FF6C69;
+        stroke-width: 0.5px;
+        margin-right: 2.5px;
+    }
+
+    .treeRoot .CollapseIcon:hover {
+        stroke-width: 1.5px;
+        scale: 130%;
+    }
+
+    .treeRoot .InspectIcon:hover {
+        stroke-width: 1.5px;
+        scale: 130%;
+    }
+
+    .treeRoot .hiddenCloseBtn {
+        margin-right: -2px;
+    }
