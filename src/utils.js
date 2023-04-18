@@ -1,7 +1,8 @@
 import { MarkerType, StepEdge } from 'reactflow';
-//import { tree } from "./Model/Parse";
 //TODO Markus bruger vi dem her?
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
+import {DepLabelTypes} from "./Types/DepLabelTypes";
+import {NodeTypes} from "./Types/NodeTypes";
 
 
 function calculateBarycenters(nodes, edges) {
@@ -19,89 +20,60 @@ function calculateBarycenters(nodes, edges) {
     return barycenters;
 }
 
+
+
 function calculateEdges(nodes, tree) {
     let edges = [];
+
+    function createEdge(node, invokedNode, typeString, edgeWeight) {
+        return {
+            id : `${node.id}-${typeString}-${invokedNode.id}`,
+            source: node.id,
+            target: invokedNode.id,
+            type: "floating",
+            animated: false,
+            label: typeString,
+            //labelStyle: { fill: "#f6ab6c", fontWeight: 700 }, //Todo not used is redundant
+            markerEnd: {
+                type: MarkerType.Arrow,
+                width: 15
+            },
+            data: {
+                isSelected: false,
+                nonSelected: true,
+                weight: edgeWeight
+            }
+        }
+    }
+
     nodes.forEach(node => {
-        if (node.type === 'openedPackageNode') return
+        if (node.type === NodeTypes.OpenedPackageNode) return
         const cls = tree.getNode(node.id)
         if (cls === undefined) return
+
         cls.classInvocation.forEach(invokedClass => {
             const invokedNode = nodes.find(n => n.id === invokedClass)
-            if (invokedNode === undefined) return
-            if (invokedNode.type === 'openedPackageNode') return
+            if (invokedNode === undefined || invokedNode.type === NodeTypes.OpenedPackageNode) return
             const edgeWeight = tree.getNumInvocations(node.id) * 2 - 15;
-            edges.push({
-                id: `${node.id}-invokes-${invokedNode.id}`,
-                source: node.id,
-                target: invokedNode.id,
-                type: "floating",
-                animated: false,
-                label: "invokes",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                    width: 15,
-                },
-                data: {
-                    isSelected: false,
-                    nonSelected: true,
-                    weight: edgeWeight,
-                }
-            })
+            edges.push(createEdge(node, invokedNode, DepLabelTypes.Invokes, edgeWeight));
         })
+
         cls.classImplements.forEach(implementedClass => {
             const implementedNode = nodes.find(n => n.id === implementedClass)
-            if (implementedNode === undefined) return
-            if (implementedNode.type === 'openedPackageNode') return
+            if (implementedNode === undefined || implementedNode.type === NodeTypes.OpenedPackageNode) return
             const edgeWeight = tree.getNumImplementations(node.id) * 2 - 15;
-            edges.push({
-                id: `${node.id}-implements-${implementedNode.id}`,
-                source: node.id,
-                target: implementedNode.id,
-                type: "floating",
-                animated: false,
-                label: "implements",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                    width: 15,
-                },
-                data: {
-                    isSelected: false,
-                    nonSelected: true,
-                    weight: edgeWeight,
-                }
-            })
+            edges.push(createEdge(node, implementedNode, DepLabelTypes.Implements, edgeWeight))
         })
+
         cls.classInherits.forEach(inheritedClass => {
             const inheritedNode = nodes.find(n => n.id === inheritedClass)
-            if (inheritedNode === undefined) return
-            if (inheritedNode.type === 'openedPackageNode') return
+            if (inheritedNode === undefined ||inheritedNode.type === NodeTypes.OpenedPackageNode) return
             const edgeWeight = tree.getNumInheritances(node.id) * 2 - 15;
-            edges.push({
-                id: `${node.id}-inherits-${inheritedNode.id}`,
-                source: node.id,
-                target: inheritedNode.id,
-                type: "floating",
-                animated: false,
-                label: "inherits",
-                labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
-                markerEnd: {
-                    type: MarkerType.Arrow,
-                    width: 15,
-                },
-                data: {
-                    isSelected: false,
-                    nonSelected: true,
-                    weight: edgeWeight,
-                }
-            })
+            edges.push(createEdge(node, inheritedNode, DepLabelTypes.Inherits, edgeWeight));
         })
     })
     return edges
 }
-
-
 
 
 
@@ -176,7 +148,7 @@ function filterNodes(nodes, parent){
     return filteredNodes
 }
 
-
+//Todo have not used NodeTypes Enum
 export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout, tree) {
     let nodes = [];
     let edges = [];
