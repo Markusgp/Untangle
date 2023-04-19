@@ -104,15 +104,12 @@ export class ClassTree {
             else if (dependencyType === CodeQLType.Implementation) fromNode.classImplements.add(tempTo+toPackages[i]);
             tempTo = tempTo + toPackages[i]+"."
         }
-
-        
     }
 
     getTopLevelPackages(){
         return [...this.root.children.values()]
     }
 
-    //get children of package name
     getPackageContent(pack){
         let current = this.root
         let packages = pack.split(".")
