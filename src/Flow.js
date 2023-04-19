@@ -72,10 +72,10 @@ function Flow() {
 
     function nodeShouldBeDrawn(node) {
         if (!node.data.visible) return false;
-        else if (node.type === "classNode" && classesToggled) return true;
-        else if (node.type === "interfaceNode" && interfacesToggled) return true;
-        else if (node.type === "packageNode" && modulesToggled) return true;
-        else if (node.type === "openedPackageNode") return true;
+        if (node.type === "classNode" && classesToggled) return true;
+        if (node.type === "interfaceNode" && interfacesToggled) return true;
+        if (node.type === "packageNode" && modulesToggled) return true;
+        if (node.type === "openedPackageNode") return true;
         return false;
     }
 
@@ -133,6 +133,16 @@ function Flow() {
     }, [nodes, edges, viewShouldFit]);
 
     const expandPackage = (_, nd) => {
+        if(layout === 'force') {
+            if(nd.type === "packageNode") {
+                //Set visibility to false
+                nd.data.visible = false
+            }
+            else if(nd.type === "openedPackageNode") {
+                //Set visibility to true
+                nd.data.visible = true
+            }
+        }
         if (selectedNode !== null) {
             let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
             redrawSelectedNodes(prevSelectNode);
@@ -151,6 +161,7 @@ function Flow() {
                 flowinstance.fitView();
             }, 0);
         }
+        
         setSelectNode(null);
     }
 
@@ -249,7 +260,6 @@ function Flow() {
         redrawSelectedEdges(node, false)
         setSelectNode(node);
         updateNodeOpacity(node);
-        //console.log(node)
     };
 
     const onPaneClicked = () => {

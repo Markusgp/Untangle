@@ -32,7 +32,6 @@ const ExpandedPackagePanel = ({ nodes, expandFunc, selectFunc }) => {
 
   const renderPackageList = (parentId) => {
     const children = expandedPackages.filter(packageNode => isChildOf(packageNode, { id: parentId }));
-    console.log(children)
     if (children.length === 0) {
       return null;
     }
