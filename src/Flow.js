@@ -302,7 +302,7 @@ function Flow() {
                 <div className="panelStyle">
 
                     <ExpandedPackagePanel
-                        nodes={nodes}
+                        expandedNodes={nodes.filter(node => node.type === 'openedPackageNode')}
                         node={selectedNode}
                         expandFunc={expandPackage}
                         selectFunc={onNodeClicked}

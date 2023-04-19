@@ -207,12 +207,30 @@ li::marker {
     stroke-width: 2px;
 }
 
-.treeRoot ul {
-    margin: 0px;
+
+
+.treeRoot {
+    width: 91%;
 }
+
+    .treeRoot .rowContainer {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .treeRoot ul {
+        margin: 0;
+    }
 
     .treeRoot li {
         list-style: disc;
+    }
+
+    .treeRoot .parent-item {
+        margin-bottom: 5px;
+        border-bottom: 2px solid #FF6C69;
     }
 
     .treeRoot .child-item {
