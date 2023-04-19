@@ -7,7 +7,7 @@ import { TbArrowsMinimize } from "react-icons/tb";
 import { FiPackage } from "react-icons/fi"
 import { RxMagnifyingGlass } from "react-icons/rx";
 
-const ExpandedPackagePanel = ({ nodes, expandFunc }) => {
+const ExpandedPackagePanel = ({ nodes, expandFunc, selectFunc }) => {
   const [open, setOpen] = useState(false);
   const [expandedPackages, setExpandedPackages] = useState([]);
 
@@ -42,7 +42,7 @@ const ExpandedPackagePanel = ({ nodes, expandFunc }) => {
             <div style={{display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-between"}}>
               {childNode.data.label}
               <div>
-                <RxMagnifyingGlass className="InspectIcon"/>
+                <RxMagnifyingGlass onClick={() => selectFunc(null, childNode)} className="InspectIcon" />
                 <CgCompressRight onClick={() => expandFunc(null, childNode)} className="CollapseIcon"></CgCompressRight>
               </div>
             </div>
@@ -75,7 +75,7 @@ const ExpandedPackagePanel = ({ nodes, expandFunc }) => {
                 <div style={{width: "100%", display: "flex", justifyContent: "space-between"}}>
                   {packageNode.data.label}
                   <div>
-                    <RxMagnifyingGlass className="InspectIcon"/>
+                    <RxMagnifyingGlass className="InspectIcon" onClick={() => selectFunc(null, packageNode)}/>
                     <CgCompressRight className="CollapseIcon" onClick={() => expandFunc(null, packageNode)}></CgCompressRight>
                   </div>
                 </div>

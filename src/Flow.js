@@ -295,7 +295,7 @@ function Flow() {
                         nodes={nodes}
                         node={selectedNode}
                         expandFunc={expandPackage}
-                        hideFunc={toggleHiddenNode}
+                        selectFunc={onNodeClicked}
                     />
                 </div>
             </div>
