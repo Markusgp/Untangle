@@ -177,8 +177,8 @@ function calculateEdges(nodes) {
             return element.source === ele.target && element.target === ele.source
         });
         if (circularEdge !== undefined && nodes.find(a => a.id === ele.source || a.id === ele.target).type !== "packageNode") {
-            let test = edgesToBeAdded.find(a => { return a.id === `${ele.source}-circular-${ele.target}` || a.id === `${ele.target}-circular-${ele.source}`});
-            if (test === undefined) {
+            let edgeAlreadyFound = edgesToBeAdded.find(a => { return a.id === `${ele.source}-circular-${ele.target}` || a.id === `${ele.target}-circular-${ele.source}`});
+            if (edgeAlreadyFound === undefined) {
                 edgesToBeAdded.push({
                     id: `${ele.source}-circular-${ele.target}`,
                     source: ele.source,
@@ -190,7 +190,7 @@ function calculateEdges(nodes) {
                     data: {
                         isSelected: false,
                         nonSelected: true,
-                        weight: ele.data.weight,
+                        weight: ele.data.weight + circularEdge.data.weight,
                         isCircular: true,
                     },
                 })
