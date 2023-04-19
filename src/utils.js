@@ -1,5 +1,5 @@
 import { MarkerType, StepEdge } from 'reactflow';
-//TODO Markus bruger vi dem her?
+//TODO Markus are we using these or can we delete?
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import {DepLabelTypes} from "./Types/DepLabelTypes";
 import {NodeTypes} from "./Types/NodeTypes";
@@ -77,7 +77,7 @@ function calculateEdges(nodes, tree) {
         let circularEdge = edges.find(element => {
             return element.source === ele.target && element.target === ele.source
         });
-        if (circularEdge !== undefined && nodes.find(a => a.id === ele.source || a.id === ele.target).type !== "packageNode") {
+        if (circularEdge !== undefined && nodes.find(a => a.id === ele.source || a.id === ele.target).type !== NodeTypes.PackageNode) {
             let edgeAlreadyFound = edgesToBeAdded.find(a => { return a.id === `${ele.source}-circular-${ele.target}` || a.id === `${ele.target}-circular-${ele.source}`});
             if (edgeAlreadyFound === undefined) {
                 edgesToBeAdded.push({
@@ -87,7 +87,7 @@ function calculateEdges(nodes, tree) {
                     type: "floating",
                     animated: false,
                     label: "circular",
-                    labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                    // labelStyle: { fill: "#f6ab6c", fontWeight: 700 }, //TODO Remove is redundant
                     data: {
                         isSelected: false,
                         nonSelected: true,
@@ -101,8 +101,6 @@ function calculateEdges(nodes, tree) {
     edges = edges.concat(edgesToBeAdded)
     return edges
 }
-
-
 
 function dependencyForce(nodes, edges, strength = 50) {
     const nodeById = new Map(nodes.map((node) => [node.id, node]));
@@ -175,15 +173,12 @@ function filterNodes(nodes, parent) {
     return filteredNodes
 }
 
-//Todo have not used NodeTypes Enum
-function distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumference) {
+function distributeNodes(oldNodes, packageNode, totalWidth, radius, totalCircumference) {
     let tempNode = packageNode
     let angleSoFar = 0
     while (tempNode.parentNode !== undefined) {
         totalWidth = oldNodes.reduce((sum, node) => {
-            if (node.parentNode === tempNode.parentNode) {
-                return sum + Math.max(node.width, node.height)
-            }
+            if (node.parentNode === tempNode.parentNode) return sum + Math.max(node.width, node.height)
             else return sum
         }, 0);
         totalCircumference = totalWidth * 130 / 100
@@ -196,9 +191,9 @@ function distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumfere
         tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: radius * 2 + 155, height: radius * 2 + 155 }
 
         let adjustedLeftX = Number.MAX_VALUE
-        let adJustedRightX = Number.MIN_VALUE
+        let adjustedRightX = Number.MIN_VALUE
         let adjustedLeftY = Number.MAX_VALUE
-        let adJustedRightY = Number.MIN_VALUE
+        let adjustedRightY = Number.MIN_VALUE
 
         oldNodes.forEach((node) => {
             if (node.parentNode === tempNode.id) {
@@ -212,9 +207,9 @@ function distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumfere
                     y: yPos
                 }
                 adjustedLeftX = Math.min(adjustedLeftX, node.position.x, 0)
-                adJustedRightX = Math.max(adJustedRightX, node.position.x + node.width, tempNode.width)
+                adjustedRightX = Math.max(adjustedRightX, node.position.x + node.width, tempNode.width)
                 adjustedLeftY = Math.min(adjustedLeftY, node.position.y, 0)
-                adJustedRightY = Math.max(adJustedRightY, node.position.y + node.height, tempNode.height)
+                adjustedRightY = Math.max(adjustedRightY, node.position.y + node.height, tempNode.height)
             }
         });
         oldNodes.forEach((node) => {
@@ -224,9 +219,9 @@ function distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumfere
             }
         })
 
-        tempNode.width = Math.abs(adJustedRightX - adjustedLeftX)
-        tempNode.height = Math.abs(adJustedRightY - adjustedLeftY)
-        tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: Math.abs(adJustedRightX - adjustedLeftX), height: Math.abs(adJustedRightY - adjustedLeftY) }
+        tempNode.width = Math.abs(adjustedRightX - adjustedLeftX)
+        tempNode.height = Math.abs(adjustedRightY - adjustedLeftY)
+        tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: Math.abs(adjustedRightX - adjustedLeftX), height: Math.abs(adjustedRightY - adjustedLeftY) }
 
     }
     totalWidth = oldNodes.reduce((sum, node) => {
@@ -249,22 +244,17 @@ function distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumfere
                 y: yPos
             }
         }
-
     });
-
-
 }
 
 export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout, tree) {
     let nodes = [];
     let edges = [];
     let oldNodes = prevNodes
-    let oldEdges = prevEdges
 
     const myNodes = tree.getPackageContent(param);
 
     myNodes.forEach(cls => {
-        //Filter out all nodes marked as invisible in tree
         if (cls.visible === true) {
             const nodeId = cls.pack
             const nodeTmp = tree.getNode(nodeId);
@@ -291,26 +281,24 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
     if (layout === 'force') {
         let packageNode = oldNodes.find(n => n.id === param);
         let updatedNodes = nodes;
-        let updatedEdges = edges;
         let hiddenNodes = []
         if (packageNode) {
-            if (packageNode.type === "packageNode") {
+            if (packageNode.type === NodeTypes.PackageNode) {
                 hiddenNodes.push(packageNode)
-                packageNode.type = "openedPackageNode";
+                packageNode.type = NodeTypes.OpenedPackageNode;
                 const childNodes = nodes.filter(node => node.parentNode === packageNode.id || node.parent === packageNode.id)
                 updatedNodes = prevNodes.concat(childNodes);
-            } else if (packageNode.type === "openedPackageNode") {
+            } else if (packageNode.type === NodeTypes.OpenedPackageNode) {
                 hiddenNodes = [];
-                packageNode.type = "packageNode";
+                packageNode.type = NodeTypes.PackageNode;
                 const childNodes = filterNodes(oldNodes, packageNode)
                 updatedNodes = oldNodes.filter(node => !childNodes.find(childNode => childNode.id === node.id));
             }
         } else {
             updatedNodes = nodes;
-            updatedEdges = edges;
         }
         const simulationNodes = updatedNodes.filter(node => !hiddenNodes.find(hiddenNode => hiddenNode.id === node.id));
-        updatedEdges = calculateEdges(simulationNodes, tree);
+        const updatedEdges = calculateEdges(simulationNodes, tree);
         return simulateForceLayout(updatedNodes, updatedEdges, hiddenNodes);
 
     }
@@ -331,8 +319,8 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
         let angleSoFar = 0
         if (oldNodes.length > 0) {
             let packageNode = oldNodes.find(n => n.id === param)
-            if (packageNode.type === "packageNode") {
-                packageNode.type = "openedPackageNode"
+            if (packageNode.type === NodeTypes.PackageNode) {
+                packageNode.type = NodeTypes.OpenedPackageNode
 
                 totalWidth = nodes.reduce((sum, node) => sum + node.width, 0);
                 totalCircumference = totalWidth * 1.3
@@ -340,11 +328,11 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                 packageNode.width = radius * 2 + 155
                 packageNode.height = radius * 2 + 155
                 packageNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.4)', width: radius * 2 + 155, height: radius * 2 + 155 }
-                distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumference)
+                distributeNodes(oldNodes, packageNode,totalWidth,radius,totalCircumference)
 
             }
             else {
-                packageNode.type = "packageNode"
+                packageNode.type = NodeTypes.PackageNode
                 packageNode.style = {}
                 packageNode.width = 110
                 packageNode.height = 100
@@ -352,7 +340,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                 const childNodes = filterNodes(oldNodes, packageNode)
 
                 oldNodes = oldNodes.filter(node => !childNodes.includes(node))
-                distrubuteNodes(oldNodes,packageNode,totalWidth,radius,totalCircumference)
+                distributeNodes(oldNodes,packageNode,totalWidth,radius,totalCircumference)
                 edges = calculateEdges(oldNodes, tree)
                 nodes = oldNodes
                 return { nodes, edges }
