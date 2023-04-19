@@ -85,7 +85,7 @@ function Flow() {
         if (edge.label === DepLabelTypes.Invokes && invocationsToggled) return true;
         else if (edge.label === DepLabelTypes.Inherits && abstractionsToggled) return true;
         else if (edge.label === DepLabelTypes.Implements && implementationsToggled) return true;
-        else if (edge.label === "circular" && circularToggled) return true;
+        else if (edge.label === DepLabelTypes.Circular && circularToggled) return true;
         return false;
     }
 
@@ -210,8 +210,6 @@ function Flow() {
 
             const shouldHighlight = edgeExists || isChild || node.id === selectedNode.id;
             const opacity = shouldHighlight ? 0.90 : 0.2;
-            //Code to set color of open packages to blue
-            //const color = isChild && selectedNode.type === NodeTypes.OpenedPackageNode ? "rgba(135, 206, 250)" : node.style.color;
 
             return {
                 ...node,

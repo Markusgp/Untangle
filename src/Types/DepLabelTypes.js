@@ -1,6 +1,7 @@
 const DepLabelTypes = {
     Invokes: "invokes",
     Implements: "implements",
-    Inherits: "inherits"
+    Inherits: "inherits",
+    Circular: "circular"
 }
 export { DepLabelTypes }

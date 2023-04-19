@@ -108,20 +108,6 @@ export class ClassTree {
         
     }
 
-    getAllLeavesRec(node, leaves){
-        if (node.children.size > 0){
-            for (let value of node.children.values()){
-                if (value instanceof JavaClass) leaves.push(value)
-                else leaves.join(this.getAllLeavesRec(value,leaves))
-            }
-        }
-        return leaves
-    }
-
-    getAllLeaves(){
-        return this.getAllLeavesRec(this.root, [])
-    }
-
     getTopLevelPackages(){
         return [...this.root.children.values()]
     }
@@ -178,69 +164,4 @@ export class ClassTree {
         })
         return numImplementations
     }
-
-    getDependantNodes(node) {
-        const dependantNodes = new Set();
-        const targetNode = node;
-    
-        if (targetNode instanceof JavaClass) {
-            const checkDependencies = (dependencySet) => {
-                dependencySet.forEach(dependency => {
-                    const dependantNode = dependency;
-                    if (dependantNode && !dependantNodes.has(dependantNode)) {
-                        dependantNodes.add(dependantNode);
-                        checkDependencies(dependantNode.classInherits);
-                        checkDependencies(dependantNode.classInvocation);
-                        checkDependencies(dependantNode.classImplements);
-                    }
-                });
-            };
-    
-            checkDependencies(targetNode.classInherits);
-            checkDependencies(targetNode.classInvocation);
-            checkDependencies(targetNode.classImplements);
-        }
-    
-        return Array.from(dependantNodes);
-    }
-    
-    getNotDependantNodes(node) {
-        const allNodes = this.getAllLeaves();
-        const dependantNodes = this.getDependantNodes(node);
-        const dependantNodeSet = new Set(dependantNodes);
-        dependantNodeSet.add(node);
-    
-        return allNodes.filter(leafNode => !dependantNodeSet.has(leafNode));
-    }
-    
-    //TODO This method is never invoked is it redundant? @Markus?
-    updateOpacityOnSelection(selectedNode) {
-        const dependantNodes = this.getDependantNodes(selectedNode.id);
-        const notDependantNodes = this.getNotDependantNodes(selectedNode.id);
-        const updateOpacity = (nodes, alpha) => {
-            nodes.forEach(node => {
-                const foundNode = nodes.find(e => e.id === node.id);
-                if (foundNode) foundNode.opacity = alpha;
-            });
-        };
-        updateOpacity(dependantNodes, 1);
-        updateOpacity(notDependantNodes, 0.5);
-    }
-
-    //TODO Unused method, can it be deleted? @Daniel?
-    contains(pack){
-        let current = this.root
-
-        let packages = pack.split(".")
-
-        for (let i = 0; i < packages.length; i++){
-            if (i === packages.length-1){
-                return current.children.has(pack)
-            }
-            if (i === 0) current = current.children.get(packages[i])
-            else current = current.children.get(current.pack+"."+packages[i])
-            if (current == null) return false
-        }
-    }
-    
 }

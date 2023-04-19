@@ -1,12 +1,11 @@
-import { MarkerType, StepEdge } from 'reactflow';
-//TODO Markus are we using these or can we delete?
-import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
+import {MarkerType} from 'reactflow';
+import {forceCollide, forceSimulation} from 'd3-force';
 import {DepLabelTypes} from "./Types/DepLabelTypes";
 import {NodeTypes} from "./Types/NodeTypes";
 import {LayoutTypes} from "./Types/LayoutTypes";
 
 function calculateBarycenters(nodes, edges) {
-    const barycenters = nodes.map((node) => {
+    return nodes.map((node) => {
         const connectedEdges = edges.filter((edge) => edge.source === node.id || edge.target === node.id);
         const sum = connectedEdges.reduce((acc, edge) => {
             const otherNodeId = edge.source === node.id ? edge.target : edge.source;
@@ -14,10 +13,8 @@ function calculateBarycenters(nodes, edges) {
             return acc + otherNodeIndex;
         }, 0);
         const average = sum / connectedEdges.length;
-        return { nodeId: node.id, barycenter: average };
+        return {nodeId: node.id, barycenter: average};
     });
-
-    return barycenters;
 }
 
 function calculateEdges(nodes, tree) {
@@ -31,7 +28,6 @@ function calculateEdges(nodes, tree) {
             type: "floating",
             animated: false,
             label: typeString,
-            //labelStyle: { fill: "#f6ab6c", fontWeight: 700 }, //Todo not used is redundant
             markerEnd: {
                 type: MarkerType.Arrow,
                 width: 15
@@ -90,7 +86,6 @@ function calculateEdges(nodes, tree) {
                     type: "floating",
                     animated: false,
                     label: "circular",
-                    // labelStyle: { fill: "#f6ab6c", fontWeight: 700 }, //TODO Remove is redundant
                     data: {
                         isSelected: false,
                         nonSelected: true,
