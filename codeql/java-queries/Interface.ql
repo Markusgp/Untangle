@@ -8,7 +8,6 @@
  */
 import java
 
-//TODO: remove javafx classes from query
 from Interface c
 where c.getCompilationUnit().fromSource()
 select c.getName(), c.getPackage() + "." + c.getName(), c.getNumberOfLinesOfCode()
