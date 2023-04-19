@@ -24,7 +24,7 @@ import FloatingEdge from './FloatingEdge.js';
 
 import LayoutPanel from "./FlowElements/Panels/LayoutPanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
-import TogglePanel from "./FlowElements/Panels/TogglePanel";
+import TogglePanel from "./FlowElements/Panels/FilterPanel.js";
 import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
 import ExpandedPackagePanel from "./FlowElements/Panels/ExpandedPackagePanel.js";
