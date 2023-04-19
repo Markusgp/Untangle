@@ -43,7 +43,7 @@ const nodeTypes = {
     openedPackageNode: OpenedPackageNode
 };
 
-const edgeTypes = {floating: FloatingEdge,};
+const edgeTypes = {floating: FloatingEdge};
 
 //TODO Why are we keeping two states here? Is it necessary? Is this not only invoked once?
 let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, 'force', tree, []);
@@ -256,45 +256,38 @@ function Flow() {
         }
     }
 
-    //TODO Is this ever used?
-    const [reactFlowInstance, setReactFlowInstance] = useState(null);
-
     return (<>
-        <div className="panelHolder" id="leftFloat">
-            <div className="panelStyle">
-                <LayoutPanel>
-                    <ToggleSwitch layout={layout} setLayout={setLayout}/>
-                </LayoutPanel>
-            </div>
-                <div>
-                    <div className="panelStyle">
-                        <TogglePanel classesToggled={setClassesToggled}
-                                     interfacesToggled={setInterfacesToggled}
-                                     moduleToggled={setModulesToggled}
-                                     implementationsToggled={setImplementationsToggled}
-                                     abstractionsToggled={setAbstractionsToggled}
-                                     invocationsToggled={setInvocationsToggled}
-                                     circularToggled={setCircularToggled} />
-    </div>{ hiddenNodes.length > 0 && (
-                        <div className="panelStyle">
-                            <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
-                            </HiddenPanel>
-                        </div>
-                    )}
+            <div className="panelHolder" id="leftFloat">
+                <div className="panelStyle">
+                    <LayoutPanel>
+                        <ToggleSwitch layout={layout} setLayout={setLayout}/>
+                    </LayoutPanel>
                 </div>
-
-        </div>
-        <div className="panelHolder" id="rightFloat">
+                <div className="panelStyle">
+                    <TogglePanel classesToggled={setClassesToggled}
+                                 interfacesToggled={setInterfacesToggled}
+                                 moduleToggled={setModulesToggled}
+                                 implementationsToggled={setImplementationsToggled}
+                                 abstractionsToggled={setAbstractionsToggled}
+                                 invocationsToggled={setInvocationsToggled}
+                                 circularToggled={setCircularToggled} />
+                </div>
+                {hiddenNodes.length > 0 && (
+                    <div className="panelStyle">
+                        <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode} />
+                    </div>
+                )}
+            </div>
+            <div className="panelHolder" id="rightFloat">
                 {selectedNode != null && (
                     <div className="panelStyleInformation">
                         <InformationPanel treeNode={tree.getNode(selectedNode.id)}
                                           node={selectedNode}
                                           expandFunc={expandPackage}
-                                          hideFunc={toggleHiddenNode}/>
+                                          hideFunc={toggleHiddenNode} />
                     </div>
                 )}
-
-        </div>
+            </div>
         <ReactFlow
             nodes={nodes.filter(nodeShouldBeDrawn)}
             edges={edges.filter(edgeShouldBeDrawn)}
@@ -304,8 +297,6 @@ function Flow() {
             onNodeDoubleClick={expandPackage}
             onPaneClick={onPaneClicked}
             fitView
-            //TODO Is this ever used?
-            onLoad={(_reactFlowInstance) => setReactFlowInstance(_reactFlowInstance)}
             edgeTypes={edgeTypes}
             minZoom={0.1}
             nodeTypes={nodeTypes}
