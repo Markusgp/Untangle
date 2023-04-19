@@ -237,7 +237,7 @@ function Flow() {
                         <ToggleSwitch layout={layout} setLayout={setLayout}/>
                     </LayoutPanel>
                 </div>
-                <div>
+
                     <div className="panelStyle">
                         <TogglePanel classesToggled={setClassesToggled}
                                      interfacesToggled={setInterfacesToggled}
@@ -263,38 +263,6 @@ function Flow() {
                             />
                         </div>
                     )}
-                </div>
-            </div>
-            <div className="panelHolder" id="rightFloat">
-                {selectedNode != null && (
-                    <div className="panelStyleInformation">
-                        <InformationPanel treeNode={tree.getNode(selectedNode.id)}
-                                          node={selectedNode}
-                                          expandFunc={expandPackage}
-                                          hideFunc={toggleHiddenNode}/>
-                    </div>
-                )}
-            </div>
-            <div className="panelHolder" id="leftFloat">
-                <div className="panelStyle">
-                    <LayoutPanel>
-                        <ToggleSwitch layout={layout} setLayout={setLayout}/>
-                    </LayoutPanel>
-                </div>
-                <div className="panelStyle">
-                    <TogglePanel classesToggled={setClassesToggled}
-                                 interfacesToggled={setInterfacesToggled}
-                                 moduleToggled={setModulesToggled}
-                                 implementationsToggled={setImplementationsToggled}
-                                 abstractionsToggled={setAbstractionsToggled}
-                                 invocationsToggled={setInvocationsToggled}
-                                 circularToggled={setCircularToggled}/>
-                </div>
-                {hiddenNodes.length > 0 && (
-                    <div className="panelStyle">
-                        <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}/>
-                    </div>
-                )}
             </div>
             <div className="panelHolder" id="rightFloat">
                 {selectedNode != null && (
