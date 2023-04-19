@@ -24,7 +24,7 @@ import FloatingEdge from './FloatingEdge.js';
 
 import LayoutPanel from "./FlowElements/Panels/LayoutPanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
-import TogglePanel from "./FlowElements/Panels/FilterPanel";
+import TogglePanel from "./FlowElements/Panels/TogglePanel";
 import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
 import ExpandedPackagePanel from "./FlowElements/Panels/ExpandedPackagePanel.js";
@@ -61,6 +61,7 @@ function Flow() {
     const [abstractionsToggled, setAbstractionsToggled] = useState(true);
     const [invocationsToggled, setInvocationsToggled] = useState(true);
     const [implementationsToggled, setImplementationsToggled] = useState(true);
+    const [circularToggled, setCircularToggled] = useState(true);
 
     const [selectedNode, setSelectNode] = useState(null);
     const [firstRender, setFirstRender] = useState(true);
@@ -91,6 +92,7 @@ function Flow() {
         if (edge.label === "invokes" && invocationsToggled) return true;
         else if (edge.label === "inherits" && abstractionsToggled) return true;
         else if (edge.label === "implements" && implementationsToggled) return true;
+        else if (edge.label === "circular" && circularToggled) return true;
         return false;
     }
 
@@ -169,7 +171,6 @@ function Flow() {
                 flowinstance.fitView();
             }, 0);
         }
-        
         setSelectNode(null);
     }
 
@@ -238,7 +239,7 @@ function Flow() {
 
             return {
                 ...node,
-                style: { ...node.style, opacity },
+                style: {...node.style, opacity},
             };
         });
         setNodes(updatedNodes);
@@ -248,7 +249,7 @@ function Flow() {
         const updatedNodes = nodes.map((node) => {
             return {
                 ...node,
-                style: { ...node.style, opacity: 1 },
+                style: {...node.style, opacity: 1},
             };
         });
         setNodes(updatedNodes);
@@ -290,34 +291,33 @@ function Flow() {
                     <ToggleSwitch layout={layout} setLayout={setLayout} />
                 </LayoutPanel>
             </div>
-
-            <div>
-                <div className="panelStyle">
-                    <TogglePanel classesToggled={setClassesToggled}
-                        interfacesToggled={setInterfacesToggled}
-                        moduleToggled={setModulesToggled}
-                        implementationsToggled={setImplementationsToggled}
-                        abstractionsToggled={setAbstractionsToggled}
-                        invocationsToggled={setInvocationsToggled} />
-                </div>
-                {hiddenNodes.length > 0 && (
+                <div>
                     <div className="panelStyle">
-                        <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
-                        </HiddenPanel>
+                        <TogglePanel classesToggled={setClassesToggled}
+                                     interfacesToggled={setInterfacesToggled}
+                                     moduleToggled={setModulesToggled}
+                                     implementationsToggled={setImplementationsToggled}
+                                     abstractionsToggled={setAbstractionsToggled}
+                                     invocationsToggled={setInvocationsToggled}
+                                     circularToggled={setCircularToggled} />
                     </div>
-                )}
-                {openedPackageNodes.length > 0 && (
-                  <div className="panelStyle">
-                      <ExpandedPackagePanel
-                        expandedNodes={openedPackageNodes}
-                        node={selectedNode}
-                        expandFunc={expandPackage}
-                        selectFunc={onNodeClicked}
-                      />
-                  </div>
-                )}
-            </div>
-
+                    { hiddenNodes.length > 0 && (
+                        <div className="panelStyle">
+                            <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
+                            </HiddenPanel>
+                        </div>
+                    )}
+                    {openedPackageNodes.length > 0 && (
+                        <div className="panelStyle">
+                            <ExpandedPackagePanel
+                                expandedNodes={openedPackageNodes}
+                                node={selectedNode}
+                                expandFunc={expandPackage}
+                                selectFunc={onNodeClicked}
+                            />
+                        </div>
+                    )}
+                </div>
         </div>
         <div className="panelHolder" id="rightFloat">
             {selectedNode != null && (
