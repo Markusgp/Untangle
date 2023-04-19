@@ -220,6 +220,10 @@ li::marker {
         justify-content: space-between;
     }
 
+    .treeRoot .rowContainer:hover {
+        font-weight: bold;
+    }
+
     .treeRoot ul {
         margin: 0;
     }
