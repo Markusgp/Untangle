@@ -169,7 +169,6 @@ function Flow() {
     function toggleSelectForNode(node) {
         let selectNode = nodes.find(e => e.id === node.id)
         selectNode.data.isSelected = !selectNode.data.isSelected
-        onNodesChange([]);
     }
 
     function redrawSelectedEdges(node, unselect) {
@@ -192,7 +191,6 @@ function Flow() {
             });
         }
         setEdges(edges);
-        onEdgesChange([]);
     }
 
     function updateDependingNodesOpacity(selNode) {
@@ -226,7 +224,6 @@ function Flow() {
 
     function onNodeClicked(_, node) {
         resetSelectedNode();
-        resetAllNodesOpacity(nodes);
         toggleSelectForNode(node);
         redrawSelectedEdges(node, false)
         setSelectNode(node);
