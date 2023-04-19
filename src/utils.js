@@ -384,7 +384,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
                 oldNodes = oldNodes.filter(node => !childNodes.includes(node))
                 distrubuteNodes(oldNodes,packageNode,totalWidth,radius,totalCircumference)
-                edges = calculateEdges(oldNodes)
+                edges = calculateEdges(oldNodes, tree)
                 nodes = oldNodes
                 return { nodes, edges }
             }
