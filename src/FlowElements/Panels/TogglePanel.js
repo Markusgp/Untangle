@@ -5,10 +5,10 @@ import { FaEyeSlash, FaEye } from "react-icons/fa";
 import { BiFilterAlt } from "react-icons/bi";
 
 
-const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, implementationsToggled, abstractionsToggled, invocationsToggled}) => {
+const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, implementationsToggled, abstractionsToggled, invocationsToggled, circularToggled}) => {
   const toggle = () => setOpen(!open);
   const nodeTypes = ["Classes", "Interfaces", "Modules"]
-  const edgeTypes = ["Invokes", "Inherits", "Implements"]
+  const edgeTypes = ["Invokes", "Inherits", "Implements", "Circular"]
   const eyeMap = new Map();
 
   const [classEye, setClassEye]=useState(true);
@@ -17,6 +17,7 @@ const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, impleme
   const [abstractionEye, setAbstractionEye]=useState(true);
   const [implementationEye, setImplementationEye]=useState(true);
   const [invocationEye, setInvocationEye]=useState(true);
+  const [circularEye, setCircularEye]=useState(true);
 
   eyeMap.set("Classes", classEye);
   eyeMap.set("Interfaces", interfaceEye);
@@ -24,6 +25,7 @@ const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, impleme
   eyeMap.set("Invokes", invocationEye);
   eyeMap.set("Inherits", abstractionEye);
   eyeMap.set("Implements", implementationEye)
+  eyeMap.set("Circular", circularEye)
   const eyeClick = (nodeType) => {
     switch (nodeType) {
       case "Classes": setClassEye(!classEye); classesToggled(!classEye); break;
@@ -32,6 +34,7 @@ const ExamplePanel = ({classesToggled, interfacesToggled, moduleToggled, impleme
       case "Invokes": setInvocationEye(!invocationEye); invocationsToggled(!invocationEye); break;
       case "Inherits": setAbstractionEye(!abstractionEye); abstractionsToggled(!abstractionEye); break;
       case "Implements": setImplementationEye(!implementationEye); implementationsToggled(!implementationEye); break;
+      case "Circular": setCircularEye(!circularEye); circularToggled(!circularEye); break;
     }
   }
   const nodeTypeItems = nodeTypes.map((nodeType) => <li className="nodesList" key={nodeType}>{eyeMap.get(nodeType) ? <FaEye className="faEye" onClick={() => eyeClick(nodeType)}/> : <FaEyeSlash className="faEye" onClick={() => eyeClick(nodeType)}/>} {nodeType} </li>)

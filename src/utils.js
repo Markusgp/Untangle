@@ -46,6 +46,7 @@ function calculateEdges(nodes, tree) {
                     isSelected: false,
                     nonSelected: true,
                     weight: edgeWeight,
+                    isCircular: false,
                 }
             })
         })
@@ -70,6 +71,7 @@ function calculateEdges(nodes, tree) {
                     isSelected: false,
                     nonSelected: true,
                     weight: edgeWeight,
+                    isCircular: false,
                 }
             })
         })
@@ -94,10 +96,39 @@ function calculateEdges(nodes, tree) {
                     isSelected: false,
                     nonSelected: true,
                     weight: edgeWeight,
-                }
+                    isCircular: false,
+                },
             })
         })
     })
+    let edgesToBeAdded = []
+    edges.forEach(ele => {
+
+        let circularEdge = edges.find(element => {
+            return element.source === ele.target && element.target === ele.source
+        });
+        if (circularEdge !== undefined && nodes.find(a => a.id === ele.source || a.id === ele.target).type !== "packageNode") {
+            let edgeAlreadyFound = edgesToBeAdded.find(a => { return a.id === `${ele.source}-circular-${ele.target}` || a.id === `${ele.target}-circular-${ele.source}`});
+            if (edgeAlreadyFound === undefined) {
+                edgesToBeAdded.push({
+                    id: `${ele.source}-circular-${ele.target}`,
+                    source: ele.source,
+                    target: ele.target,
+                    type: "floating",
+                    animated: false,
+                    label: "circular",
+                    labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                    data: {
+                        isSelected: false,
+                        nonSelected: true,
+                        weight: ele.data.weight + circularEdge.data.weight,
+                        isCircular: true,
+                    },
+                })
+            }
+        }
+    })
+    edges = edges.concat(edgesToBeAdded)
     return edges
 }
 
