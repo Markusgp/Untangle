@@ -53,6 +53,7 @@ function calculateEdges(nodes, tree) {
         cls.classInvocation.forEach(invokedClass => {
             const invokedNode = nodes.find(n => n.id === invokedClass)
             if (invokedNode === undefined || invokedNode.type === NodeTypes.OpenedPackageNode) return
+            if (invokedNode.id === node.id) return
             const edgeWeight = tree.getNumInvocations(node.id) * 2 - 15;
             edges.push(createEdge(node, invokedNode, DepLabelTypes.Invokes, edgeWeight));
         })
@@ -60,6 +61,7 @@ function calculateEdges(nodes, tree) {
         cls.classImplements.forEach(implementedClass => {
             const implementedNode = nodes.find(n => n.id === implementedClass)
             if (implementedNode === undefined || implementedNode.type === NodeTypes.OpenedPackageNode) return
+            if (implementedNode.id === node.id) return
             const edgeWeight = tree.getNumImplementations(node.id) * 2 - 15;
             edges.push(createEdge(node, implementedNode, DepLabelTypes.Implements, edgeWeight))
         })
@@ -67,6 +69,7 @@ function calculateEdges(nodes, tree) {
         cls.classInherits.forEach(inheritedClass => {
             const inheritedNode = nodes.find(n => n.id === inheritedClass)
             if (inheritedNode === undefined ||inheritedNode.type === NodeTypes.OpenedPackageNode) return
+            if (inheritedNode.id === node.id) return
             const edgeWeight = tree.getNumInheritances(node.id) * 2 - 15;
             edges.push(createEdge(node, inheritedNode, DepLabelTypes.Inherits, edgeWeight));
         })
