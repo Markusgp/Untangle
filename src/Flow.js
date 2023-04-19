@@ -50,7 +50,7 @@ let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getT
 
 
 function Flow() {
-    const flowinstance = useReactFlow();
+    const flowInstance = useReactFlow();
 
     let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
     let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -115,8 +115,8 @@ function Flow() {
 
         resetNodeOpacity(oldNodes);
         setEdges(oldEdges);
-        oldNodes = nodes;
-        oldEdges = edges;
+        oldNodes = nodes; //TODO why is oldNodes used here? What is the purpose?
+        oldEdges = edges; //TODO why is oldEdges used here? What is the purpose?
         setViewShouldFit(true); // Set viewShouldFit to true when layout changes or a package is expanded
     };
 
@@ -128,7 +128,7 @@ function Flow() {
     useEffect(() => {
         if (nodes !== oldNodes || edges !== oldEdges) {
             if (viewShouldFit) {
-                flowinstance.fitView();
+                flowInstance.fitView();
                 setViewShouldFit(false); // Reset viewShouldFit after fitView is called
             }
         }
@@ -143,7 +143,7 @@ function Flow() {
             setEdges(edges);
             setTimeout(() => {
                 resetNodeOpacity(nodes);
-                flowinstance.fitView();
+                flowInstance.fitView();
             }, 0);
         }
         setSelectNode(null);
