@@ -72,10 +72,10 @@ function Flow() {
 
     function nodeShouldBeDrawn(node) {
         if (!node.data.visible) return false;
-        if (node.type === "classNode" && classesToggled) return true;
-        if (node.type === "interfaceNode" && interfacesToggled) return true;
-        if (node.type === "packageNode" && modulesToggled) return true;
-        if (node.type === "openedPackageNode") return true;
+        else if (node.type === "classNode" && classesToggled) return true;
+        else if (node.type === "interfaceNode" && interfacesToggled) return true;
+        else if (node.type === "packageNode" && modulesToggled) return true;
+        else if (node.type === "openedPackageNode") return true;
         return false;
     }
 
