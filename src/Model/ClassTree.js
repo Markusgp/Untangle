@@ -1,6 +1,6 @@
 import { JavaClass } from "./JavaClass"
 import { JavaPackage } from "./JavaPackage"
-import { CodeQLType } from "./CodeQLType"
+import { CodeQLType } from "../Types/CodeQLType"
 
 export class ClassTree {
     constructor() {

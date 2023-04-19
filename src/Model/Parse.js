@@ -9,7 +9,7 @@ import Instantiations from "../data/Instantiation.json"
 import GenericInitializations from "../data/GenericInitialization.json"
 import GenericInstantiations from "../data/GenericInstantiation.json"
 
-import { CodeQLType } from "./CodeQLType.js"
+import { CodeQLType } from "../Types/CodeQLType.js"
 
 const tree = new ClassTree()
 
