@@ -3,7 +3,7 @@ import { MarkerType, StepEdge } from 'reactflow';
 import { forceSimulation, forceManyBody, forceCenter, forceCollide } from 'd3-force';
 import {DepLabelTypes} from "./Types/DepLabelTypes";
 import {NodeTypes} from "./Types/NodeTypes";
-
+import {LayoutTypes} from "./Types/LayoutTypes";
 
 function calculateBarycenters(nodes, edges) {
     const barycenters = nodes.map((node) => {
@@ -278,7 +278,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
     edges = calculateEdges(nodes, tree)
 
 
-    if (layout === 'force') {
+    if (layout === LayoutTypes.Force) {
         let packageNode = oldNodes.find(n => n.id === param);
         let updatedNodes = nodes;
         let hiddenNodes = []

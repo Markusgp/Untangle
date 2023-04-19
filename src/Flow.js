@@ -30,9 +30,10 @@ import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
 import {tree} from "./Model/Parse"
 import {DepLabelTypes} from "./Types/DepLabelTypes.js";
 import {NodeTypes} from "./Types/NodeTypes.js";
+import { LayoutTypes } from "./Types/LayoutTypes.js";
 
 const useBaryCenter = true;
-const layout = 'circle';
+const layout = LayoutTypes.Circular;
 
 let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout, tree, []);
 
@@ -46,7 +47,7 @@ const nodeTypes = {
 const edgeTypes = {floating: FloatingEdge};
 
 //TODO Why are we keeping two states here? Is it necessary? Is this not only invoked once?
-let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, 'force', tree, []);
+let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, LayoutTypes.Force, tree, []);
 
 
 function Flow() {

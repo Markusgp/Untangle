@@ -1,11 +1,12 @@
 import React from 'react';
 import ReactSwitch from 'react-switch';
 import {BiShapeCircle, BiNetworkChart} from "react-icons/bi"
+import {LayoutTypes} from "../../Types/LayoutTypes";
 
 function ToggleSwitch({layout, setLayout}) {
 
     const handleChange = val => {
-        const newLayout = val ? "force" : "circle";
+        const newLayout = val ? LayoutTypes.Force : LayoutTypes.Circular;
         setLayout(newLayout);
     };
 
@@ -15,10 +16,10 @@ function ToggleSwitch({layout, setLayout}) {
             <p style={{
                 width: "65px",
                 fontWeight: "700",
-                opacity: layout === "force" ? 0.3 : 1
+                opacity: layout === LayoutTypes.Force ? 0.3 : 1
             }}>{"Circular"}</p>
             <ReactSwitch
-                checked={layout === "force"}
+                checked={layout === LayoutTypes.Force}
                 onChange={handleChange}
                 offColor="#FF6C69"
                 onColor="#FF6C69"
@@ -76,7 +77,7 @@ function ToggleSwitch({layout, setLayout}) {
             <p style={{
                 width: "65px",
                 fontWeight: 700,
-                opacity: layout === "force" ? 1 : 0.3
+                opacity: layout === LayoutTypes.Force ? 1 : 0.3
             }}>{"Force"}</p>
         </div>
     );
