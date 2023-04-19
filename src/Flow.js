@@ -61,6 +61,7 @@ function Flow() {
     const [abstractionsToggled, setAbstractionsToggled] = useState(true);
     const [invocationsToggled, setInvocationsToggled] = useState(true);
     const [implementationsToggled, setImplementationsToggled] = useState(true);
+    const [circularToggled, setCircularToggled] = useState(true);
 
     const [selectedNode, setSelectNode] = useState(null);
     const [firstRender, setFirstRender] = useState(true);
@@ -83,6 +84,7 @@ function Flow() {
         if (edge.label === DepLabelTypes.Invokes && invocationsToggled) return true;
         else if (edge.label === DepLabelTypes.Inherits && abstractionsToggled) return true;
         else if (edge.label === DepLabelTypes.Implements && implementationsToggled) return true;
+        else if (edge.label === "circular" && circularToggled) return true;
         return false;
     }
 
@@ -271,9 +273,9 @@ function Flow() {
                                      moduleToggled={setModulesToggled}
                                      implementationsToggled={setImplementationsToggled}
                                      abstractionsToggled={setAbstractionsToggled}
-                                     invocationsToggled={setInvocationsToggled}/>
-                    </div>
-                    { hiddenNodes.length > 0 && (
+                                     invocationsToggled={setInvocationsToggled}
+                                     circularToggled={setCircularToggled} />
+    </div>{ hiddenNodes.length > 0 && (
                         <div className="panelStyle">
                             <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
                             </HiddenPanel>

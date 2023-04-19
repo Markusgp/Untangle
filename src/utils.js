@@ -39,7 +39,8 @@ function calculateEdges(nodes, tree) {
             data: {
                 isSelected: false,
                 nonSelected: true,
-                weight: edgeWeight
+                weight: edgeWeight,
+                isCircular: false
             }
         }
     }
@@ -70,6 +71,34 @@ function calculateEdges(nodes, tree) {
             edges.push(createEdge(node, inheritedNode, DepLabelTypes.Inherits, edgeWeight));
         })
     })
+    let edgesToBeAdded = []
+    edges.forEach(ele => {
+
+        let circularEdge = edges.find(element => {
+            return element.source === ele.target && element.target === ele.source
+        });
+        if (circularEdge !== undefined && nodes.find(a => a.id === ele.source || a.id === ele.target).type !== "packageNode") {
+            let edgeAlreadyFound = edgesToBeAdded.find(a => { return a.id === `${ele.source}-circular-${ele.target}` || a.id === `${ele.target}-circular-${ele.source}`});
+            if (edgeAlreadyFound === undefined) {
+                edgesToBeAdded.push({
+                    id: `${ele.source}-circular-${ele.target}`,
+                    source: ele.source,
+                    target: ele.target,
+                    type: "floating",
+                    animated: false,
+                    label: "circular",
+                    labelStyle: { fill: "#f6ab6c", fontWeight: 700 },
+                    data: {
+                        isSelected: false,
+                        nonSelected: true,
+                        weight: ele.data.weight + circularEdge.data.weight,
+                        isCircular: true,
+                    },
+                })
+            }
+        }
+    })
+    edges = edges.concat(edgesToBeAdded)
     return edges
 }
 
@@ -160,7 +189,7 @@ function distrubuteNodes(oldNodes, packageNode,totalWidth,radius,totalCircumfere
         totalCircumference = totalWidth * 130 / 100
         radius = totalCircumference / (2 * Math.PI)
         angleSoFar = 0
-        tempNode = oldNodes.find(n => n.id == tempNode.parentNode)
+        tempNode = oldNodes.find(n => n.id === tempNode.parentNode)
 
         tempNode.width = radius * 2 + 155
         tempNode.height = radius * 2 + 155
@@ -324,7 +353,7 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
                 oldNodes = oldNodes.filter(node => !childNodes.includes(node))
                 distrubuteNodes(oldNodes,packageNode,totalWidth,radius,totalCircumference)
-                edges = calculateEdges(oldNodes)
+                edges = calculateEdges(oldNodes, tree)
                 nodes = oldNodes
                 return { nodes, edges }
             }
