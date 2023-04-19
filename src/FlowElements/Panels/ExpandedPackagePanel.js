@@ -26,11 +26,13 @@ const ExpandedPackagePanel = ({ nodes, expandFunc, selectFunc }) => {
   }
 
   const isChildOf = (childNode, parentNode) => {
-    return childNode.parentNode === parentNode.id;
+    return childNode.parentNode === parentNode.id || childNode.parent === parentNode.id;
   };
+  
 
   const renderPackageList = (parentId) => {
     const children = expandedPackages.filter(packageNode => isChildOf(packageNode, { id: parentId }));
+    console.log(children)
     if (children.length === 0) {
       return null;
     }
