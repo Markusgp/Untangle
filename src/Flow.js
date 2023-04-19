@@ -79,6 +79,14 @@ function Flow() {
         return false;
     }
 
+    const [openedPackageNodes, setOpenedPackageNodes] = useState([]);
+
+    useEffect(() => {
+        setOpenedPackageNodes(nodes.filter(n => n.type === "openedPackageNode"))
+    }, [nodes]);
+
+
+
     function edgeShouldBeDrawn(edge) {
         if (edge.label === "invokes" && invocationsToggled) return true;
         else if (edge.label === "inherits" && abstractionsToggled) return true;
@@ -292,22 +300,22 @@ function Flow() {
                         abstractionsToggled={setAbstractionsToggled}
                         invocationsToggled={setInvocationsToggled} />
                 </div>
-
                 {hiddenNodes.length > 0 && (
                     <div className="panelStyle">
                         <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
                         </HiddenPanel>
                     </div>
                 )}
-                <div className="panelStyle">
-
-                    <ExpandedPackagePanel
-                        expandedNodes={nodes.filter(node => node.type === 'openedPackageNode')}
+                {openedPackageNodes.length > 0 && (
+                  <div className="panelStyle">
+                      <ExpandedPackagePanel
+                        expandedNodes={openedPackageNodes}
                         node={selectedNode}
                         expandFunc={expandPackage}
                         selectFunc={onNodeClicked}
-                    />
-                </div>
+                      />
+                  </div>
+                )}
             </div>
 
         </div>

@@ -6,7 +6,7 @@ import { FiPackage } from "react-icons/fi"
 import { RxMagnifyingGlass } from "react-icons/rx";
 
 const ExpandedPackagePanel = ({ expandedNodes, expandFunc, selectFunc }) => {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   const toggle = () => setOpen(!open);
 
