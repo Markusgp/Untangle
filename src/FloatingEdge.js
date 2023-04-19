@@ -14,8 +14,8 @@ function FloatingEdge({id, source, target, markerEnd, data}) {
     const [edgePath] = getStraightPath({
         sourceX: sx,
         sourceY: sy,
-        sourcePosition: sx,
-        targetPosition: sy,
+        //sourcePosition: sx, //TODO Can be removed without any errors
+        //targetPosition: sy, //TODO can be removed without any errors
         targetX: tx,
         targetY: ty,
     });

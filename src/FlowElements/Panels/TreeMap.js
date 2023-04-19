@@ -5,19 +5,6 @@ import "./PanelStyles.css"
 function TreeMap({ width, height, data}) {
   let ref = useRef();
 
-  //Used for opacity calculation remove in cleanup
-  const reduceJsonData = (data, acc) => {
-    if (data.hasOwnProperty('children')) {
-      return (reduceJsonData(data.children, acc));
-    } else {
-      for (let i = 0; i < data.length; i++) acc.push(data[i].value);
-      return Math.max(...acc);
-    }
-  }
-
-  //Used for opacity calculation remove in cleanup
-  let valueDelimeter = reduceJsonData(data, []);
-
   useEffect(() => {
     draw();
   }, [data]);
@@ -33,22 +20,8 @@ function TreeMap({ width, height, data}) {
       .sum(function(d){ return d.value})
       .sort((a, b) => b.value - a.value);
 
-    //d3.treemapSlice(root, 0, 0, width, height)
     d3.treemap().size([width, height]) (root);
 
-    /*
-    const opacity = d3.scaleLinear()
-      .domain([0, valueDelimeter])
-      .range([.5,1]);
-    */
-    //---TOOLTIP
-    /*
-    const tip = d3.select("#inspect")
-      .html("Something here")
-      .style("pointer-events", "none")
-      .style("overflow", "hidden")
-      .style("word-wrap", "break-word")
-     */
     const nodes = svg
       .selectAll("rect")
       .data(root.leaves());
@@ -62,30 +35,7 @@ function TreeMap({ width, height, data}) {
       .style("stroke", "white")
       .style("stroke-width", "2px")
       .style("fill", function (d) { return color(d.parent.data.name) } )
-      .style("opacity", function (d) { return (/*opacity*/(d.data.value)) } )
-       // ---- TOOLTIP HOVER FUNC
-      /*
-      .on("mousemove", function(event, d) {
-        tip.style("opacity", 1)
-          .style("z-index", 100)
-          .style("stroke", "black")
-          //.style("left", event.clientX + "px")
-          //.style("top", event.clientY + "px")
-          .html("<strong>Currently Inspecting: </strong>" + d.data.name)
-        d3.select(this)
-          .style("stroke", "black")
-          .style("stroke-width", 2)
-      })
-      .on("mouseout", function(event, d) {
-        tip.style("opacity", 1)
-          //.style("left", 0 + "px")
-          //.style("top", 0 + "px")
-        d3.select(this)
-          .style("stroke", "white")
-          .style("stroke-width", 2)
-      });
-      */
-
+      .style("opacity", function (d) { return ((d.data.value)) } )
 
     nodes.exit().remove()
 
@@ -145,9 +95,6 @@ function TreeMap({ width, height, data}) {
   return (
       <div className="chart">
         <svg ref={ref}></svg>
-        {/*
-          <div id="inspectionHolder"><p id="inspect"><strong>Currently Inspecting:</strong></p></div>
-        */}
       </div>
   )
 }
