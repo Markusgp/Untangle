@@ -52,7 +52,6 @@ function calculateEdges(nodes, tree) {
             if (invokedNode === undefined || invokedNode.type === NodeTypes.OpenedPackageNode) return
             if (invokedNode.id === node.id) return
             const maxDependancies = tree.getMaxDependancies()
-            console.log(maxDependancies)
             const edgeWeight = Math.pow(((tree.getNumInvocations(node.id)),2)/(maxDependancies*maxDependancies))*200;
             edges.push(createEdge(node, invokedNode, DepLabelTypes.Invokes, edgeWeight));
         })
