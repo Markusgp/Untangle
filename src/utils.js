@@ -72,11 +72,12 @@ function calculateEdges(nodes, tree) {
     })
     let edgesToBeAdded = []
     edges.forEach(ele => {
-
         let circularEdge = edges.find(element => {
             return element.source === ele.target && element.target === ele.source
         });
-        if (circularEdge !== undefined && nodes.find(a => a.id === ele.source || a.id === ele.target).type !== NodeTypes.PackageNode) {
+        let foundSourceNode = nodes.find(a => a.id === ele.source)
+        let foundTargetNode = nodes.find(a => a.id === ele.target)
+        if (circularEdge !== undefined && foundSourceNode.type !== NodeTypes.PackageNode && foundTargetNode.type !== NodeTypes.PackageNode) {
             let edgeAlreadyFound = edgesToBeAdded.find(a => { return a.id === `${ele.source}-circular-${ele.target}` || a.id === `${ele.target}-circular-${ele.source}`});
             if (edgeAlreadyFound === undefined) {
                 edgesToBeAdded.push({

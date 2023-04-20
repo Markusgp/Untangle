@@ -61,6 +61,7 @@ function Flow() {
     let [nodes, setNodes, onNodesChange] = useNodesState(initialNodesCircular);
     let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdgesCircular);
 
+    const [isNodeSelected, setIsNodeSelected] = useState(false)
     const [classesToggled, setClassesToggled] = useState(true);
     const [interfacesToggled, setInterfacesToggled] = useState(true);
     const [modulesToggled, setModulesToggled] = useState(true);
@@ -97,10 +98,18 @@ function Flow() {
 
     //Load in state of nodes upon nodes changed.
     useEffect(() => {
-        setOpenedPackageNodes(nodes.filter(n => n.type === NodeTypes.OpenedPackageNode));
-        if (layout === LayoutTypes.Force) setHiddenNodes(nodes.filter(n => n.data.visible === false && n.type !== NodeTypes.OpenedPackageNode));
-        else setHiddenNodes(nodes.filter(n => n.data.visible === false));
+        if (!isNodeSelected) {
+            setOpenedPackageNodes(nodes.filter(n => n.type === NodeTypes.OpenedPackageNode));
+            if (layout === LayoutTypes.Force) setHiddenNodes(nodes.filter(n => n.data.visible === false && n.type !== NodeTypes.OpenedPackageNode));
+            else setHiddenNodes(nodes.filter(n => n.data.visible === false));
+        }
+        setIsNodeSelected(false)
     }, [nodes]);
+
+    useEffect(() => {
+        if (selectedNode !== null) setIsNodeSelected(true)
+        else setIsNodeSelected(false)
+    }, [selectedNode])
 
     //Avoid force-layout to override default circular layout
     useEffect(() => {
@@ -226,8 +235,9 @@ function Flow() {
         resetSelectedNode();
         toggleSelectForNode(node);
         redrawSelectedEdges(node, false)
-        setSelectNode(node);
         updateDependingNodesOpacity(node);
+        setSelectNode(node);
+        setIsNodeSelected(true)
     }
 
     return (<>
