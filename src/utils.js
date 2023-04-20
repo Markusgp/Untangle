@@ -130,9 +130,9 @@ function dependencyForce(nodes, edges, strength = 50) {
 }
 
 function simulateForceLayout(nodes, edges, hiddenNodes) {
-    //Reset position of nodes to 0
     nodes.forEach((node) => {
-        node.position = { x: 0, y: 0 };
+        node.x = 0;
+        node.y = 0;
         if (node.parentNode !== null) node.parent = node.parentNode
         node.parentNode = null
     });
@@ -143,20 +143,9 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
         .force("dependency", dependencyForce(simulationNodes, simulationEdges))
         .stop();
 
-
-    // Run simulation for a fixed number of iterations
-    //TODO This should definitely be a property
-    const numIterations = 600; // Increase the number of iterations for better convergence
-    for (let i = 0; i < numIterations; ++i) {
-        simulation.tick();
-    }
-
-
-
-    // Update node positions based on simulation results
-    simulationNodes.forEach((node, index) => {
-        node.position = { x: simulationNodes[index].x, y: simulationNodes[index].y };
-    });
+    const numIterations = 600;
+    for (let i = 0; i < numIterations; ++i) simulation.tick();
+    simulationNodes.forEach((node, index) => { node.position = { x: simulationNodes[index].x, y: simulationNodes[index].y } });
 
     return { nodes, edges };
 }
@@ -372,4 +361,3 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
         return { nodes, edges };
     }
 }
-

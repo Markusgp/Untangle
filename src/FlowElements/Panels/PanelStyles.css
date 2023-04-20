@@ -62,12 +62,6 @@
     background-color: lightskyblue;
 }
 
-.content ul {
-    margin: 0;
-    padding: 0 0 0 20px;
-    text-align: left;
-}
-
 .content h5 {
     margin: 10px 0;
 }
@@ -175,6 +169,7 @@ li::marker {
 }
 
 .content ul {
+    text-align: left;
     padding: 0 0 0 16px;
     margin: 10px 0 10px 0;
 }
@@ -204,3 +199,74 @@ li::marker {
 .listElementHolder:hover {
     font-weight: bolder;
 }
+
+.ExpandedPackagesIcon {
+    width: 25px;
+    height: 25px;
+    margin: 0 7px 0 0;
+    stroke-width: 2px;
+}
+
+
+
+.treeRoot {
+    width: 91%;
+}
+
+    .treeRoot .rowContainer {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .treeRoot .rowContainer:hover {
+        font-weight: bold;
+    }
+
+    .treeRoot ul {
+        margin: 0;
+    }
+
+    .treeRoot li {
+        list-style: disc;
+    }
+
+    .treeRoot .parent-item {
+        margin-bottom: 5px;
+        border-bottom: 2px solid #FF6C69;
+    }
+
+    .treeRoot .child-item {
+        list-style: circle;
+        margin-top: 5px;
+    }
+
+    .treeRoot .CollapseIcon {
+        color: #FF6C69;
+        stroke-width: 0.5px;
+        height: 17px;
+        width: 17px;
+    }
+
+    .treeRoot .InspectIcon {
+        width: 17px;
+        height: 17px;
+        color: #FF6C69;
+        stroke-width: 0.5px;
+        margin-right: 2.5px;
+    }
+
+    .treeRoot .CollapseIcon:hover {
+        stroke-width: 1.5px;
+        scale: 130%;
+    }
+
+    .treeRoot .InspectIcon:hover {
+        stroke-width: 1.5px;
+        scale: 130%;
+    }
+
+    .treeRoot .hiddenCloseBtn {
+        margin-right: -2px;
+    }

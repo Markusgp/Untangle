@@ -8,7 +8,6 @@ import TreeMap from "./TreeMap";
 
 const InformationPanel = ({treeNode, node, expandFunc, hideFunc}) => {
     const toggle = () => setOpen(!open);
-
     const isPackage = treeNode.type === "package";
     const isOpenedPackage = node.type === "openedPackageNode";
     const isHidden = treeNode.visible === false;

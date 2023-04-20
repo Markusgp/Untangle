@@ -11,8 +11,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import './index.css';
 
-//TODO Can we remove simulate force layout here?
-import { createNodesAndEdges, /*simulateForceLayout*/ } from './utils.js';
+import {createNodesAndEdges} from './utils.js';
 
 import PackageNode from './FlowElements/Nodes/PackageNode.js';
 import ClassNode from './FlowElements/Nodes/ClassNode'
@@ -23,19 +22,28 @@ import FloatingEdge from './FloatingEdge.js';
 
 import LayoutPanel from "./FlowElements/Panels/LayoutPanel";
 import InformationPanel from "./FlowElements/Panels/InformationPanel";
-import TogglePanel from "./FlowElements/Panels/TogglePanel";
+import TogglePanel from "./FlowElements/Panels/FilterPanel.js";
 import ToggleSwitch from './FlowElements/Panels/ToggleSwitch.js';
 import HiddenPanel from "./FlowElements/Panels/HiddenPanel";
+import ExpandedPackagePanel from "./FlowElements/Panels/ExpandedPackagePanel.js";
 
 import {tree} from "./Model/Parse"
 import {DepLabelTypes} from "./Types/DepLabelTypes.js";
 import {NodeTypes} from "./Types/NodeTypes.js";
-import { LayoutTypes } from "./Types/LayoutTypes.js";
+import {LayoutTypes} from "./Types/LayoutTypes.js";
 
 const useBaryCenter = true;
 const layout = LayoutTypes.Circular;
 
-let { nodes: initialNodes, edges: initialEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout, tree, []);
+let {
+    nodes: initialNodesCircular,
+    edges: initialEdgesCircular
+} = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout, tree, []);
+
+let {
+    nodes: initialNodesForce,
+    edges: initialEdgesForce
+} = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, LayoutTypes.Force, tree, []);
 
 const nodeTypes = {
     packageNode: PackageNode,
@@ -46,15 +54,12 @@ const nodeTypes = {
 
 const edgeTypes = {floating: FloatingEdge};
 
-//TODO Why are we keeping two states here? Is it necessary? Is this not only invoked once?
-let { nodes: oldNodes, edges: oldEdges } = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, LayoutTypes.Force, tree, []);
-
 
 function Flow() {
     const flowInstance = useReactFlow();
 
-    let [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-    let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+    let [nodes, setNodes, onNodesChange] = useNodesState(initialNodesCircular);
+    let [edges, setEdges, onEdgesChange] = useEdgesState(initialEdgesCircular);
 
     const [classesToggled, setClassesToggled] = useState(true);
     const [interfacesToggled, setInterfacesToggled] = useState(true);
@@ -71,10 +76,11 @@ function Flow() {
     const [layout, setLayout] = useState(null);
 
     const [hiddenNodes, setHiddenNodes] = useState([]);
+    const [openedPackageNodes, setOpenedPackageNodes] = useState([]);
 
     function nodeShouldBeDrawn(node) {
         if (!node.data.visible) return false;
-        else if (node.type === NodeTypes.ClassNode && classesToggled)  return true;
+        else if (node.type === NodeTypes.ClassNode && classesToggled) return true;
         else if (node.type === NodeTypes.InterfaceNode && interfacesToggled) return true;
         else if (node.type === NodeTypes.PackageNode && modulesToggled) return true;
         else if (node.type === NodeTypes.OpenedPackageNode) return true;
@@ -89,6 +95,27 @@ function Flow() {
         return false;
     }
 
+    //Load in state of nodes upon nodes changed.
+    useEffect(() => {
+        setOpenedPackageNodes(nodes.filter(n => n.type === NodeTypes.OpenedPackageNode));
+        if (layout === LayoutTypes.Force) setHiddenNodes(nodes.filter(n => n.data.visible === false && n.type !== NodeTypes.OpenedPackageNode));
+        else setHiddenNodes(nodes.filter(n => n.data.visible === false));
+    }, [nodes]);
+
+    //Avoid force-layout to override default circular layout
+    useEffect(() => {
+        if (firstRender) setFirstRender(false);
+        else resetLayout();
+    }, [layout]);
+
+    //fitView whenever nodes, edges are changed or fit is invoked
+    useEffect(() => {
+        if (viewShouldFit) {
+            flowInstance.fitView();
+            setViewShouldFit(false);
+        }
+    }, [viewShouldFit]);
+
     function toggleHiddenNode(node) {
         let tmpHidden = hiddenNodes;
         let index = tmpHidden.findIndex(n => n.id === node.id);
@@ -102,61 +129,49 @@ function Flow() {
         setHiddenNodes(tmpHidden);
         setNodes(nodes);
         onNodesChange([]);
-        onPaneClicked();
+        resetSelectedNode();
     }
 
-    const updateData = () => {
+    function resetSelectedNode() {
         if (selectedNode !== null) {
-            let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
-            redrawSelectedNodes(prevSelectNode);
-            redrawSelectedEdges(prevSelectNode, true)
+            let prevSelect = nodes.find(e => e.id === selectedNode.id);
+            toggleSelectForNode(prevSelect);
+            redrawSelectedEdges(prevSelect, true);
             setSelectNode(null);
-            resetNodeOpacity(nodes);
+            resetAllNodesOpacity(nodes);
         }
+    }
 
-        resetNodeOpacity(oldNodes);
-        setEdges(oldEdges);
-        oldNodes = nodes; //TODO why is oldNodes used here? What is the purpose?
-        oldEdges = edges; //TODO why is oldEdges used here? What is the purpose?
-        setViewShouldFit(true); // Set viewShouldFit to true when layout changes or a package is expanded
-    };
+    function resetLayout() {
+        resetSelectedNode();
+        resetAllNodesOpacity(initialNodesForce);
+        setEdges(initialEdgesForce);
+        initialNodesForce = nodes;
+        initialEdgesForce = edges;
+        setViewShouldFit(true);
+    }
 
-    useEffect(() => {
-        if (firstRender) setFirstRender(false)
-        else updateData();
-    }, [layout]);
-
-    useEffect(() => {
-        if (nodes !== oldNodes || edges !== oldEdges) {
-            if (viewShouldFit) {
-                flowInstance.fitView();
-                setViewShouldFit(false); // Reset viewShouldFit after fitView is called
-            }
-        }
-    }, [nodes, edges, viewShouldFit]);
-
-    const expandPackage = (_, nd) => {
-        const tempNodes = nodes
-        const tempEdges = edges
+    function expandPackage(_, nd) {
+        resetSelectedNode();
+        const tempNodes = nodes;
+        const tempEdges = edges;
         if (nd.type === NodeTypes.PackageNode || nd.type === NodeTypes.OpenedPackageNode) {
+            if (layout === LayoutTypes.Force) nd.data.visible = !nd.data.visible;
             const {nodes, edges} = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout, tree);
             setNodes(nodes);
             setEdges(edges);
-            setTimeout(() => {
-                resetNodeOpacity(nodes);
-                flowInstance.fitView();
-            }, 0);
+            resetAllNodesOpacity(nodes);
+            setViewShouldFit(true);
         }
         setSelectNode(null);
     }
 
-    const redrawSelectedNodes = (node) => {
+    function toggleSelectForNode(node) {
         let selectNode = nodes.find(e => e.id === node.id)
         selectNode.data.isSelected = !selectNode.data.isSelected
-        onNodesChange([]);
     }
 
-    const redrawSelectedEdges = (node, unselect) => {
+    function redrawSelectedEdges(node, unselect) {
         if (unselect) {
             edges.forEach(function (e) {
                 e.data.isSelected = false;
@@ -176,83 +191,43 @@ function Flow() {
             });
         }
         setEdges(edges);
-        onEdgesChange([]);
     }
 
-    const updateNodeOpacity = (selectedNode) => {
-        const updatedNodes = nodes.map((node) => {
-            let edgeExists = false;
-            let isChild = false;
+    function updateDependingNodesOpacity(selNode) {
+        const updatedNodes = nodes.map(node => {
+            let edgeExists = false, isChild = false;
 
-            if (selectedNode.type !== NodeTypes.OpenedPackageNode) {
-                edgeExists = edges.some(
-                    (edge) =>
-                        (edge.source === selectedNode.id && edge.target === node.id) ||
-                        (edge.target === selectedNode.id && edge.source === node.id)
-                );
-            }
-
-            if (selectedNode.type === NodeTypes.OpenedPackageNode) {
-                const childNodes = tree.getPackageContent(selectedNode.id);
-                isChild = childNodes.some(
-                    (child) => node.id.startsWith(child.pack)
-                );
-                edgeExists = edges.some((edge) => {
-                    return childNodes.some((child) => {
-                        const childId = child.pack;
-                        return (
-                            (edge.source === childId && edge.target === node.id) ||
-                            (edge.target === childId && edge.source === node.id)
-                        );
+            if (selNode.type !== NodeTypes.OpenedPackageNode) {
+                edgeExists = edges.some(edge => (edge.source === selNode.id && edge.target === node.id) || (edge.target === selNode.id && edge.source === node.id));
+            } else if (selNode.type === NodeTypes.OpenedPackageNode) {
+                const childNodes = tree.getPackageContent(selNode.id);
+                isChild = childNodes.some(child => node.id.startsWith(child.pack));
+                edgeExists = edges.some(edge => {
+                    return childNodes.some(child => {
+                        return ((edge.source === child.pack && edge.target === node.id) || (edge.target === child.pack && edge.source === node.id));
                     });
                 });
             }
-
-            const shouldHighlight = edgeExists || isChild || node.id === selectedNode.id;
+            const shouldHighlight = edgeExists || isChild || node.id === selNode.id;
             const opacity = shouldHighlight ? 0.90 : 0.2;
-
-            return {
-                ...node,
-                style: {...node.style, opacity},
-            };
+            return {...node, style: {...node.style, opacity}};
         });
         setNodes(updatedNodes);
     }
 
-    const resetNodeOpacity = (nodes) => {
-        const updatedNodes = nodes.map((node) => {
-            return {
-                ...node,
-                style: {...node.style, opacity: 1},
-            };
+    function resetAllNodesOpacity(nodes) {
+        const updatedNodes = nodes.map(node => {
+            return {...node, style: {...node.style, opacity: 1}};
         });
         setNodes(updatedNodes);
-    };
+    }
 
-
-    const onNodeClicked = (_, node) => {
-        resetNodeOpacity(nodes);
-        if (selectedNode !== null) {
-            const selNode = nodes.find(e => e.id === selectedNode.id)
-            redrawSelectedNodes(selNode);
-            redrawSelectedEdges(selNode, true);
-            setSelectNode(null);
-            updateNodeOpacity(node);
-        }
-        redrawSelectedNodes(node);
+    function onNodeClicked(_, node) {
+        resetSelectedNode();
+        toggleSelectForNode(node);
         redrawSelectedEdges(node, false)
         setSelectNode(node);
-        updateNodeOpacity(node);
-    };
-
-    const onPaneClicked = () => {
-        if (selectedNode !== null) {
-            let prevSelectNode = nodes.find(e => e.id === selectedNode.id);
-            redrawSelectedNodes(prevSelectNode);
-            redrawSelectedEdges(prevSelectNode, true)
-            setSelectNode(null);
-            resetNodeOpacity(nodes);
-        }
+        updateDependingNodesOpacity(node);
     }
 
     return (<>
@@ -262,20 +237,32 @@ function Flow() {
                         <ToggleSwitch layout={layout} setLayout={setLayout}/>
                     </LayoutPanel>
                 </div>
-                <div className="panelStyle">
-                    <TogglePanel classesToggled={setClassesToggled}
-                                 interfacesToggled={setInterfacesToggled}
-                                 moduleToggled={setModulesToggled}
-                                 implementationsToggled={setImplementationsToggled}
-                                 abstractionsToggled={setAbstractionsToggled}
-                                 invocationsToggled={setInvocationsToggled}
-                                 circularToggled={setCircularToggled} />
-                </div>
-                {hiddenNodes.length > 0 && (
+
                     <div className="panelStyle">
-                        <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode} />
+                        <TogglePanel classesToggled={setClassesToggled}
+                                     interfacesToggled={setInterfacesToggled}
+                                     moduleToggled={setModulesToggled}
+                                     implementationsToggled={setImplementationsToggled}
+                                     abstractionsToggled={setAbstractionsToggled}
+                                     invocationsToggled={setInvocationsToggled}
+                                     circularToggled={setCircularToggled}/>
                     </div>
-                )}
+                    {hiddenNodes.length > 0 && (
+                        <div className="panelStyle">
+                            <HiddenPanel hiddenElements={hiddenNodes} hideFunc={toggleHiddenNode}>
+                            </HiddenPanel>
+                        </div>
+                    )}
+                    {openedPackageNodes.length > 0 && (
+                        <div className="panelStyle">
+                            <ExpandedPackagePanel
+                                expandedNodes={openedPackageNodes}
+                                node={selectedNode}
+                                expandFunc={expandPackage}
+                                selectFunc={onNodeClicked}
+                            />
+                        </div>
+                    )}
             </div>
             <div className="panelHolder" id="rightFloat">
                 {selectedNode != null && (
@@ -283,40 +270,40 @@ function Flow() {
                         <InformationPanel treeNode={tree.getNode(selectedNode.id)}
                                           node={selectedNode}
                                           expandFunc={expandPackage}
-                                          hideFunc={toggleHiddenNode} />
+                                          hideFunc={toggleHiddenNode}/>
                     </div>
                 )}
             </div>
-        <ReactFlow
-            nodes={nodes.filter(nodeShouldBeDrawn)}
-            edges={edges.filter(edgeShouldBeDrawn)}
-            onNodesChange={onNodesChange}
-            onEdgesChange={onEdgesChange}
-            onNodeClick={onNodeClicked}
-            onNodeDoubleClick={expandPackage}
-            onPaneClick={onPaneClicked}
-            fitView
-            edgeTypes={edgeTypes}
-            minZoom={0.1}
-            nodeTypes={nodeTypes}
-            nodesConnectable={false}
-            nodesDraggable={false}
-            zoomOnDoubleClick={false}
-        >
-            <Background/>
-            <Controls/>
-        </ReactFlow></>
+            <ReactFlow
+                nodes={nodes.filter(nodeShouldBeDrawn)}
+                edges={edges.filter(edgeShouldBeDrawn)}
+                onNodesChange={onNodesChange}
+                onEdgesChange={onEdgesChange}
+                onNodeClick={onNodeClicked}
+                onNodeDoubleClick={expandPackage}
+                onPaneClick={resetSelectedNode}
+                fitView
+                edgeTypes={edgeTypes}
+                minZoom={0.1}
+                nodeTypes={nodeTypes}
+                nodesConnectable={false}
+                nodesDraggable={false}
+                zoomOnDoubleClick={false}
+            >
+                <Background/>
+                <Controls/>
+            </ReactFlow></>
     );
 }
 
 let NodeAsHandleFlow = () => {
-  return (
-      <div className="FlowWrapper">
-        <ReactFlowProvider>
-          <Flow/>
-        </ReactFlowProvider>
-      </div>
-  );
+    return (
+        <div className="FlowWrapper">
+            <ReactFlowProvider>
+                <Flow/>
+            </ReactFlowProvider>
+        </div>
+    );
 };
 
 export default NodeAsHandleFlow;

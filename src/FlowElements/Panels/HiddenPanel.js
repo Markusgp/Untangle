@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import "./PanelStyles.css"
-import FileLogo from "../Assets/File.svg"
 import Drop from "../Assets/Drop.svg";
 import {FaEyeSlash} from "react-icons/fa";
 import {CgClose} from "react-icons/cg"
