@@ -166,6 +166,29 @@ export class ClassTree {
         return current
     }
 
+    getNumDependenciesRec(node,targetNode,type){
+        let numInvocations = 0
+        targetNode.children.forEach(child => {
+            if (child instanceof JavaClass) {
+                if (type === "invocation") if (node.classInvocation.has(child.pack)) numInvocations += 1
+                else if (type === "implementation") if (node.classImplements.has(child.pack)) numInvocations += 1
+                else if (type === "inheritence") if (node.classInherits.has(child.pack)) numInvocations += 1
+            }
+            else {
+                numInvocations += this.getNumDependenciesRec(node,child,type)
+            }
+        })
+        return numInvocations
+    }
+
+    getNumDependencies(node,targetNode,type){
+        let current = this.getNode(node)
+        let target = this.getNode(targetNode)
+        if (target instanceof JavaClass) return 1
+
+        return this.getNumDependenciesRec(current,target,type)
+    }
+
     getNumInvocations(node){
         let current = this.getNode(node)
         let numInvocations = current.classInvocation.size
