@@ -29,8 +29,10 @@ function calculateEdges(nodes, tree) {
             animated: false,
             label: typeString,
             markerEnd: {
+                markerUnits: "userSpaceOnUse",
                 type: MarkerType.Arrow,
-                width: 15
+                width: 25,
+                height: 25
             },
             data: {
                 isSelected: false,
