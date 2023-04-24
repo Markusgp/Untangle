@@ -7,5 +7,6 @@ codeql pack install
 find . -type f -exec dos2unix {} \;
 ./run-docker.sh java
 cp -r codeql-data ../../react-app/src
+rm -r codeql-data
 cd ../../react-app
 npm start
