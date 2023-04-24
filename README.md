@@ -22,7 +22,7 @@ It features no ads, tracking, cloud, server or data mining.
 
 ### Step-by-step guide
 
-First make sure that both `docker-run.sh` and `run-docker.sh` scripts have executable permission.
+(FOR UNIX USERS): First make sure that both `docker-run.sh` and `run-docker.sh` scripts have executable permission.
 Execute the following commands:
 ```
 chmod +x ./docker-run.sh
