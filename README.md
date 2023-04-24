@@ -53,11 +53,6 @@ docker cp . untangled:/var/www
 ```
 Where `${path-to-project}` refers to the path to the project you want analyzed with Untangle.
 
-If you instead want to run the image with file sharing **(only recommended for testing purposes, as it pollutes source code)**, meaning that all changes in the image for the source project will also be reflected on your own system run:
-```
-docker run -d -it -p 8080:3000 --name untangled -v ${absolute-path-to-project}:/var/www untangle
-```
-
 ---
 
 Now the container is set up for Untangle to run. To run Untangle execute the following command while specifying your java version
