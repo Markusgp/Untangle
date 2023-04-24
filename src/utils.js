@@ -31,7 +31,7 @@ function calculateEdges(nodes, tree) {
             type: "floating",
             animated: false,
             label: typeString,
-            zIndex: -2,
+            zIndex: -1,
             markerEnd: {
                 markerUnits: "userSpaceOnUse",
                 type: MarkerType.Arrow,
