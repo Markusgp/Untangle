@@ -1,13 +1,13 @@
 import { ClassTree } from "./ClassTree";
 
-import Classes from "../data/Class.json";
-import Interfaces from "../data/Interface.json"
-import Implementations from "../data/Implementations.json";
-import Extensions from "../data/Extensions.json";
-import Initializations from "../data/Initialization.json"
-import Instantiations from "../data/Instantiation.json"
-import GenericInitializations from "../data/GenericInitialization.json"
-import GenericInstantiations from "../data/GenericInstantiation.json"
+import Classes from "../codeql-data/Class.json";
+import Interfaces from "../codeql-data/Interface.json"
+import Implementations from "../codeql-data/Implementations.json";
+import Extensions from "../codeql-data/Extensions.json";
+import Initializations from "../codeql-data/Initialization.json"
+import Instantiations from "../codeql-data/Instantiation.json"
+import GenericInitializations from "../codeql-data/GenericInitialization.json"
+import GenericInstantiations from "../codeql-data/GenericInstantiation.json"
 
 import { CodeQLType } from "../Types/CodeQLType.js"
 

@@ -2,14 +2,12 @@
 ## Running the app locally
 To run the app locally you run the ``run.sh`` script with some parameter which can be seen below
 ```
-./run.sh language skipDatabase path/to/project
+./run.sh language path/to/project
 ```
 
 Right now the only supported language is java, so specifying another language will not produce any results. 
 
-skipDatabase is if you want to run the program again and the database is already set up from a previous run, and you simply just want to run the queries again and see the results. If this is the case, simply just write ``skipDatabase`` as the second parameter. If not simply write anything but ``skipDatabase`` as the second parameter
-
-Lastly you need to specify what project you want to run the application on. Here specify the path to the project.
+Then you need to specify what project you want to run the application on. Here specify the absolute path to the project.
 
 ## Running the app in docker
 Start with creating the docker image by running
@@ -39,3 +37,10 @@ For example if you want to run the app and your project is made with java 15, yo
 ```
 docker exec untangled /bin/bash -c "./docker-run.sh 15"
 ```
+
+## Note
+If you are running the app locally or with file sharing in docker, these are the files/directories that will go in your source project
+- qlpack.yml (codeql dependencies)
+- codeql (codeql queries)
+- codeql-database-java (the codeql database)
+- codeql-data (the final json data from the codeql database)

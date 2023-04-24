@@ -16,10 +16,10 @@ codeql database run-queries codeql-database-$1
 echo "Interpreting results"
 dir=$(pwd)
 datapath2=$dir/codeql-database-$1/results/codeql/$1
-mkdir -p data
+mkdir -p codeql-data
 for i in $datapath2/*.bqrs
 do
   cutted=$(cut -d "." -f 1 <<< "$i")
   queryFile=$(echo ${cutted##*/})
-  codeql bqrs decode "$i" -o=data/$queryFile.json --format=json
+  codeql bqrs decode "$i" -o=codeql-data/$queryFile.json --format=json
 done
