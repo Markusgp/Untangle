@@ -5,6 +5,7 @@ import {NodeTypes} from "./Types/NodeTypes";
 import {LayoutTypes} from "./Types/LayoutTypes";
 
 const maxEdgeWeight = 300
+const cm = 1.5
 
 function calculateBarycenters(nodes, edges) {
     return nodes.map((node) => {
@@ -30,6 +31,7 @@ function calculateEdges(nodes, tree) {
             type: "floating",
             animated: false,
             label: typeString,
+            zIndex: -2,
             markerEnd: {
                 markerUnits: "userSpaceOnUse",
                 type: MarkerType.Arrow,
@@ -188,13 +190,14 @@ function distributeNodes(oldNodes, packageNode, totalWidth, radius, totalCircumf
             if (node.parentNode === tempNode.parentNode) return sum + Math.max(node.width, node.height)
             else return sum
         }, 0);
-        totalCircumference = totalWidth * 130 / 100
+        totalCircumference = totalWidth * cm
         radius = totalCircumference / (2 * Math.PI)
         angleSoFar = 0
         tempNode = oldNodes.find(n => n.id === tempNode.parentNode)
 
         tempNode.width = radius * 2 + 155
         tempNode.height = radius * 2 + 155
+        tempNode.zIndex = -1
         tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: radius * 2 + 155, height: radius * 2 + 155 }
 
         let adjustedLeftX = Number.MAX_VALUE
@@ -204,7 +207,7 @@ function distributeNodes(oldNodes, packageNode, totalWidth, radius, totalCircumf
 
         oldNodes.forEach((node) => {
             if (node.parentNode === tempNode.id) {
-                const angle = ((Math.max(node.width, node.height)) / totalCircumference) * (2 * Math.PI) * 1.3;
+                const angle = ((Math.max(node.width, node.height)) / totalCircumference) * (2 * Math.PI) * cm;
                 angleSoFar += angle / 2
                 const xPos = 75 + radius + radius * Math.cos(angleSoFar) - node.width / 2;
                 const yPos = 50 + radius + radius * Math.sin(angleSoFar) - node.height / 2;
@@ -222,25 +225,25 @@ function distributeNodes(oldNodes, packageNode, totalWidth, radius, totalCircumf
         oldNodes.forEach((node) => {
             if (node.parentNode === tempNode.id) {
                 node.position.x += Math.abs(adjustedLeftX)
-                node.position.y += Math.abs(adjustedLeftY)
+                node.position.y += Math.abs(adjustedLeftY)+25
             }
         })
 
         tempNode.width = Math.abs(adjustedRightX - adjustedLeftX)
-        tempNode.height = Math.abs(adjustedRightY - adjustedLeftY)
-        tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: Math.abs(adjustedRightX - adjustedLeftX), height: Math.abs(adjustedRightY - adjustedLeftY) }
-
+        tempNode.height = Math.abs(adjustedRightY - adjustedLeftY)+25
+        tempNode.zIndex = -1
+        tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: Math.abs(adjustedRightX - adjustedLeftX), height: Math.abs(adjustedRightY - adjustedLeftY)+25 }
     }
     totalWidth = oldNodes.reduce((sum, node) => {
         if (node.parentNode === undefined) return sum + Math.max(node.width, node.height)
         else return sum
     }, 0);
-    totalCircumference = totalWidth * 130 / 100
+    totalCircumference = totalWidth * cm
     radius = totalCircumference / (2 * Math.PI)
     angleSoFar = 0
     oldNodes.forEach((node) => {
         if (node.parentNode === undefined) {
-            const angle = ((Math.max(node.width, node.height)) / totalCircumference) * (2 * Math.PI) * 1.3;
+            const angle = ((Math.max(node.width, node.height)) / totalCircumference) * (2 * Math.PI) * cm;
             angleSoFar += angle / 2
             const xPos = 400 + radius * Math.cos(angleSoFar) - node.width / 2;
             const yPos = 300 + radius * Math.sin(angleSoFar) - node.height / 2;
@@ -254,12 +257,12 @@ function distributeNodes(oldNodes, packageNode, totalWidth, radius, totalCircumf
     });
 }
 
-export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, layout, tree) {
+export function createNodesAndEdges(prevNodes,newNodes, param, useBarycenter, layout, tree) {
     let nodes = [];
     let edges = [];
     let oldNodes = prevNodes
 
-    const myNodes = tree.getPackageContent(param);
+    const myNodes = newNodes
 
     myNodes.forEach(cls => {
         if (cls.visible === true) {
@@ -330,11 +333,12 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
                 packageNode.type = NodeTypes.OpenedPackageNode
 
                 totalWidth = nodes.reduce((sum, node) => sum + node.width, 0);
-                totalCircumference = totalWidth * 1.3
+                totalCircumference = totalWidth * cm
                 radius = totalCircumference / (2 * Math.PI)
                 packageNode.width = radius * 2 + 155
                 packageNode.height = radius * 2 + 155
-                packageNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.4)', width: radius * 2 + 155, height: radius * 2 + 155 }
+                packageNode.zIndex = -1
+                packageNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: radius * 2 + 155, height: radius * 2 + 155 }
                 distributeNodes(oldNodes, packageNode,totalWidth,radius,totalCircumference)
 
             }
@@ -355,12 +359,12 @@ export function createNodesAndEdges(prevNodes, prevEdges, param, useBarycenter, 
 
         }
         totalWidth = nodes.reduce((sum, node) => sum + node.width, 0);
-        totalCircumference = totalWidth * 1.3
+        totalCircumference = totalWidth * cm
 
         radius = totalCircumference / (2 * Math.PI)
         angleSoFar = 0
         nodes.forEach((node) => {
-            const angle = (110 / totalCircumference) * (2 * Math.PI) * 1.3;
+            const angle = (node.width / totalCircumference) * (2 * Math.PI) * cm;
             angleSoFar += angle / 2
             const xPos = 25 + radius + radius * Math.cos(angleSoFar);
             const yPos = 40 + radius + radius * Math.sin(angleSoFar);
