@@ -30,6 +30,7 @@ function calculateEdges(nodes, tree) {
             type: "floating",
             animated: false,
             label: typeString,
+            zIndex: -2,
             markerEnd: {
                 type: MarkerType.Arrow,
                 width: 15
@@ -212,7 +213,7 @@ function distributeNodes(oldNodes, packageNode, totalWidth, radius, totalCircumf
 
         tempNode.width = Math.abs(adjustedRightX - adjustedLeftX)
         tempNode.height = Math.abs(adjustedRightY - adjustedLeftY)+25
-        tempNode.zIndex = -10
+        tempNode.zIndex = -1
         tempNode.style = { backgroundColor: 'rgba(111, 168, 255, 0.2)', width: Math.abs(adjustedRightX - adjustedLeftX), height: Math.abs(adjustedRightY - adjustedLeftY)+25 }
     }
     totalWidth = oldNodes.reduce((sum, node) => {
