@@ -13,14 +13,9 @@ It features no ads, tracking, cloud, server or data mining.
 ![Example of execution](./Media/Untangle_Example.gif)
 
 
+## Running Untangle in Docker *(recommended)*
 
-## Running _Untangle_
-Untangle can be executed in a docker container **(recommended)** or locally.
-
-
-## Running Untangle in Docker
-
-### Prerequisites for running Untangle in Docker (recommended).
+### Prerequisites for running Untangle in Docker.
 * A buildable maven or gradle Java project.
 * Your project must be buildable with JDK 8, 11, 12, 13, 14, 15, or 16.
 * [Docker](https://docs.docker.com/get-docker/) installed.
