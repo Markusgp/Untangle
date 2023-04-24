@@ -1,8 +1,10 @@
 import {MarkerType} from 'reactflow';
-import {forceCollide, forceSimulation} from 'd3-force';
+import {forceCollide, forceSimulation, forceCenter} from 'd3-force';
 import {DepLabelTypes} from "./Types/DepLabelTypes";
 import {NodeTypes} from "./Types/NodeTypes";
 import {LayoutTypes} from "./Types/LayoutTypes";
+
+const maxEdgeWeight = 300
 
 function calculateBarycenters(nodes, edges) {
     return nodes.map((node) => {
@@ -31,8 +33,8 @@ function calculateEdges(nodes, tree) {
             markerEnd: {
                 markerUnits: "userSpaceOnUse",
                 type: MarkerType.Arrow,
-                width: 25,
-                height: 25
+                width: 30,
+                height: 30
             },
             data: {
                 isSelected: false,
@@ -54,13 +56,10 @@ function calculateEdges(nodes, tree) {
             if (invokedNode === undefined || invokedNode.type === NodeTypes.OpenedPackageNode) return
             if (invokedNode.id === node.id) return
             const maxDependancies = tree.getMaxDependancies()
-            
-            const edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,invokedNode.id,"invocation")),2)) / (maxDependancies*maxDependancies)) * 100
-            ///(maxDependancies*maxDependancies))*2000;
-            if (node.id === "BFST21Group6.AddressDataStructure"){
-                console.log(node.id,invokedNode.id)
-                console.log(tree.getNumDependencies(node.id,invokedNode.id,"invocation"))
+            let edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,invokedNode.id,"invocation")),3)) / (maxDependancies*maxDependancies)) * 100
+            if(edgeWeight > maxEdgeWeight) {
                 console.log(edgeWeight)
+                edgeWeight = maxEdgeWeight
             }
             edges.push(createEdge(node, invokedNode, DepLabelTypes.Invokes, edgeWeight));
         })
@@ -70,7 +69,10 @@ function calculateEdges(nodes, tree) {
             if (implementedNode === undefined || implementedNode.type === NodeTypes.OpenedPackageNode) return
             if (implementedNode.id === node.id) return
             const maxDependancies = tree.getMaxDependancies()
-            const edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,implementedNode.id,"implementation")),2)) / (maxDependancies*maxDependancies)) * 100
+            let edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,implementedNode.id,"implementation")),3)) / (maxDependancies*maxDependancies)) * 100
+            if(edgeWeight > maxEdgeWeight) {
+                edgeWeight = maxEdgeWeight
+            }
             edges.push(createEdge(node, implementedNode, DepLabelTypes.Implements, edgeWeight))
         })
 
@@ -79,7 +81,10 @@ function calculateEdges(nodes, tree) {
             if (inheritedNode === undefined ||inheritedNode.type === NodeTypes.OpenedPackageNode) return
             if (inheritedNode.id === node.id) return
             const maxDependancies = tree.getMaxDependancies()
-            const edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,inheritedNode.id,"inheritence")),2)) / (maxDependancies*maxDependancies)) * 100
+            let edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,inheritedNode.id,"inheritence")),3)) / (maxDependancies*maxDependancies)) * 100
+            if(edgeWeight > maxEdgeWeight) {
+                edgeWeight = maxEdgeWeight
+            }
             edges.push(createEdge(node, inheritedNode, DepLabelTypes.Inherits, edgeWeight));
         })
     })
@@ -155,6 +160,7 @@ function simulateForceLayout(nodes, edges, hiddenNodes) {
     const simulation = forceSimulation(simulationNodes)
         .force("collide", forceCollide(150))
         .force("dependency", dependencyForce(simulationNodes, simulationEdges))
+        .force("center", forceCenter())
         .stop();
 
     const numIterations = 600;
