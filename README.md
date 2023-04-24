@@ -44,3 +44,4 @@ If you are running the app locally or with file sharing in docker, these are the
 - codeql (codeql queries)
 - codeql-database-java (the codeql database)
 - codeql-data (the final json data from the codeql database)
+If something goes wrong in the execution of the application, all of these files/directories might not be present in the source project
