@@ -35,15 +35,17 @@ import {LayoutTypes} from "./Types/LayoutTypes.js";
 const useBaryCenter = true;
 const layout = LayoutTypes.Circular;
 
+
+
 let {
     nodes: initialNodesCircular,
     edges: initialEdgesCircular
-} = createNodesAndEdges([], tree.getTopLevelPackages(),"", useBaryCenter, layout, tree, []);
+} = createNodesAndEdges([], tree.getTopLevelPackages().length == 1 ? tree.getPackageContent(tree.getTopLevelPackages()[0].name) : tree.getTopLevelPackages() ,"", useBaryCenter, layout, tree, []);
 
 let {
     nodes: initialNodesForce,
     edges: initialEdgesForce
-} = createNodesAndEdges([], tree.getTopLevelPackages(),"", useBaryCenter, LayoutTypes.Force, tree, []);
+} = createNodesAndEdges([], tree.getTopLevelPackages().length == 1 ? tree.getPackageContent(tree.getTopLevelPackages()[0].name) : tree.getTopLevelPackages(),"", useBaryCenter, LayoutTypes.Force, tree, []);
 
 const nodeTypes = {
     packageNode: PackageNode,
