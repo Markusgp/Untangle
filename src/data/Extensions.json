@@ -1,8 +1,0 @@
-{"#select":{"columns":[
-  {"kind":"String"}
-,{"kind":"String"}]
-,"tuples":[
-    ["BFST21Group6.pointsofinterest.FavouritePoint","BFST21Group6.pointsofinterest.PointOfInterest"]
-  ,["BFST21Group6.pointsofinterest.HomePoint","BFST21Group6.pointsofinterest.PointOfInterest"]
-  ,["BFST21Group6.pointsofinterest.WorkPoint","BFST21Group6.pointsofinterest.PointOfInterest"]]
-}}
