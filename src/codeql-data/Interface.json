@@ -1,0 +1,9 @@
+{"#select":{"columns":[
+   {"kind":"String"}
+  ,{"kind":"String"}
+  ,{"kind":"Integer"}]
+ ,"tuples":[
+   ["Drawable","BFST21Group6.Drawable",4]
+  ,["RTreeNode","BFST21Group6.RTreeNode",2]
+  ,["HasBounds","BFST21Group6.osm.HasBounds",8]]
+ }}
