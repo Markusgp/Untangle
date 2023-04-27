@@ -9,4 +9,5 @@ find . -type f -exec dos2unix {} \;
 cp -r codeql-data ../../react-app/src
 rm -r codeql-data
 cd ../../react-app
+npm i
 npm start
