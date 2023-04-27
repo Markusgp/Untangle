@@ -14,7 +14,7 @@ It features no ads, tracking, cloud, server or data mining.
 
 ## Running the app
 
-### Running Untangle in Docker *(recommended)*r
+### Running Untangle in Docker *(recommended)*
 Start with creating the docker image by running
 
 #### Prerequisites for running Untangle in Docker.
@@ -67,7 +67,7 @@ docker exec untangled /bin/bash -c "./docker-run.sh 15"
 
 #### Prerequisites for running Untangle locally.
 * A buildable maven or gradle Java project.
-* Installed version (16.0+) of [npm](https://docs.npmjs.com/ downloading-and-installing-node-js-and-npm) installed.
+* Installed version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 * Installed version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
 * Your Java project must be buildable on your local machine.
 
