@@ -9,7 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
-src/data
+src/codeql-data
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
