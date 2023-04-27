@@ -13,7 +13,7 @@ It features no ads, tracking, cloud, server or data mining.
 ![Example of execution](./Media/Untangle_Example.gif)
 
 ## Running the app
-There is currently 2 different ways to run the app. You can either run it locally or through docker. How to run the app is described in later sections.
+There is currently 2 different ways to run the app. You can either run it [locally](#running-untangle-locally) or through [docker](#running-untangle-in-docker-recommended). How to run the app is described in later sections.
 
 It is important to note the time it can take for the application to start. If you are creating the docker image for the first time this step usually takes around 5 minutes depending on the power of your pc.
 And the codeql analysis for the first time can also take up to 5 minutes depending on the size of your project.
