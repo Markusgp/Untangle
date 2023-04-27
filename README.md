@@ -1,41 +1,81 @@
 # Untangle
-## Running the app locally
-To run the app locally you run the ``run.sh`` script with some parameter which can be seen below
+Untangle is a visualization tool for analyzing Java projects and its internal dependencies.  
+It features no ads, tracking, cloud, server or data mining.
+
+**Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you!**
+
+## Untangle Capabilities
+* View your project in either the *Circular* or *Force-directed* layouts.
+* **Expand** and **collapse** packages to gain better insight into your project structure.
+* **Highlight** edges pertaining to specific class / interface / package in your system.
+* Control your view with **filtering** and **hiding** of unneeded elements.
+
+![Example of execution](./Media/Untangle_Example.gif)
+
+
+## Running Untangle in Docker *(recommended)*
+
+### Prerequisites for running Untangle in Docker.
+* A buildable maven or gradle Java project.
+* Your project must be buildable with JDK 8, 11, 12, 13, 14, 15, or 16.
+* [Docker](https://docs.docker.com/get-docker/) installed.
+
+### Step-by-step guide
+
+(FOR UNIX USERS): First make sure that both `docker-run.sh` and `run-docker.sh` scripts have executable permission.
+Execute the following commands:
 ```
-./run.sh language skipDatabase path/to/project
+chmod +x ./docker-run.sh
+chmod +x ./run-docker.sh
 ```
-
-Right now the only supported language is java, so specifying another language will not produce any results. 
-
-skipDatabase is if you want to run the program again and the database is already set up from a previous run, and you simply just want to run the queries again and see the results. If this is the case, simply just write ``skipDatabase`` as the second parameter. If not simply write anything but ``skipDatabase`` as the second parameter
-
-Lastly you need to specify what project you want to run the application on. Here specify the path to the project.
-
-## Running the app in docker
-Start with creating the docker image by running
+---
+Create the docker image by executing the following command from the root directory:
 
 ```
-docker build -f Docker\DOCKERFILE -t untangle .
+docker build -f ${path-to-dockerfile} -t untangle .
 ```
+Where `${path-to-dockerfile}` is either `Docker\DOCKERFILE` for Windows or `Docker/DOCKERFILE` for UNIX systems.
 
-If you want to run the image with file sharing, meaning that all changes in the image for the source project will also be reflected on your own system (only recommended for testing as it pollutes your source code with queries etc) run
-```
-docker run -d -it -p 8080:3000 --name untangled -v /path/to/project:/var/www untangle
-```
+---
 
-If you want to run the image without file sharing run the following commands
+If you want to run the image without file sharing **(recommended)** run the following commands:
 ```
 docker run -d -it -p 8080:3000 --name untangled untangle
-cd /path/to/project
+
+cd ${path-to-project}
+
 docker cp . untangled:/var/www
 ```
+Where `${path-to-project}` refers to the path to the project you want analyzed with Untangle.
 
-Now the container is set up for the app to run. To run the app run the following command while specifying your java version
+---
+
+Now the container is set up for Untangle to run. To run Untangle execute the following command while specifying your java version
 ```
-docker exec untangled /bin/bash -c "./docker-run.sh java-version"
+docker exec untangled /bin/bash -c "./docker-run.sh ${specified-java-version}"
 ```
 
-For example if you want to run the app and your project is made with java 15, you can run the following command
+For example if you want to run the app and your project is buildable in Java 15, you can run the following command:
 ```
 docker exec untangled /bin/bash -c "./docker-run.sh 15"
 ```
+
+
+## Running Untangle locally
+
+### Prerequisites for running Untangle locally.
+* A buildable maven or gradle Java project.
+* Installed version (16.0+) of [npm](https://docs.npmjs.com/ downloading-and-installing-node-js-and-npm) installed.
+* Installed version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
+* Your Java project must be buildable on your local machine.
+
+### Step-by-step guide
+To run the app locally you can execute the ``run.sh`` script with some parameters:
+
+```
+./run.sh ${language} skipDatabase ${path-to-project}
+```
+
+1. `${language}` must be specified to `java`, as it is, for now, the only supported language.
+2. `skipDatabase` is if you want to run the program again and the database is already set up from a previous run. If this is the case, simply just write `skipDatabase` as the second parameter. If not simply write anything but `skipDatabase` as the second parameter
+3. `${path-to-project}` must be set to the path to the project that you want to analyze with Untangle.
