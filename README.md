@@ -13,8 +13,6 @@ It features no ads, tracking, cloud, server or data mining.
 ![Example of execution](./Media/Untangle_Example.gif)
 
 ## Running the app
-To use this application you have to first clone the repository
-
 There is currently 2 different ways to run the app. You can either run it [locally](#running-untangle-locally) or through [docker](#running-untangle-in-docker-recommended). How to run the app is described in later sections.
 
 It is important to note the time it can take for the application to start. If you are creating the docker image for the first time this step usually takes around 5 minutes depending on the power of your pc.
@@ -41,15 +39,13 @@ chmod +x ./run-docker.sh
 Create the docker image by executing the following command from the root directory:
 
 ```
-docker build -f ${path-to-dockerfile} -t untangle .
+docker pull karlo2001/untangle:latest
 ```
-Where `${path-to-dockerfile}` is either `Docker\DOCKERFILE` for Windows or `Docker/DOCKERFILE` for UNIX systems.
-
 ---
 
 If you want to run the image without file sharing **(recommended)** run the following commands:
 ```
-docker run -d -it -p 8080:3000 --name untangled untangle
+docker run -d -it -p 8080:3000 --name untangled karlo2001/untangle
 
 cd ${path-to-project}
 
@@ -76,9 +72,12 @@ docker exec untangled /bin/bash -c "./docker-run.sh 15"
 * Installed version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 * Installed version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
 * Your Java project must be buildable on your local machine.
+* Git to clone the project
 
 #### Step-by-step guide
-To run the app locally you can execute the ``run.sh`` script with some parameters:
+First you have to clone the project
+
+Then to run the app locally you can execute the ``run.sh`` script with some parameters:
 
 ```
 ./run.sh ${language} ${path-to-project}
