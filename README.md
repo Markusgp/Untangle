@@ -7,10 +7,14 @@ It features no ads, tracking, cloud, server or data mining.
 ## Untangle Capabilities
 * View your project in either the *Circular* or *Force-directed* layouts.
 * **Expand** and **collapse** packages to gain better insight into your project structure.
-* **Highlight** edges pertaining to specific class / interface / package in your system.
+* **Highlight** edges pertaining to specific class / interface / package in your system by selecting nodes.
 * Control your view with **filtering** and **hiding** of unneeded elements.
 
-![Example of execution](./Media/Untangle_Example.gif)
+## Example of Circular Layout
+![Example of Circular Layout](./Media/UntangleCircular.png)
+
+## Example of Force-directed Layout
+![Example of Force-directed Layout](./Media/UntangleForce.png)
 
 ## Running the app
 To use this application you have to first clone the repository
