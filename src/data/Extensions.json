@@ -1,8 +1,31 @@
 {"#select":{"columns":[
-  {"kind":"String"}
-,{"kind":"String"}]
-,"tuples":[
-    ["BFST21Group6.pointsofinterest.FavouritePoint","BFST21Group6.pointsofinterest.PointOfInterest"]
-  ,["BFST21Group6.pointsofinterest.HomePoint","BFST21Group6.pointsofinterest.PointOfInterest"]
-  ,["BFST21Group6.pointsofinterest.WorkPoint","BFST21Group6.pointsofinterest.PointOfInterest"]]
-}}
+   {"kind":"String"}
+  ,{"kind":"String"}]
+ ,"tuples":[
+   ["bfst21.address.Address","bfst21.geometry.Coordinate"]
+  ,["bfst21.address.City","bfst21.address.AddressPart"]
+  ,["bfst21.address.Floor","bfst21.address.AddressPart"]
+  ,["bfst21.address.House","bfst21.address.AddressPart"]
+  ,["bfst21.address.Side","bfst21.address.AddressPart"]
+  ,["bfst21.address.Postcode","bfst21.address.AddressPart"]
+  ,["bfst21.address.Street","bfst21.address.AddressPart"]
+  ,["bfst21.beans.binding.FileBinding","bfst21.beans.binding.FileExpression"]
+  ,["bfst21.beans.property.FileProperty","bfst21.beans.property.ReadOnlyFileProperty"]
+  ,["bfst21.beans.property.ValueWrapper","bfst21.beans.binding.FileBinding"]
+  ,["bfst21.beans.property.ReadOnlyFileProperty","bfst21.beans.binding.FileExpression"]
+  ,["bfst21.beans.property.FilePropertyBase","bfst21.beans.property.FileProperty"]
+  ,["bfst21.beans.property.SimpleFileProperty","bfst21.beans.property.FilePropertyBase"]
+  ,["bfst21.collections.rtree.RTreeDivision","bfst21.collections.Tuple"]
+  ,["bfst21.drawing.canvas.MapCanvas","bfst21.drawing.canvas.LayeredCanvas"]
+  ,["bfst21.drawing.theme.DarkTheme","bfst21.drawing.theme.DefaultTheme"]
+  ,["bfst21.drawing.theme.DefaultTheme","bfst21.drawing.theme.Theme"]
+  ,["bfst21.exceptions.BFSTBadLatitudeException","bfst21.exceptions.BFSTRuntimeException"]
+  ,["bfst21.gui.FilePicker","bfst21.gui.IconButton"]
+  ,["bfst21.gui.FileSavePicker","bfst21.gui.FilePicker"]
+  ,["bfst21.osm.Node","bfst21.geometry.Coordinate"]
+  ,["bfst21.osm.Road","bfst21.osm.Way"]
+  ,["bfst21.osm.builder.BFSTBadRelationException","bfst21.exceptions.BFSTException"]
+  ,["bfst21.osm.builder.MultiPolygonRelationBuilder","bfst21.osm.builder.DrawableBuilder"]
+  ,["bfst21.osm.builder.WayBuilder","bfst21.osm.builder.DrawableBuilder"]
+  ,["bfst21.collections.rtree.RTreeDivision<>","bfst21.collections.Tuple"]]
+ }}

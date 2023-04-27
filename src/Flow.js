@@ -35,15 +35,17 @@ import {LayoutTypes} from "./Types/LayoutTypes.js";
 const useBaryCenter = true;
 const layout = LayoutTypes.Circular;
 
+
+
 let {
     nodes: initialNodesCircular,
     edges: initialEdgesCircular
-} = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, layout, tree, []);
+} = createNodesAndEdges([], tree.getTopLevelPackages().length == 1 ? tree.getPackageContent(tree.getTopLevelPackages()[0].name) : tree.getTopLevelPackages() ,"", useBaryCenter, layout, tree, []);
 
 let {
     nodes: initialNodesForce,
     edges: initialEdgesForce
-} = createNodesAndEdges([], [], tree.getTopLevelPackages()[0].name, useBaryCenter, LayoutTypes.Force, tree, []);
+} = createNodesAndEdges([], tree.getTopLevelPackages().length == 1 ? tree.getPackageContent(tree.getTopLevelPackages()[0].name) : tree.getTopLevelPackages(),"", useBaryCenter, LayoutTypes.Force, tree, []);
 
 const nodeTypes = {
     packageNode: PackageNode,
@@ -166,7 +168,7 @@ function Flow() {
         const tempEdges = edges;
         if (nd.type === NodeTypes.PackageNode || nd.type === NodeTypes.OpenedPackageNode) {
             if (layout === LayoutTypes.Force) nd.data.visible = !nd.data.visible;
-            const {nodes, edges} = createNodesAndEdges(tempNodes, tempEdges, nd.id, useBaryCenter, layout, tree);
+            const {nodes, edges} = createNodesAndEdges(tempNodes, tree.getPackageContent(nd.id), nd.id, useBaryCenter, layout, tree);
             setNodes(nodes);
             setEdges(edges);
             resetAllNodesOpacity(nodes);
