@@ -5,6 +5,7 @@ import { CodeQLType } from "../Types/CodeQLType"
 export class ClassTree {
     constructor() {
         this.root = new JavaPackage("src","")
+        this.maxDepend = 0
     }
 
     add(name, pack, type, linesOfCode){
@@ -49,6 +50,36 @@ export class ClassTree {
         } else {
             return node.linesOfCode;
         }
+    }
+
+    getAllLeavesRec(node, leaves){
+        if (node.children.size > 0){
+            for (let value of node.children.values()){
+                if (value instanceof JavaClass) leaves.push(value)
+                else leaves.join(this.getAllLeavesRec(value,leaves))
+            }
+        }
+        return leaves
+    }
+    getAllLeaves(){
+        return this.getAllLeavesRec(this.root, [])
+    }
+
+    getMaxDependencies(){
+        if(this.maxDepend !== 0) {
+            return this.maxDepend
+        }
+        let nodes = this.getAllLeaves()
+        let max = 0
+        for (let i = 0; i < nodes.length; i++){
+            let current = nodes[i]
+            let numInvocations = current.classInvocation.size
+            let numInheritances = current.classInherits.size
+            let numImplementations = current.classImplements.size
+            let sum = numInvocations+numInheritances+numImplementations
+            if (sum > max) max = sum
+        }
+        return max
     }
 
     createJSONTreeRecursively(node) {
@@ -133,6 +164,29 @@ export class ClassTree {
                 current = current.children.get(node)
         }
         return current
+    }
+
+    getNumDependenciesRec(node,targetNode,type){
+        let numInvocations = 0
+        targetNode.children.forEach(child => {
+            if (child instanceof JavaClass) {
+                if (type === "invocation") if (node.classInvocation.has(child.pack)) numInvocations += 1
+                else if (type === "implementation") if (node.classImplements.has(child.pack)) numInvocations += 1
+                else if (type === "inheritence") if (node.classInherits.has(child.pack)) numInvocations += 1
+            }
+            else {
+                numInvocations += this.getNumDependenciesRec(node,child,type)
+            }
+        })
+        return numInvocations
+    }
+
+    getNumDependencies(node,targetNode,type){
+        let current = this.getNode(node)
+        let target = this.getNode(targetNode)
+        if (target instanceof JavaClass) return 1
+
+        return this.getNumDependenciesRec(current,target,type)
     }
 
     getNumInvocations(node){

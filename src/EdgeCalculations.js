@@ -18,8 +18,9 @@ export function getEdgeParams(source, target) {
     }
 }
 
-//This function returns the border point of the node that is closest to the target node
-function getNodeIntersection(intersectionNode, targetNode) {
+// This function returns the border point of the node that is closest to the target node
+// considering rounded edges with a given corner radius
+function getNodeIntersection(intersectionNode, targetNode, cornerRadius = 40) {
     const {
         width: intersectionNodeWidth,
         height: intersectionNodeHeight,
@@ -35,16 +36,30 @@ function getNodeIntersection(intersectionNode, targetNode) {
     const x1 = targetPosition.x + w;
     const y1 = targetPosition.y + h;
 
-    const xx1 = (x1 - x2) / (2 * w) - (y1 - y2) / (2 * h);
-    const yy1 = (x1 - x2) / (2 * w) + (y1 - y2) / (2 * h);
-    const a = 1 / (Math.abs(xx1) + Math.abs(yy1));
-    const xx3 = a * xx1;
-    const yy3 = a * yy1;
-    const x = w * (xx3 + yy3) + x2;
-    const y = h * (-xx3 + yy3) + y2;
+    const dx = x1 - x2;
+    const dy = y1 - y2;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    // Compute the normalized direction vector
+    const directionX = dx / distance;
+    const directionY = dy / distance;
+
+    // Calculate the intersection point of the straight line with the rounded rectangle
+    const straightLineIntersectionX = w * Math.abs(directionX) + cornerRadius * (1 - Math.abs(directionX));
+    const straightLineIntersectionY = h * Math.abs(directionY) + cornerRadius * (1 - Math.abs(directionY));
+
+    // Scale the intersection point along the direction vector to ensure it lies on the rounded rectangle
+    const scaleX = straightLineIntersectionX / (w * Math.abs(directionX));
+    const scaleY = straightLineIntersectionY / (h * Math.abs(directionY));
+    const scale = Math.min(scaleX, scaleY);
+
+    const x = x2 + directionX * w * scale;
+    const y = y2 + directionY * h * scale;
 
     return { x, y };
 }
+
+
 
 
 //Returns the position (top,right,bottom or right) passed node compared to the intersection point
