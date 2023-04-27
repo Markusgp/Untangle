@@ -20,7 +20,6 @@ And the codeql analysis for the first time can also take up to 5 minutes dependi
 However after having installed the docker image or ran the application once, you can refer to the [Rerunning the app](#rerunning-the-app)
 
 ### Running Untangle in Docker *(recommended)*
-Start with creating the docker image by running
 
 #### Prerequisites for running Untangle in Docker.
 * A buildable maven or gradle Java project.
