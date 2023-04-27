@@ -2,7 +2,7 @@
 Untangle is a visualization tool for analyzing Java projects and its internal dependencies.  
 It features no ads, tracking, cloud, server or data mining.
 
-**Untangle is part of a research study - please fill out our [short survey](https://www.google.com) after trying out the tool. Thank you!**
+**Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you!**
 
 ## Untangle Capabilities
 * View your project in either the *Circular* or *Force-directed* layouts.
@@ -29,7 +29,7 @@ chmod +x ./docker-run.sh
 chmod +x ./run-docker.sh
 ```
 ---
-Create the docker image by executing:
+Create the docker image by executing the following command from the root directory:
 
 ```
 docker build -f ${path-to-dockerfile} -t untangle .
@@ -65,12 +65,11 @@ docker exec untangled /bin/bash -c "./docker-run.sh 15"
 
 ### Prerequisites for running Untangle locally.
 * A buildable maven or gradle Java project.
-* Newest version of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
-* Newest version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
+* Installed version (16.0+) of [npm](https://docs.npmjs.com/ downloading-and-installing-node-js-and-npm) installed.
+* Installed version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
 * Your Java project must be buildable on your local machine.
 
 ### Step-by-step guide
-
 To run the app locally you can execute the ``run.sh`` script with some parameters:
 
 ```
@@ -80,4 +79,3 @@ To run the app locally you can execute the ``run.sh`` script with some parameter
 1. `${language}` must be specified to `java`, as it is, for now, the only supported language.
 2. `skipDatabase` is if you want to run the program again and the database is already set up from a previous run. If this is the case, simply just write `skipDatabase` as the second parameter. If not simply write anything but `skipDatabase` as the second parameter
 3. `${path-to-project}` must be set to the path to the project that you want to analyze with Untangle.
-
