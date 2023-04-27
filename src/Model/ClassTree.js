@@ -65,7 +65,7 @@ export class ClassTree {
         return this.getAllLeavesRec(this.root, [])
     }
 
-    getMaxDependancies(){
+    getMaxDependencies(){
         if(this.maxDepend !== 0) {
             return this.maxDepend
         }

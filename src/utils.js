@@ -57,7 +57,7 @@ function calculateEdges(nodes, tree) {
             const invokedNode = nodes.find(n => n.id === invokedClass)
             if (invokedNode === undefined || invokedNode.type === NodeTypes.OpenedPackageNode) return
             if (invokedNode.id === node.id) return
-            const maxDependancies = tree.getMaxDependancies()
+            const maxDependancies = tree.getMaxDependencies()
             let edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,invokedNode.id,"invocation")),3)) / (maxDependancies*maxDependancies)) * 100
             if(edgeWeight > maxEdgeWeight) {
                 console.log(edgeWeight)
@@ -70,7 +70,7 @@ function calculateEdges(nodes, tree) {
             const implementedNode = nodes.find(n => n.id === implementedClass)
             if (implementedNode === undefined || implementedNode.type === NodeTypes.OpenedPackageNode) return
             if (implementedNode.id === node.id) return
-            const maxDependancies = tree.getMaxDependancies()
+            const maxDependancies = tree.getMaxDependencies()
             let edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,implementedNode.id,"implementation")),3)) / (maxDependancies*maxDependancies)) * 100
             if(edgeWeight > maxEdgeWeight) {
                 edgeWeight = maxEdgeWeight
@@ -82,7 +82,7 @@ function calculateEdges(nodes, tree) {
             const inheritedNode = nodes.find(n => n.id === inheritedClass)
             if (inheritedNode === undefined ||inheritedNode.type === NodeTypes.OpenedPackageNode) return
             if (inheritedNode.id === node.id) return
-            const maxDependancies = tree.getMaxDependancies()
+            const maxDependancies = tree.getMaxDependencies()
             let edgeWeight = ((Math.pow((tree.getNumDependencies(node.id,inheritedNode.id,"inheritence")),3)) / (maxDependancies*maxDependancies)) * 100
             if(edgeWeight > maxEdgeWeight) {
                 edgeWeight = maxEdgeWeight
