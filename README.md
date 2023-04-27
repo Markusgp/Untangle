@@ -65,6 +65,8 @@ For example if you want to run the app and your project is buildable in Java 15,
 docker exec untangled /bin/bash -c "./docker-run.sh 15"
 ```
 
+After the application is up and running, you can open it on `localhost:8080`
+
 ### Running Untangle locally
 
 #### Prerequisites for running Untangle locally.
