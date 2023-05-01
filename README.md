@@ -33,21 +33,14 @@ However after having installed the docker image or ran the application once, you
 
 #### Step-by-step guide
 
-(FOR UNIX USERS): First make sure that both `docker-run.sh` and `run-docker.sh` scripts have executable permission.
-Execute the following commands:
-```
-chmod +x ./docker-run.sh
-chmod +x ./run-docker.sh
-```
----
-Create the docker image by executing the following command from the root directory:
+Create the docker image by executing the following command:
 
 ```
 docker pull karlo2001/untangle:latest
 ```
 ---
 
-If you want to run the image without file sharing **(recommended)** run the following commands:
+Then run the following commands to start a container and copy the project that should be analysed into the container:
 ```
 docker run -d -it -p 8080:3000 --name untangled karlo2001/untangle
 
