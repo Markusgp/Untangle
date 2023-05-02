@@ -102,7 +102,7 @@ It is also worth to note that if something goes wrong, you might see some previo
 
 ## Contact
 If there is any problems with the tool or you have any questions regarding the tool feel free to reach us on any of these emails
-- [Gustav](guch@itu.dk)
-- [Karl](kabm@itu.dk)
-- [Markus](mgrp@itu.dk)
-- [Daniel](dlli@itu.dk)
+- guch@itu.dk
+- kabm@itu.dk
+- mgrp@itu.dk
+- dlli@itu.dk
