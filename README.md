@@ -68,8 +68,8 @@ After the application is up and running, you can open it on `localhost:8080`
 
 #### Prerequisites for running Untangle locally.
 * A buildable maven or gradle Java project.
-* Installed version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
-* Installed version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
+* Version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+* [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
 * Your Java project must be buildable on your local machine.
 * Git to clone the project
 
