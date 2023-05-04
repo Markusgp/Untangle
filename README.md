@@ -50,7 +50,7 @@ For example if you wanna run the application with java 15 the command would be
 curl https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.sh | bash -s -- 15
 ```
 ##### Windows users
-Windows users have to use powershell with administration rights and first allow the shell to run scripts with the following command
+Windows users have to use **powershell with administration** rights and first allow the shell to run scripts with the following command
 ```
 PowerShell -ExecutionPolicy Bypass
 ```
