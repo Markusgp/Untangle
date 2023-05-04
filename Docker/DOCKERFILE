@@ -1,3 +1,5 @@
+FROM openjdk:17-oracle as Java17
+
 FROM adoptopenjdk/openjdk16:jdk-16.0.2_7-ubuntu as Java16
 
 FROM adoptopenjdk/openjdk15:jdk-15.0.2_7-ubuntu as Java15
@@ -30,6 +32,7 @@ ENV PATH="$PATH:/codeql-bundle/codeql"
 COPY . ./react-app
 COPY docker-run.sh .
 
+COPY --from=Java17 /usr/java/openjdk-17 /opt/java/openjdk17
 COPY --from=Java16 /opt/java/openjdk /opt/java/openjdk16
 COPY --from=Java15 /opt/java/openjdk /opt/java/openjdk15
 COPY --from=Java14 /opt/java/openjdk /opt/java/openjdk14

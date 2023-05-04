@@ -1,0 +1,7 @@
+param ([Parameter(Mandatory)]$path, [Parameter(Mandatory)]$java_version)
+
+docker pull karlo2001/untangle:latest
+docker run -d -it -p 8080:3000 --name untangled karlo2001/untangle
+cd $path
+docker cp . untangled:/var/www
+docker exec untangled //bin/bash -c "./docker-run.sh $java_version"
