@@ -52,7 +52,7 @@ PowerShell -ExecutionPolicy Bypass
 ```
 which will allow for you to run scripts in the current session
 
-Next you have to set the environment variable `UNTANGLE_VERSION` to a JDK version that your project is buildable with, which can be done using the following command
+Next you have to set the environment variable `UNTANGLE_JAVA` to a JDK version that your project is buildable with, which can be done using the following command
 ```
 $Env:UNTANGLE_JAVA = '${java-version}'
 ```
