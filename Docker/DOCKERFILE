@@ -22,6 +22,7 @@ SHELL ["/bin/bash", "-c"]
 RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle.tar.gz
 RUN mkdir -p codeql-bundle
 RUN mkdir -p react-app
+RUN mkdir -p var/www
 RUN tar -xvzf codeql-bundle.tar.gz -C codeql-bundle
 RUN rm codeql-bundle.tar.gz
 
