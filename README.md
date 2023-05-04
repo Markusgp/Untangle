@@ -33,21 +33,14 @@ However after having installed the docker image or ran the application once, you
 
 #### Step-by-step guide
 
-(FOR UNIX USERS): First make sure that both `docker-run.sh` and `run-docker.sh` scripts have executable permission.
-Execute the following commands:
-```
-chmod +x ./docker-run.sh
-chmod +x ./run-docker.sh
-```
----
-Create the docker image by executing the following command from the root directory:
+Create the docker image by executing the following command:
 
 ```
 docker pull karlo2001/untangle:latest
 ```
 ---
 
-If you want to run the image without file sharing **(recommended)** run the following commands:
+Then run the following commands to start a container and copy the project that should be analysed into the container:
 ```
 docker run -d -it -p 8080:3000 --name untangled karlo2001/untangle
 
@@ -75,8 +68,8 @@ After the application is up and running, you can open it on `localhost:8080`
 
 #### Prerequisites for running Untangle locally.
 * A buildable maven or gradle Java project.
-* Installed version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
-* Installed version of [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
+* Version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
+* [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
 * Your Java project must be buildable on your local machine.
 * Git to clone the project
 
@@ -106,3 +99,10 @@ If you are running the app locally these are the files/directories that will go 
 - codeql-database-java (the codeql database)
 
 It is also worth to note that if something goes wrong, you might see some previous data from a prior execution, or the test data provided by us. Therefore, it is a good practice if you wish to run analysis on another project or an updated project, that you delete the contents of `src/codeql-data` to not get any mix-ups
+
+## Contact
+If there is any problems with the tool or you have any questions regarding the tool feel free to reach us on any of these emails
+- guch@itu.dk
+- kabm@itu.dk
+- mgrp@itu.dk
+- dlli@itu.dk
