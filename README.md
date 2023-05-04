@@ -33,33 +33,39 @@ However after having installed the docker image or ran the application once, you
 
 #### Step-by-step guide
 
-Create the docker image by executing the following command:
-
+First you must open a terminal and go to the project you wish to analyze and then find your OS type underneath and following the instructions
+##### Unix users
+Unix users can use the following command to run the app through docker
 ```
-docker pull karlo2001/untangle:latest
+curl https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.sh | bash -s -- ${java-version}
 ```
----
+where `${java-version}` is a JDK version that your project is buildable with
 
-Then run the following commands to start a container and copy the project that should be analysed into the container:
+For example if you wanna run the application with java 15 the command would be
 ```
-docker run -d -it -p 8080:3000 --name untangled karlo2001/untangle
-
-cd ${path-to-project}
-
-docker cp . untangled:/var/www
+curl https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.sh | bash -s -- 15
 ```
-Where `${path-to-project}` refers to the path to the project you want analyzed with Untangle.
-
----
-
-Now the container is set up for Untangle to run. To run Untangle execute the following command while specifying your java version
+##### Windows users
+Windows users have to use powershell with administration rights and first allow the shell to run scripts with the following command
 ```
-docker exec untangled /bin/bash -c "./docker-run.sh ${specified-java-version}"
+PowerShell -ExecutionPolicy Bypass
+```
+which will allow for you to run scripts in the current session
+
+Next you have to set the environment variable `UNTANGLE_VERSION` to a JDK version that your project is buildable with, which can be done using the following command
+```
+$Env:UNTANGLE_JAVA = '${java-version}'
+```
+Now you can run the run script with the following command
+```
+(New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.ps1") | powershell
 ```
 
-For example if you want to run the app and your project is buildable in Java 15, you can run the following command:
+An example of running the app through docker with java version 15 this is the following commands that will be ran
 ```
-docker exec untangled /bin/bash -c "./docker-run.sh 15"
+PowerShell -ExecutionPolicy Bypass
+$Env:UNTANGLE_JAVA = '15'
+(New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.ps1") | powershell
 ```
 
 After the application is up and running, you can open it on `localhost:8080`
