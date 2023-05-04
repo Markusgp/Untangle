@@ -33,7 +33,11 @@ However after having installed the docker image or ran the application once, you
 
 #### Step-by-step guide
 
-First you must open a terminal and go to the project you wish to analyze and then find your OS type underneath and following the instructions
+First you must open a terminal and go to the project you wish to analyze with the command
+```
+cd ${project-to-analyze}
+```
+then find your OS type underneath and following the instructions
 ##### Unix users
 Unix users can use the following command to run the app through docker
 ```
