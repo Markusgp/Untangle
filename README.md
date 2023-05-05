@@ -2,7 +2,7 @@
 Untangle is a architecture recovery & visualization tool for analyzing Java codebases, their software entities, and their internal dependencies.
 Untangle features no ads, tracking, cloud, server, source code pollution, and is completely open-source.
 
-### Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you
+<h3> Untangle is part of a research study - please fill out our <a href="https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform">short survey</a> after trying out the tool. Thank you! </h3>
 
 ## Untangle Capabilities
 * View your project in either the **Circular** or **Force-directed** layouts.
