@@ -4,6 +4,8 @@ Untangle features no ads, tracking, cloud, server, source code pollution, and is
 
 <h3> Untangle is part of a research study - please fill out our <a href="https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform">short survey</a> after trying out the tool. Thank you! </h3>
 
+OBS please be aware that Apple Silicon processors (M1 & M2) are not yet supported by Untangle
+
 ## Untangle Capabilities
 * View your project in either the **Circular** or **Force-directed** layouts.
 * **Expand** and **collapse** packages to gain better insight into your project's hierachial structure.
