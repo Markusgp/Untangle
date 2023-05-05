@@ -147,9 +147,9 @@ Untangle should become available at `localhost:3000`
 
 If you have already done an analysis on the project, and you wish to see the same data, you do not need to run the whole analysis again.
 
-If you ran the application locally, you can simply use the `npm start` command and Untangle with the previous data should become available at `localhost:3000`.
+If you ran the application locally, you can simply use the `npm start` command from the root folder of the Untangle repo and Untangle with the previous data should become available at `localhost:3000`.
 
-If you ran the application in docker, you need to run `docker exec untangled /bin/bash -c "cd react-app; npm start"` and Untangle should become available at `localhost:8080`.
+If you ran the application in docker, you can run `docker exec untangled /bin/bash -c "cd react-app; npm start"` and Untangle should become available at `localhost:8080`.
 
 </details>
 
