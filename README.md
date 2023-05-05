@@ -1,6 +1,6 @@
 # Untangle
 Untangle is a architecture recovery & visualization tool for analyzing Java codebases, their software entities, and their internal dependencies.
-Untangle features no ads, tracking, cloud, server, and is completely open-source.
+Untangle features no ads, tracking, cloud, server, source code pollution, and is completely open-source.
 
 **Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you!**
 
@@ -13,16 +13,14 @@ Untangle features no ads, tracking, cloud, server, and is completely open-source
 
 | View | Img |
 | --- | --- |
-| Circular Layout | ![Example of Circular Layout](./Media/UntangleCircular.png | width=600) | 
-| Force-directed Layout | ![Example of Force-directed Layout](./Media/UntangleForce.png | width=600) |
+| Circular Layout | ![Example of Circular Layout](./Media/UntangleCircular.png) | 
+| Force-directed Layout | ![Example of Force-directed Layout](./Media/UntangleForce.png) |
 # Running Untangle
 Untangle can be executed in **2** different ways - in an isolated [docker container](#running-untangle-in-docker-recommended) *(recommended)*, or [locally in your own environment](#running-untangle-locally).
 
 ## Running Untangle in Docker *(recommended)*
 
-After having installed the docker image, and having ran the application once, you can refer to [Rerunning Untangle](#rerunning-the-app)
-
-### Prerequisites for running Untangle in Docker.
+### Prerequisites.
 * A buildable maven or gradle Java project.
 * Your project must be buildable with Java 8, 11, 12, 13, 14, 15, 16, or 17.
 * [Docker](https://docs.docker.com/get-docker/) installed.
@@ -80,6 +78,10 @@ $Env:UNTANGLE_JAVA = '15'
 After the application is up and running, you can open it by navigating to url `localhost:8080` in a browser.
 
 ---
+
+
+After having installed the docker image, and having ran the application once, you can refer to [rerunning Untangle](#rerunning-the-app)
+
 
 ### Running Untangle locally
 
