@@ -1,62 +1,81 @@
 # Untangle
-Untangle is a visualization tool for analyzing Java projects and its internal dependencies.  
-It features no ads, tracking, cloud, server or data mining.
+Untangle is a architecture recovery & visualization tool for analyzing Java codebases, their software entities, and their internal dependencies.
+Untangle features no ads, tracking, cloud, server, source code pollution, and is completely open-source.
 
-**Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you!**
+<h3> Untangle is part of a research study - please fill out our <a href="https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform">short survey</a> after trying out the tool. Thank you! </h3>
 
 ## Untangle Capabilities
-* View your project in either the *Circular* or *Force-directed* layouts.
-* **Expand** and **collapse** packages to gain better insight into your project structure.
-* **Highlight** edges pertaining to specific class / interface / package in your system by selecting nodes.
-* Control your view with **filtering** and **hiding** of unneeded elements.
+* View your project in either the **Circular** or **Force-directed** layouts.
+* **Expand** and **collapse** packages to gain better insight into your project's hierachial structure.
+* **Highlight** edges pertaining to a specific class / interface / package in your system by selecting nodes, and gain insights into metrics of the chosen entity.
+* Control your view with **filtering** and **hiding** of unneeded elements.  
 
-## Example of Circular Layout
-![Example of Circular Layout](./Media/UntangleCircular.png)
 
-## Example of Force-directed Layout
-![Example of Force-directed Layout](./Media/UntangleForce.png)
 
-## Running the app
-There is currently 2 different ways to run the app. You can either run it [locally](#running-untangle-locally) or through [docker](#running-untangle-in-docker-recommended). How to run the app is described in later sections.
+| View | Image |
+| --- | --- |
+| Circular Layout | ![Example of Circular Layout](./Media/UntangleCircular.png) | 
+| Force-directed Layout | ![Example of Force-directed Layout](./Media/UntangleForce.png) |
 
-It is important to note the time it can take for the application to start. If you are creating the docker image for the first time this step usually takes around 5 minutes depending on the power of your pc.
-And the codeql analysis for the first time can also take up to 5 minutes depending on the size of your project.
-However after having installed the docker image or ran the application once, you can refer to the [Rerunning the app](#rerunning-the-app)
 
-### Running Untangle in Docker *(recommended)*
 
-#### Prerequisites for running Untangle in Docker.
+# Running Untangle
+Untangle can be executed in **2** different ways - in an isolated [docker container](#running-untangle-in-docker-recommended) *(recommended)*, or [locally in your own environment](#running-untangle-locally). After having ran the application once, you can refer to [rerunning Untangle](#rerunning-the-app) for easier execution.
+
+## Running Untangle in Docker *(recommended)*
+
+### Prerequisites.
 * A buildable maven or gradle Java project.
-* Your project must be buildable with JDK 8, 11, 12, 13, 14, 15, or 16.
+* Your project must be buildable with Java 8, 11, 12, 13, 14, 15, 16, or 17.
 * [Docker](https://docs.docker.com/get-docker/) installed.
+* A bit of patience, executing the analysis can take up to 10 minutes depending on your specifications.
 
 
-#### Step-by-step guide
+### Step-by-step guide
 
 First you must open a terminal as administrator and go to the project you wish to analyze with the command
 ```
 cd ${project-to-analyze}
 ```
-then find your OS type underneath and following the instructions
-##### Unix users
-Unix users can use the following command to run the app through docker
+where `${project-to-analyze}` is replaced with the path to your Java project e.g `~/Desktop/MyJavaProject`  
+then find your operating system underneath and follow the instructions.
+
+<details>
+<summary>
+
+### UNIX users (Mac & Linux)
+
+</summary>
+
+UNIX users can use the following command to run Untangle through docker.
 ```
 curl https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.sh | bash -s -- ${java-version}
 ```
-where `${java-version}` is a JDK version that your project is buildable with
+where `${java-version}` should be replaced by the Java version that your project is buildable with.
 
-For example if you wanna run the application with java 15 the command would be
+For example, if you wanna run the application with Java 15 the command would be:
 ```
 curl https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.sh | bash -s -- 15
 ```
-##### Windows users
-Windows users have to use **powershell with administration rights** and first allow the shell to run scripts with the following command
+
+Once you see the line `webpack compiled with 1 warning` in your terminal - Untangle is running, and can be utilized by navigating to `localhost:8080` in a browser.
+
+</details>
+
+
+
+<details>
+<summary>
+
+### Windows users
+
+</summary>
+
+Windows users have to use **powershell with administration rights** and first enable powershell to run scripts in your current session with the following command:
 ```
 PowerShell -ExecutionPolicy Bypass
 ```
-which will allow for you to run scripts in the current session
-
-Next you have to set the environment variable `UNTANGLE_JAVA` to a JDK version that your project is buildable with, which can be done using the following command
+Next you have to set the environment variable `UNTANGLE_JAVA` to a Java version that your project is buildable with, which can be done using the following command
 ```
 $Env:UNTANGLE_JAVA = '${java-version}'
 ```
@@ -65,50 +84,77 @@ Now you can run the run script with the following command
 (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.ps1") | powershell
 ```
 
-An example of running the app through docker with java version 15 this is the following commands that will be ran
+An example of running the app through docker with Java version 15 this is the following commands that will be ran
 ```
 PowerShell -ExecutionPolicy Bypass
+
 $Env:UNTANGLE_JAVA = '15'
+
 (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.ps1") | powershell
 ```
 
-After the application is up and running, you can open it on `localhost:8080`
+Once you see the line `webpack compiled with 1 warning` in your terminal - Untangle is running, and can be utilized by navigating to `localhost:8080` in a browser.
 
-### Running Untangle locally
+</details>
 
-#### Prerequisites for running Untangle locally.
+---
+
+<details>
+<summary>
+
+## Running Untangle locally
+
+</summary>
+
+Untangle supports local execution. This can be useful as you may want to test Untangle on Java projects which rely on third-party dependencies that are installed on your local machine.
+
+We do however recommend that you perform the analysis on a copy of your Java project, as running Untangle locally will produce source code pollution, in the form of creating the following files in your local Java directory:
+- qlpack.yml (codeql dependencies)
+- codeql (codeql queries)
+- codeql-database-java (the codeql database)
+
+
+### Prerequisites.
 * A buildable maven or gradle Java project.
 * Version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 * [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
 * Your Java project must be buildable on your local machine.
 * Git to clone the project
 
-#### Step-by-step guide
-First you have to clone the project
+### Step-by-step guide
+First clone this repository and move the terminal to the root folder of Untangle.
 
-Then to run the app locally you can execute the ``run.sh`` script with some parameters:
+Then execute the ``run.sh`` script with parameters:
 
 ```
 ./run.sh ${language} ${path-to-project}
 ```
+Where
+1. `${language}` must be replaced with `java`, as it is, for now, the only supported language.
+2. `${path-to-project}` must be replaced with the path to the project that you want to analyze with Untangle - e.g. `~/Desktop/MyJavaProject`
 
-1. `${language}` must be specified to `java`, as it is, for now, the only supported language.
-2. `${path-to-project}` must be set to the path to the project that you want to analyze with Untangle.
+Once you see the line `webpack compiled with 1 warning` in your terminal - Untangle is running, and can be utilized by navigating to `localhost:3000` in a browser.
 
-### Rerunning the app
+</details>
+
+---
+
+<details>
+<summary>
+
+## Rerunning Untangle
+
+</summary>
+
 If you have already done an analysis on the project, and you wish to see the same data, you do not need to run the whole analysis again.
 
-If you ran the application locally, you can simply use the `npm start` command and the application with the previous data should be displayed.
+If you ran the application locally, you can simply use the `npm start` command from the root folder of the Untangle repo and Untangle with the previous data should become available at `localhost:3000`.
 
-If you ran the application in docker, you need to run `docker exec untangled /bin/bash -c "cd react-app; npm start"`
+If you ran the application in docker, you can run `docker exec untangled /bin/bash -c "cd react-app; npm start"` and Untangle should become available at `localhost:8080`.
 
-### Note
-If you are running the app locally these are the files/directories that will go in your source project
-- qlpack.yml (codeql dependencies)
-- codeql (codeql queries)
-- codeql-database-java (the codeql database)
+</details>
 
-It is also worth to note that if something goes wrong, you might see some previous data from a prior execution, or the test data provided by us. Therefore, it is a good practice if you wish to run analysis on another project or an updated project, that you delete the contents of `src/codeql-data` to not get any mix-ups
+---
 
 ## Contact
 If there is any problems with the tool or you have any questions regarding the tool feel free to reach us on any of these emails
