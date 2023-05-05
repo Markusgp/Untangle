@@ -57,7 +57,8 @@ For example, if you wanna run the application with Java 15 the command would be:
 ```
 curl https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.sh | bash -s -- 15
 ```
-After the application is up and running, you can open it by navigating to url `localhost:8080` in a browser.
+
+Once you see the line `webpack compiled with 1 warning` in your terminal - Untangle is running, and can be utilized by navigating to `localhost:8080` in a browser.
 
 </details>
 
@@ -92,7 +93,7 @@ $Env:UNTANGLE_JAVA = '15'
 (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/Markusgp/Untangle/main/untangle.ps1") | powershell
 ```
 
-After the application is up and running, you can open it by navigating to url `localhost:8080` in a browser.
+Once you see the line `webpack compiled with 1 warning` in your terminal - Untangle is running, and can be utilized by navigating to `localhost:8080` in a browser.
 
 </details>
 
