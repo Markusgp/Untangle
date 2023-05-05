@@ -16,8 +16,11 @@ Untangle features no ads, tracking, cloud, server, source code pollution, and is
 | --- | --- |
 | Circular Layout | ![Example of Circular Layout](./Media/UntangleCircular.png) | 
 | Force-directed Layout | ![Example of Force-directed Layout](./Media/UntangleForce.png) |
+
+
+
 # Running Untangle
-Untangle can be executed in **2** different ways - in an isolated [docker container](#running-untangle-in-docker-recommended) *(recommended)*, or [locally in your own environment](#running-untangle-locally).
+Untangle can be executed in **2** different ways - in an isolated [docker container](#running-untangle-in-docker-recommended) *(recommended)*, or [locally in your own environment](#running-untangle-locally). After having ran the application once, you can refer to [rerunning Untangle](#rerunning-the-app) for easier execution.
 
 ## Running Untangle in Docker *(recommended)*
 
@@ -95,15 +98,7 @@ After the application is up and running, you can open it by navigating to url `l
 
 </details>
 
-
-
-
-
 ---
-
-
-After having installed the docker image, and having ran the application once, you can refer to [rerunning Untangle](#rerunning-the-app)
-
 
 <details>
 <summary>
@@ -134,6 +129,7 @@ Then to run the app locally you can execute the ``run.sh`` script with some para
 
 </details>
 
+---
 
 <details>
 <summary>
@@ -150,6 +146,8 @@ If you ran the application in docker, you need to run `docker exec untangled /bi
 
 </details>
 
+---
+
 ## Note
 If you are running the app locally these are the files/directories that will go in your source project
 - qlpack.yml (codeql dependencies)
@@ -157,6 +155,9 @@ If you are running the app locally these are the files/directories that will go 
 - codeql-database-java (the codeql database)
 
 It is also worth to note that if something goes wrong, you might see some previous data from a prior execution, or the test data provided by us. Therefore, it is a good practice if you wish to run analysis on another project or an updated project, that you delete the contents of `src/codeql-data` to not get any mix-ups
+
+
+---
 
 ## Contact
 If there is any problems with the tool or you have any questions regarding the tool feel free to reach us on any of these emails
