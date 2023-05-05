@@ -33,7 +33,7 @@ However after having installed the docker image or ran the application once, you
 
 #### Step-by-step guide
 
-First you must open a terminal and go to the project you wish to analyze with the command
+First you must open a terminal as administrator and go to the project you wish to analyze with the command
 ```
 cd ${project-to-analyze}
 ```
