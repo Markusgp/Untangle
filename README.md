@@ -40,8 +40,6 @@ cd ${project-to-analyze}
 where `${project-to-analyze}` is replaced with the path to your Java project e.g `~/Desktop/MyJavaProject`  
 then find your operating system underneath and follow the instructions.
 
----
-
 <details>
 <summary>
 
@@ -107,7 +105,9 @@ After the application is up and running, you can open it by navigating to url `l
 
 </summary>
 
-If you are running the app locally these are the files/directories that will go in your source project
+Untangle supports local execution. This can be useful as you may want to test Untangle on Java projects which rely on third-party dependencies that are installed on your local machine.
+
+We do however recommend that you perform the analysis on a copy of your Java project, as running Untangle locally will produce source code pollution, in the form of creating the following files in your local Java directory:
 - qlpack.yml (codeql dependencies)
 - codeql (codeql queries)
 - codeql-database-java (the codeql database)
@@ -121,16 +121,18 @@ If you are running the app locally these are the files/directories that will go 
 * Git to clone the project
 
 ### Step-by-step guide
-First you have to clone the project
+First clone this repository and move the terminal to the root folder of Untangle.
 
-Then to run the app locally you can execute the ``run.sh`` script with some parameters:
+Then execute the ``run.sh`` script with parameters:
 
 ```
 ./run.sh ${language} ${path-to-project}
 ```
+Where
+1. `${language}` must be replaced with `java`, as it is, for now, the only supported language.
+2. `${path-to-project}` must be replaced with the path to the project that you want to analyze with Untangle - e.g. `~/Desktop/MyJavaProject`
 
-1. `${language}` must be specified to `java`, as it is, for now, the only supported language.
-2. `${path-to-project}` must be set to the path to the project that you want to analyze with Untangle.
+Untangle should become available at `localhost:3000`
 
 </details>
 
@@ -145,9 +147,9 @@ Then to run the app locally you can execute the ``run.sh`` script with some para
 
 If you have already done an analysis on the project, and you wish to see the same data, you do not need to run the whole analysis again.
 
-If you ran the application locally, you can simply use the `npm start` command and the application with the previous data should be displayed.
+If you ran the application locally, you can simply use the `npm start` command and Untangle with the previous data should become available at `localhost:3000`.
 
-If you ran the application in docker, you need to run `docker exec untangled /bin/bash -c "cd react-app; npm start"`
+If you ran the application in docker, you need to run `docker exec untangled /bin/bash -c "cd react-app; npm start"` and Untangle should become available at `localhost:8080`.
 
 </details>
 
