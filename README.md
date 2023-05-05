@@ -2,7 +2,7 @@
 Untangle is a architecture recovery & visualization tool for analyzing Java codebases, their software entities, and their internal dependencies.
 Untangle features no ads, tracking, cloud, server, source code pollution, and is completely open-source.
 
-**Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you!**
+### Untangle is part of a research study - please fill out our [short survey](https://docs.google.com/forms/d/e/1FAIpQLSdklKw3WTpTMkxsHGbBROVpRa4UMqqKAwNolv2vco42i0Tv8Q/viewform) after trying out the tool. Thank you
 
 ## Untangle Capabilities
 * View your project in either the **Circular** or **Force-directed** layouts.
@@ -107,8 +107,13 @@ After the application is up and running, you can open it by navigating to url `l
 
 </summary>
 
+If you are running the app locally these are the files/directories that will go in your source project
+- qlpack.yml (codeql dependencies)
+- codeql (codeql queries)
+- codeql-database-java (the codeql database)
 
-### Prerequisites for running Untangle locally.
+
+### Prerequisites.
 * A buildable maven or gradle Java project.
 * Version (16.0+) of [npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) installed.
 * [CodeQL CLI](https://codeql.github.com/docs/codeql-cli/getting-started-with-the-codeql-cli/) installed.
@@ -145,17 +150,6 @@ If you ran the application locally, you can simply use the `npm start` command a
 If you ran the application in docker, you need to run `docker exec untangled /bin/bash -c "cd react-app; npm start"`
 
 </details>
-
----
-
-## Note
-If you are running the app locally these are the files/directories that will go in your source project
-- qlpack.yml (codeql dependencies)
-- codeql (codeql queries)
-- codeql-database-java (the codeql database)
-
-It is also worth to note that if something goes wrong, you might see some previous data from a prior execution, or the test data provided by us. Therefore, it is a good practice if you wish to run analysis on another project or an updated project, that you delete the contents of `src/codeql-data` to not get any mix-ups
-
 
 ---
 
