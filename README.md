@@ -133,7 +133,7 @@ Where
 1. `${language}` must be replaced with `java`, as it is, for now, the only supported language.
 2. `${path-to-project}` must be replaced with the path to the project that you want to analyze with Untangle - e.g. `~/Desktop/MyJavaProject`
 
-Untangle should become available at `localhost:3000`
+Once you see the line `webpack compiled with 1 warning` in your terminal - Untangle is running, and can be utilized by navigating to `localhost:3000` in a browser.
 
 </details>
 
