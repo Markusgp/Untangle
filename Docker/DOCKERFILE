@@ -19,6 +19,49 @@ FROM ubuntu:latest as APP
 RUN apt-get clean
 RUN apt-get update
 RUN apt install -y wget
+RUN apt install -y maven
+SHELL ["/bin/bash", "-c"]
+
+RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle.tar.gz
+RUN mkdir -p codeql-bundle
+RUN mkdir -p react-app
+RUN mkdir -p var/www
+RUN tar -xvzf codeql-bundle.tar.gz -C codeql-bundle
+RUN rm codeql-bundle.tar.gz
+
+ENV PATH="$PATH:/codeql-bundle/codeql"
+COPY . ./react-app
+COPY docker-run.sh .
+
+COPY --from=Java17 /usr/java/openjdk-17 /opt/java/openjdk17
+COPY --from=Java16 /opt/java/openjdk /opt/java/openjdk16
+COPY --from=Java15 /opt/java/openjdk /opt/java/openjdk15
+COPY --from=Java14 /opt/java/openjdk /opt/java/openjdk14
+COPY --from=Java13 /opt/java/openjdk /opt/java/openjdk13
+COPY --from=Java12 /opt/java/openjdk /opt/java/openjdk12
+COPY --from=Java11 /opt/java/openjdk /opt/java/openjdk11
+COPY --from=Java8 /opt/java/openjdk /opt/java/openjdk8
+
+ENV NODE_VERSION=16.13.0
+RUN apt install dos2unix
+RUN apt-get update
+RUN apt install -y curl
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+
+RUN dos2unix docker-run.sh
+
+FROM --platform=linux/arm64 ubuntu:latest as APParm64
+
+RUN apt-get clean
+RUN apt-get update
+RUN apt install -y wget
+RUN apt install -y maven
 SHELL ["/bin/bash", "-c"]
 
 RUN wget https://github.com/github/codeql-action/releases/latest/download/codeql-bundle.tar.gz
