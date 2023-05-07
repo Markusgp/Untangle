@@ -5,7 +5,7 @@ if [ ! "$#" -eq "1" ]; then
   exit 1
 fi
 docker pull karlo2001/untangle:arm64
-docker run -d -it -p 8080:3000 --name untangled karlo2001/untangle:arm64
+docker run -d -it --platform=linux/arm64/v8 -p 8080:3000 --name untangled karlo2001/untangle:arm64
 docker cp . untangled:/var/www
 docker exec untangled //bin/bash -c "./docker-run.sh $1"
 $SHELL
