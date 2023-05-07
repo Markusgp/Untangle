@@ -56,7 +56,7 @@ ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
 
 RUN dos2unix docker-run.sh
 
-FROM --platform=linux/arm64 ubuntu:latest as APParm64
+FROM --platform=linux/x86_64 ubuntu:latest as APParm64
 
 RUN apt-get clean
 RUN apt-get update
