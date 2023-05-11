@@ -8,6 +8,8 @@ import Initializations from "../codeql-data/Initialization.json"
 import Instantiations from "../codeql-data/Instantiation.json"
 import GenericInitializations from "../codeql-data/GenericInitialization.json"
 import GenericInstantiations from "../codeql-data/GenericInstantiation.json"
+import FieldAccess from "../codeql-data/FieldAccess.json"
+import StaticMethodAccess from "../codeql-data/StaticMethodAccess.json"
 
 import { CodeQLType } from "../Types/CodeQLType.js"
 
@@ -59,6 +61,13 @@ addDependencyTuples(instantiationTuples, CodeQLType.Invocation);
 
 const genericInstantiationTuples = GenericInstantiations["#select"]["tuples"]
 addDependencyTuples(genericInstantiationTuples, CodeQLType.Invocation);
+
+const fieldAccessTuples = FieldAccess["#select"]["tuples"]
+addDependencyTuples(fieldAccessTuples, CodeQLType.Invocation);
+
+const staticMethodAccessTuples = StaticMethodAccess["#select"]["tuples"]
+addDependencyTuples(staticMethodAccessTuples, CodeQLType.Invocation);
+
 
 tree.calculateLinesOfCodeRecursively(tree.root);
 tree.createJSONTreeRecursively(tree.root);
