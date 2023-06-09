@@ -41,5 +41,6 @@ fi
 cp -r codeql-data $cwd/src
 rm -r codeql-data
 cd $cwd
+npm i
 npm start
 $SHELL
